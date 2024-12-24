@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: HOPS_NEW_API
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+  datasource:
+    url: jdbc:mysql://db-een48.vpc-cdb.ntruss.com:3306/EDU
+    username: vb_dev
+    password: kmi@1324
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  mapper-locations: classpath:**/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+server:
+  port: 28080
+  error:
+    include-stacktrace: never
+logging:
+  level:
+    root: INFO
+  pattern:
+    file: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-15thread][%-30.30logger{0}] %msg%n"
+    console: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-15thread][%-30.30logger{0}] %msg%n"
+  file:
+    name: logs/catalina.out
+#p6spy 설정
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: false
+
