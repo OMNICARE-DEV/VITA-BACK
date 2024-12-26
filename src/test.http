@@ -1,0 +1,8 @@
+### GET request to example server
+POST http://localhost:28080/user/commonIdLogin
+Content-Type: application/json
+
+{
+    "userId": "omnicare",
+    "userPassword": "be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58"
+}

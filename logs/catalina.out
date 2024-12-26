@@ -1,8 +1,462 @@
-[2024-12-24 16:45:06][INFO ][Test worker    ][HopsNewApiApplicationTests    ] Starting HopsNewApiApplicationTests using Java 17.0.13 with PID 41999 (started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
-[2024-12-24 16:45:06][INFO ][Test worker    ][HopsNewApiApplicationTests    ] No active profile set, falling back to 1 default profile: "default"
-[2024-12-24 16:45:06][INFO ][Test worker    ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/test/com/hops/hops_new_api/hops_mobile/mapper] does not exist
-[2024-12-24 16:45:06][INFO ][Test worker    ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
-[2024-12-24 16:45:06][INFO ][Test worker    ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/test/com/hops/hops_new_api/common/mapper] does not exist
-[2024-12-24 16:45:06][WARN ][Test worker    ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
-[2024-12-24 16:45:06][INFO ][Test worker    ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
-[2024-12-24 16:45:07][INFO ][Test worker    ][HopsNewApiApplicationTests    ] Started HopsNewApiApplicationTests in 0.966 seconds (process running for 1.495)
+[2024-12-26 08:32:25][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 63576 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 08:32:25][INFO ][restartedMain  ][HopsNewApiApplication         ] No active profile set, falling back to 1 default profile: "default"
+[2024-12-26 08:32:25][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 08:32:25][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 08:32:25][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 08:32:25][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 08:32:25][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 08:32:25][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 08:32:25][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 08:32:25][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 08:32:25][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 08:32:25][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 572 ms
+[2024-12-26 08:32:26][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 08:32:26][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.107 seconds (process running for 1.445)
+[2024-12-26 08:34:02][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 08:34:02][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 08:45:38][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 63773 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 08:45:38][INFO ][restartedMain  ][HopsNewApiApplication         ] No active profile set, falling back to 1 default profile: "default"
+[2024-12-26 08:45:38][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 08:45:38][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 08:45:39][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 08:45:39][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 08:45:39][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 08:45:39][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 08:45:39][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 08:45:39][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 08:45:39][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 08:45:39][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 757 ms
+[2024-12-26 08:45:40][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 08:45:40][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.668 seconds (process running for 1.988)
+[2024-12-26 08:45:41][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 08:45:41][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 08:47:53][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 63971 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 08:47:53][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 08:47:53][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 08:47:53][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 08:47:53][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 08:47:53][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 08:47:53][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 08:47:54][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 08:47:54][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 08:47:54][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 08:47:54][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 08:47:54][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 618 ms
+[2024-12-26 08:47:54][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 08:47:54][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.267 seconds (process running for 1.906)
+[2024-12-26 08:48:37][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 08:48:37][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 08:48:39][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 64031 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 08:48:39][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 08:48:39][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 08:48:39][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 08:48:40][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 08:48:40][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 08:48:40][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 08:48:40][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 08:48:40][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 08:48:40][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 08:48:40][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 08:48:40][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 674 ms
+[2024-12-26 08:48:40][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 08:48:40][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.329 seconds (process running for 1.842)
+[2024-12-26 08:55:43][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 08:55:43][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 08:55:45][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 64218 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 08:55:45][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 08:55:45][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 08:55:45][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 08:55:45][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 08:55:45][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 08:55:45][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 08:55:45][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 08:55:45][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 08:55:45][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 08:55:45][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 08:55:45][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 616 ms
+[2024-12-26 08:55:45][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 08:55:45][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.208 seconds (process running for 1.719)
+[2024-12-26 08:57:49][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 08:57:49][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 08:57:49][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 10 ms
+[2024-12-26 08:57:49][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 08:57:49][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4157cc68
+[2024-12-26 08:57:49][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 08:57:49][WARN ][http-nio-28080-exec-1][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 08:57:55][WARN ][http-nio-28080-exec-2][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 08:58:09][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 08:58:09][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 08:58:09][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 08:58:09][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 08:58:10][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 64364 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 08:58:10][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 08:58:11][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 08:58:11][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 08:58:11][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 08:58:11][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 08:58:11][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 08:58:11][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 08:58:11][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 08:58:11][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 08:58:11][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 08:58:11][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 680 ms
+[2024-12-26 08:58:12][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 08:58:12][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.326 seconds (process running for 1.837)
+[2024-12-26 09:03:58][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:03:58][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:03:58][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 1 ms
+[2024-12-26 09:03:58][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:03:58][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4c5afdf8
+[2024-12-26 09:03:58][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:03:58][WARN ][http-nio-28080-exec-1][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:08:24][WARN ][http-nio-28080-exec-2][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:08:29][WARN ][http-nio-28080-exec-3][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:08:52][WARN ][http-nio-28080-exec-4][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:11:32][WARN ][http-nio-28080-exec-5][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:14:20][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:14:20][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:14:20][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:14:20][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:14:22][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 64830 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:14:22][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:14:22][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:14:22][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:14:22][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:14:23][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:14:23][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:14:23][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:14:23][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:14:23][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:14:23][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:14:23][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 607 ms
+[2024-12-26 09:14:23][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:14:23][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.232 seconds (process running for 1.835)
+[2024-12-26 09:14:31][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:14:31][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:14:31][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 1 ms
+[2024-12-26 09:14:31][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:14:31][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:14:32][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5f6e048f
+[2024-12-26 09:14:32][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:14:32][WARN ][http-nio-28080-exec-1][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:16:02][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:16:02][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:16:02][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:16:02][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:16:05][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 64866 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:16:05][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:16:05][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:16:05][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:16:05][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:16:05][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:16:05][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:16:05][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:16:05][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:16:05][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:16:05][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:16:05][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 645 ms
+[2024-12-26 09:16:06][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:16:06][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.371 seconds (process running for 1.897)
+[2024-12-26 09:16:10][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:16:10][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:16:10][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 1 ms
+[2024-12-26 09:16:10][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:16:10][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@28aaaea4
+[2024-12-26 09:16:10][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:16:10][WARN ][http-nio-28080-exec-1][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:22:16][WARN ][http-nio-28080-exec-2][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:24:36][WARN ][http-nio-28080-exec-3][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:25:42][WARN ][http-nio-28080-exec-4][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:25:42][WARN ][http-nio-28080-exec-6][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:25:42][WARN ][http-nio-28080-exec-5][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:29:00][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:29:00][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:29:00][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:29:00][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:29:04][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 65252 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:29:04][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:29:04][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:29:04][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:29:04][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:29:04][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:29:04][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:29:05][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:29:05][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:29:05][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:29:05][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:29:05][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 882 ms
+[2024-12-26 09:29:05][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:29:05][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.849 seconds (process running for 2.623)
+[2024-12-26 09:30:13][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:30:13][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:30:13][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 2 ms
+[2024-12-26 09:30:13][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:30:17][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:30:17][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@670ed25
+[2024-12-26 09:30:17][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:30:18][WARN ][http-nio-28080-exec-1][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:31:15][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:31:15][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:31:15][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:31:15][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:31:17][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 65302 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:31:17][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:31:17][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:31:17][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:31:18][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:31:18][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:31:18][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:31:18][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:31:18][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:31:18][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:31:18][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:31:18][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 619 ms
+[2024-12-26 09:31:18][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:31:18][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.217 seconds (process running for 1.717)
+[2024-12-26 09:31:28][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:31:28][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:31:28][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 1 ms
+[2024-12-26 09:31:28][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:31:30][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:31:31][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7eacd7ba
+[2024-12-26 09:31:31][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:31:31][WARN ][http-nio-28080-exec-1][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:32:16][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:32:16][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:32:16][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:32:16][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:32:19][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 65567 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:32:19][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:32:19][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:32:19][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:32:19][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:32:19][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:32:19][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:32:20][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:32:20][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:32:20][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:32:20][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:32:20][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 801 ms
+[2024-12-26 09:32:20][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:32:20][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.503 seconds (process running for 2.233)
+[2024-12-26 09:32:28][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:32:28][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:32:28][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 1 ms
+[2024-12-26 09:32:28][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:32:30][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:32:30][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6d45ad9b
+[2024-12-26 09:32:30][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:32:30][WARN ][http-nio-28080-exec-1][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:33:57][INFO ][http-nio-28080-exec-2][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:33:57][WARN ][http-nio-28080-exec-2][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:35:09][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:35:09][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:35:09][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:35:09][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:35:11][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 65625 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:35:11][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:35:11][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:35:11][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:35:12][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:35:12][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:35:12][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:35:12][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:35:12][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:35:12][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:35:12][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:35:12][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 704 ms
+[2024-12-26 09:35:12][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:35:12][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.366 seconds (process running for 1.896)
+[2024-12-26 09:35:26][INFO ][http-nio-28080-exec-2][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:35:26][INFO ][http-nio-28080-exec-2][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:35:26][INFO ][http-nio-28080-exec-2][DispatcherServlet             ] Completed initialization in 1 ms
+[2024-12-26 09:35:26][INFO ][http-nio-28080-exec-2][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:35:26][INFO ][http-nio-28080-exec-2][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:35:26][INFO ][http-nio-28080-exec-2][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@58d7ffc9
+[2024-12-26 09:35:26][INFO ][http-nio-28080-exec-2][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:35:26][WARN ][http-nio-28080-exec-2][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:35:56][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:35:56][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:35:56][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:35:56][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:35:58][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 65658 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:35:58][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:35:58][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:35:58][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:35:59][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:35:59][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:35:59][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:35:59][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:35:59][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:35:59][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:35:59][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:35:59][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 1069 ms
+[2024-12-26 09:36:00][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:36:00][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.929 seconds (process running for 2.476)
+[2024-12-26 09:36:27][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:36:27][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:36:27][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 2 ms
+[2024-12-26 09:36:28][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:36:28][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:36:28][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@474881a3
+[2024-12-26 09:36:28][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:36:28][WARN ][http-nio-28080-exec-1][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:37:31][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:37:31][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:37:31][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:37:31][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:37:33][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 65701 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:37:33][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:37:33][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:37:33][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:37:33][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:37:33][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:37:33][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:37:33][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:37:33][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:37:33][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:37:33][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:37:33][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 622 ms
+[2024-12-26 09:37:34][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:37:34][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.269 seconds (process running for 1.788)
+[2024-12-26 09:37:39][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:37:39][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:37:39][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 0 ms
+[2024-12-26 09:37:39][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:37:39][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:37:39][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@167ea172
+[2024-12-26 09:37:39][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:37:39][WARN ][http-nio-28080-exec-1][eptionHandlerExceptionResolver] Resolved [com.hops.hops_new_api.common.exception.HopsException: 회원 불일치]
+[2024-12-26 09:42:01][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:42:01][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:42:01][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:42:01][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:42:03][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 65856 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:42:03][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:42:03][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:42:03][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:42:04][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:42:04][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:42:04][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:42:04][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:42:04][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:42:04][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:42:04][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:42:04][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 942 ms
+[2024-12-26 09:42:04][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:42:04][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.602 seconds (process running for 2.144)
+[2024-12-26 09:42:08][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:42:08][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:42:08][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 1 ms
+[2024-12-26 09:42:08][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:42:08][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:42:08][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@64bba0e7
+[2024-12-26 09:42:08][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:42:08][INFO ][http-nio-28080-exec-1][UserLoginServiceImpl          ] UserLoginResponse(loginMapList=[null, null, null, null, null, null, null, null, null, null, null], userDtoList=[])
+[2024-12-26 09:42:08][INFO ][http-nio-28080-exec-1][UserLoginServiceImpl          ] 11
+[2024-12-26 09:42:11][INFO ][http-nio-28080-exec-2][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:42:11][INFO ][http-nio-28080-exec-2][UserLoginServiceImpl          ] UserLoginResponse(loginMapList=[null, null, null, null, null, null, null, null, null, null, null], userDtoList=[])
+[2024-12-26 09:42:11][INFO ][http-nio-28080-exec-2][UserLoginServiceImpl          ] 11
+[2024-12-26 09:42:47][INFO ][http-nio-28080-exec-3][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:42:47][INFO ][http-nio-28080-exec-3][UserLoginServiceImpl          ] UserLoginResponse(loginMapList=[null, null, null, null, null, null, null, null, null, null, null], userDtoList=[])
+[2024-12-26 09:42:47][INFO ][http-nio-28080-exec-3][UserLoginServiceImpl          ] 11
+[2024-12-26 09:44:01][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:44:01][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:44:01][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:44:01][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:44:03][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 65909 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:44:03][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:44:03][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:44:03][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:44:03][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:44:03][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:44:03][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:44:03][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:44:03][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:44:03][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:44:03][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:44:03][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 575 ms
+[2024-12-26 09:44:03][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:44:03][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.16 seconds (process running for 1.686)
+[2024-12-26 09:44:05][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:44:05][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:44:05][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 0 ms
+[2024-12-26 09:44:05][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:44:05][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:44:06][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@68f47071
+[2024-12-26 09:44:06][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:44:06][INFO ][http-nio-28080-exec-1][UserLoginServiceImpl          ] UserLoginResponse(loginMapList=[CustomerMapDto(commonUserNo=103, userNo=133156, customerId=C000000588), CustomerMapDto(commonUserNo=103, userNo=133154, customerId=C000008202), CustomerMapDto(commonUserNo=103, userNo=133161, customerId=C000011956), CustomerMapDto(commonUserNo=103, userNo=133157, customerId=C000014635), CustomerMapDto(commonUserNo=103, userNo=133167, customerId=C000024633), CustomerMapDto(commonUserNo=103, userNo=133155, customerId=C000026177), CustomerMapDto(commonUserNo=103, userNo=133084, customerId=C000026336), CustomerMapDto(commonUserNo=103, userNo=133153, customerId=C000026344), CustomerMapDto(commonUserNo=103, userNo=133152, customerId=C000026357), CustomerMapDto(commonUserNo=103, userNo=133151, customerId=C000026366), CustomerMapDto(commonUserNo=103, userNo=133097, customerId=C000026453)], userDtoList=[])
+[2024-12-26 09:44:06][INFO ][http-nio-28080-exec-1][UserLoginServiceImpl          ] 11
+[2024-12-26 09:44:45][INFO ][http-nio-28080-exec-3][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:44:45][INFO ][http-nio-28080-exec-2][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:44:45][INFO ][http-nio-28080-exec-3][UserLoginServiceImpl          ] UserLoginResponse(loginMapList=[CustomerMapDto(commonUserNo=103, userNo=133156, customerId=C000000588), CustomerMapDto(commonUserNo=103, userNo=133154, customerId=C000008202), CustomerMapDto(commonUserNo=103, userNo=133161, customerId=C000011956), CustomerMapDto(commonUserNo=103, userNo=133157, customerId=C000014635), CustomerMapDto(commonUserNo=103, userNo=133167, customerId=C000024633), CustomerMapDto(commonUserNo=103, userNo=133155, customerId=C000026177), CustomerMapDto(commonUserNo=103, userNo=133084, customerId=C000026336), CustomerMapDto(commonUserNo=103, userNo=133153, customerId=C000026344), CustomerMapDto(commonUserNo=103, userNo=133152, customerId=C000026357), CustomerMapDto(commonUserNo=103, userNo=133151, customerId=C000026366), CustomerMapDto(commonUserNo=103, userNo=133097, customerId=C000026453)], userDtoList=[])
+[2024-12-26 09:44:45][INFO ][http-nio-28080-exec-3][UserLoginServiceImpl          ] 11
+[2024-12-26 09:44:45][INFO ][http-nio-28080-exec-2][UserLoginServiceImpl          ] UserLoginResponse(loginMapList=[CustomerMapDto(commonUserNo=103, userNo=133156, customerId=C000000588), CustomerMapDto(commonUserNo=103, userNo=133154, customerId=C000008202), CustomerMapDto(commonUserNo=103, userNo=133161, customerId=C000011956), CustomerMapDto(commonUserNo=103, userNo=133157, customerId=C000014635), CustomerMapDto(commonUserNo=103, userNo=133167, customerId=C000024633), CustomerMapDto(commonUserNo=103, userNo=133155, customerId=C000026177), CustomerMapDto(commonUserNo=103, userNo=133084, customerId=C000026336), CustomerMapDto(commonUserNo=103, userNo=133153, customerId=C000026344), CustomerMapDto(commonUserNo=103, userNo=133152, customerId=C000026357), CustomerMapDto(commonUserNo=103, userNo=133151, customerId=C000026366), CustomerMapDto(commonUserNo=103, userNo=133097, customerId=C000026453)], userDtoList=[])
+[2024-12-26 09:44:45][INFO ][http-nio-28080-exec-2][UserLoginServiceImpl          ] 11
+[2024-12-26 09:45:33][INFO ][http-nio-28080-exec-5][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:45:33][INFO ][http-nio-28080-exec-5][UserLoginServiceImpl          ] UserLoginResponse(loginMapList=[CustomerMapDto(commonUserNo=103, userNo=133156, customerId=C000000588), CustomerMapDto(commonUserNo=103, userNo=133154, customerId=C000008202), CustomerMapDto(commonUserNo=103, userNo=133161, customerId=C000011956), CustomerMapDto(commonUserNo=103, userNo=133157, customerId=C000014635), CustomerMapDto(commonUserNo=103, userNo=133167, customerId=C000024633), CustomerMapDto(commonUserNo=103, userNo=133155, customerId=C000026177), CustomerMapDto(commonUserNo=103, userNo=133084, customerId=C000026336), CustomerMapDto(commonUserNo=103, userNo=133153, customerId=C000026344), CustomerMapDto(commonUserNo=103, userNo=133152, customerId=C000026357), CustomerMapDto(commonUserNo=103, userNo=133151, customerId=C000026366), CustomerMapDto(commonUserNo=103, userNo=133097, customerId=C000026453)], userDtoList=[])
+[2024-12-26 09:45:33][INFO ][http-nio-28080-exec-5][UserLoginServiceImpl          ] 11
+[2024-12-26 09:53:31][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:53:31][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:53:31][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:53:31][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:53:33][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 66400 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:53:33][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:53:33][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:53:33][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:53:33][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:53:34][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:53:34][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:53:34][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:53:34][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:53:34][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:53:34][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:53:34][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 640 ms
+[2024-12-26 09:53:34][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:53:34][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.313 seconds (process running for 1.823)
+[2024-12-26 09:53:41][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:53:41][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:53:41][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 0 ms
+[2024-12-26 09:53:41][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:53:41][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:53:42][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@d5160ea
+[2024-12-26 09:53:42][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:53:42][INFO ][http-nio-28080-exec-1][UserLoginServiceImpl          ] UserLoginResponse(loginMapList=[null, null, null, null, null, null, null, null, null, null, null], userDtoList=[])
+[2024-12-26 09:53:42][INFO ][http-nio-28080-exec-1][UserLoginServiceImpl          ] 11
+[2024-12-26 09:58:00][INFO ][SpringApplicationShutdownHook][GracefulShutdown              ] Commencing graceful shutdown. Waiting for active requests to complete
+[2024-12-26 09:58:00][INFO ][tomcat-shutdown][GracefulShutdown              ] Graceful shutdown complete
+[2024-12-26 09:58:00][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown initiated...
+[2024-12-26 09:58:00][INFO ][SpringApplicationShutdownHook][HikariDataSource              ] HikariPool-1 - Shutdown completed.
+[2024-12-26 09:58:02][INFO ][restartedMain  ][HopsNewApiApplication         ] Starting HopsNewApiApplication using Java 17.0.13 with PID 66525 (/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main started by user in /Users/user/Documents/GitHub/HOPS_NEW_API)
+[2024-12-26 09:58:02][INFO ][restartedMain  ][HopsNewApiApplication         ] The following 1 profile is active: "edu"
+[2024-12-26 09:58:02][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[2024-12-26 09:58:02][INFO ][restartedMain  ][sPropertyDefaultsPostProcessor] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[2024-12-26 09:58:02][INFO ][restartedMain  ][atchingResourcePatternResolver] Skipping search for files matching pattern [**/*.class]: directory [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/hops_mobile/mapper] does not exist
+[2024-12-26 09:58:02][DEBUG][restartedMain  ][ClassPathMapperScanner        ] Identified candidate component class: file [/Users/user/Documents/GitHub/HOPS_NEW_API/build/classes/java/main/com/hops/hops_new_api/common/mapper/UserLoginMapper.class]
+[2024-12-26 09:58:02][DEBUG][restartedMain  ][ClassPathMapperScanner        ] Creating MapperFactoryBean with name 'userLoginMapper' and 'com.hops.hops_new_api.common.mapper.UserLoginMapper' mapperInterface
+[2024-12-26 09:58:02][DEBUG][restartedMain  ][ClassPathMapperScanner        ] Enabling autowire by type for MapperFactoryBean with name 'userLoginMapper'.
+[2024-12-26 09:58:03][WARN ][restartedMain  ][egate$BeanPostProcessorChecker] Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.
+[2024-12-26 09:58:03][INFO ][restartedMain  ][nnotationActionEndpointMapping] Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+[2024-12-26 09:58:03][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat initialized with port 28080 (http)
+[2024-12-26 09:58:03][INFO ][restartedMain  ][StandardService               ] Starting service [Tomcat]
+[2024-12-26 09:58:03][INFO ][restartedMain  ][StandardEngine                ] Starting Servlet engine: [Apache Tomcat/10.1.33]
+[2024-12-26 09:58:03][INFO ][restartedMain  ][[/]                           ] Initializing Spring embedded WebApplicationContext
+[2024-12-26 09:58:03][INFO ][restartedMain  ][letWebServerApplicationContext] Root WebApplicationContext: initialization completed in 616 ms
+[2024-12-26 09:58:03][DEBUG][restartedMain  ][SqlSessionFactoryBean         ] Property 'configuration' or 'configLocation' not specified, using default MyBatis Configuration
+[2024-12-26 09:58:03][DEBUG][restartedMain  ][SqlSessionFactoryBean         ] Parsed mapper file: 'file [/Users/user/Documents/GitHub/HOPS_NEW_API/build/resources/main/mapper/UserLoginMapper.xml]'
+[2024-12-26 09:58:03][INFO ][restartedMain  ][TomcatWebServer               ] Tomcat started on port 28080 (http) with context path '/'
+[2024-12-26 09:58:03][INFO ][restartedMain  ][HopsNewApiApplication         ] Started HopsNewApiApplication in 1.282 seconds (process running for 1.816)
+[2024-12-26 09:58:22][INFO ][http-nio-28080-exec-1][[/]                           ] Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2024-12-26 09:58:22][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Initializing Servlet 'dispatcherServlet'
+[2024-12-26 09:58:22][INFO ][http-nio-28080-exec-1][DispatcherServlet             ] Completed initialization in 1 ms
+[2024-12-26 09:58:22][INFO ][http-nio-28080-exec-1][UserLoginController           ] UserLoginController.commonIdLogin request: UserLoginRequest(loginType=, userId=omnicare, customerId=, employNo=, userPassword=be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58)
+[2024-12-26 09:58:22][DEBUG][http-nio-28080-exec-1][SqlSessionUtils               ] Creating a new SqlSession
+[2024-12-26 09:58:22][DEBUG][http-nio-28080-exec-1][SqlSessionUtils               ] SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7dedb1ea] was not registered for synchronization because synchronization is not active
+[2024-12-26 09:58:22][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Starting...
+[2024-12-26 09:58:22][INFO ][http-nio-28080-exec-1][HikariPool                    ] HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@35f07117
+[2024-12-26 09:58:22][INFO ][http-nio-28080-exec-1][HikariDataSource              ] HikariPool-1 - Start completed.
+[2024-12-26 09:58:22][DEBUG][http-nio-28080-exec-1][SpringManagedTransaction      ] JDBC Connection [HikariProxyConnection@521878959 wrapping com.mysql.cj.jdbc.ConnectionImpl@35f07117] will not be managed by Spring
+[2024-12-26 09:58:22][DEBUG][http-nio-28080-exec-1][SqlSessionUtils               ] Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7dedb1ea]
+[2024-12-26 09:58:22][INFO ][http-nio-28080-exec-1][UserLoginServiceImpl          ] UserLoginResponse(loginMapList=[null, null, null, null, null, null, null, null, null, null, null], userDtoList=[])
+[2024-12-26 09:58:22][INFO ][http-nio-28080-exec-1][UserLoginServiceImpl          ] 11
+[2024-12-26 10:10:53][WARN ][HikariPool-1 housekeeper][HikariPool                    ] HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=58s694ms).

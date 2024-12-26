@@ -1,4 +1,5 @@
 spring:
+  active : edu
   application:
     name: HOPS_NEW_API
   devtools:
@@ -16,6 +17,7 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 server:
   port: 28080
   error:
@@ -23,6 +25,8 @@ server:
 logging:
   level:
     root: INFO
+    org.mybatis: DEBUG
+    org.apache.mybatis: DEBUG
   pattern:
     file: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-15thread][%-30.30logger{0}] %msg%n"
     console: "[%d{yyyy-MM-dd HH:mm:ss}][%-5level][%-15thread][%-30.30logger{0}] %msg%n"

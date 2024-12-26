@@ -11,7 +11,6 @@ import java.util.List;
 public class UserLoginResponse {
 
     private List<CustomerMapDto> loginMapList = new ArrayList<>();
-    private  UserDto userDto = new UserDto();
     private List<UserDto> userDtoList = new ArrayList<>();
 
 }
