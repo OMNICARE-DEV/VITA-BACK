@@ -6,6 +6,7 @@ import com.hops.hops_new_api.common.model.Constant;
 import com.hops.hops_new_api.common.model.HopsResponse;
 import com.hops.hops_new_api.common.model.Request.UserLoginRequest;
 import com.hops.hops_new_api.common.service.UserLoginService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "AUTH", description = "AUTH API")
 @RestController
 @RequestMapping(value = "/user")
 @Slf4j
