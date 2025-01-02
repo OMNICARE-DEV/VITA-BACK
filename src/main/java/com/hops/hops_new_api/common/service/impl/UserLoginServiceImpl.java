@@ -6,7 +6,7 @@ import com.hops.hops_new_api.common.exception.HopsException;
 import com.hops.hops_new_api.common.mapper.UserLoginMapper;
 import com.hops.hops_new_api.common.model.Request.UserLoginRequest;
 import com.hops.hops_new_api.common.model.Response.UserLoginResponse;
-import com.hops.hops_new_api.common.model.data.CustomerMapDto;
+import com.hops.hops_new_api.common.model.util.ValidUtil;
 import com.hops.hops_new_api.common.service.UserLoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,17 +27,19 @@ public class UserLoginServiceImpl implements UserLoginService {
 
         UserLoginResponse userLoginResponse = new UserLoginResponse();
 
-        try {
-            userLoginResponse.setLoginMapList(mapper.getCommonUser(request));
-            logger.info(userLoginResponse.toString());
-            logger.info(Integer.toString(userLoginResponse.getLoginMapList().size()));
-            boolean loginSuccess = userLoginResponse.getLoginMapList().size() > 1;
+        /* 필수값 체크*/
+        ValidUtil.validNull(
+            request.getUserId(),
+            request.getUserPassword()
+        );
 
-            if (loginSuccess) {
-                return userLoginResponse;
-            } else {
-                throw new HopsException(HopsCode.FAIL_LOGIN);
-            }
+        try {
+            //공통회원 db조회
+            userLoginResponse.setLoginMapList(mapper.getCommonUser(request));
+
+            logger.info("commonIdLogin response: {}",userLoginResponse);
+
+            return userLoginResponse;
         }catch (Exception e){
             e.printStackTrace();
             throw new HopsException(HopsCode.FAIL_LOGIN);

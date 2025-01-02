@@ -1,8 +1,29 @@
-### GET request to example server
 POST http://localhost:28080/user/commonIdLogin
 Content-Type: application/json
 
 {
     "userId": "omnicare",
     "userPassword": "be2c88b6808ddf6e3d266d4041d0f39104746e475e1036a3daaeee774cf30a58"
+}
+
+
+### POST 기존
+POST http://localhost:28081/certify/encrypt
+Content-Type: application/json
+
+{
+  "returnUrl": "http//edu.withkmi.or.kr:48080/selfauthentication",
+  "userCertifyDiv": "10",
+  "userCertifyType": "10"
+}
+
+
+### POST 수정
+POST http://localhost:28080/nice/userJoinCertification
+Content-Type: application/json
+
+{
+  "returnUrl": "http//edu.withkmi.or.kr:48080/selfauthentication",
+  "userCertifyDiv": "10",
+  "userCertifyType": "10"
 }
