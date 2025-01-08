@@ -4,15 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hops.hops_new_api.common.exception.HopsCode;
 import com.hops.hops_new_api.common.exception.HopsException;
 import com.hops.hops_new_api.common.mapper.NiceCertificationMapper;
-import com.hops.hops_new_api.common.model.Request.GetNiceEncryptTokenRequest;
-import com.hops.hops_new_api.common.model.Request.NiceCertificationRequest;
-import com.hops.hops_new_api.common.model.Request.NicePopupRequest;
-import com.hops.hops_new_api.common.model.Request.RegKeyRequest;
+import com.hops.hops_new_api.common.model.Request.*;
 import com.hops.hops_new_api.common.model.Response.GetNiceEncryptTokenResponse;
+import com.hops.hops_new_api.common.model.Response.NiceCertificateAuthResponse;
 import com.hops.hops_new_api.common.model.Response.NiceCirtificationResponse;
 import com.hops.hops_new_api.common.model.Response.RegKeyResponse;
-import com.hops.hops_new_api.common.model.data.ServiceInfoDto;
-import com.hops.hops_new_api.common.model.data.UserCertifyDto;
+import com.hops.hops_new_api.common.model.data.*;
 import com.hops.hops_new_api.common.model.util.AES256Util;
 import com.hops.hops_new_api.common.model.util.ValidUtil;
 import com.hops.hops_new_api.common.service.NiceCertificationService;
@@ -23,6 +20,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLDecoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -240,30 +238,30 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
         }
 
         /* 4. 요청 json 암호화 */
-        NicePopupRequest nicePopupRequest = new NicePopupRequest();
-        nicePopupRequest.setRequestno(String.valueOf(userCertifyDto.getUserCertifyNo()));
-        nicePopupRequest.setReturnurl(request.getReturnUrl());
-        nicePopupRequest.setSitecode(siteCodeValue);
+        NicePopupDto nicePopupDto = new NicePopupDto();
+        nicePopupDto.setRequestno(String.valueOf(userCertifyDto.getUserCertifyNo()));
+        nicePopupDto.setReturnurl(request.getReturnUrl());
+        nicePopupDto.setSitecode(siteCodeValue);
 
         if (request.getUserCertifyType().equals("10")) { // 휴대폰 인증일 경우
-            nicePopupRequest.setPopupyn("Y");
-            nicePopupRequest.setReceivedata("");
+            nicePopupDto.setPopupyn("Y");
+            nicePopupDto.setReceivedata("");
             // 미사용
-            nicePopupRequest.setAuthtype("");
-            nicePopupRequest.setMobilceco("");
-            nicePopupRequest.setBusinessno("");
-            nicePopupRequest.setMethodtype("");
+            nicePopupDto.setAuthtype("");
+            nicePopupDto.setMobilceco("");
+            nicePopupDto.setBusinessno("");
+            nicePopupDto.setMethodtype("");
         }
 
         if (request.getUserCertifyType().equals("30")) { // 아이핀 인증의 경우
-            nicePopupRequest.setMethodtype("");
-            nicePopupRequest.setReceivedata("");
+            nicePopupDto.setMethodtype("");
+            nicePopupDto.setReceivedata("");
         }
 
         // 요청 데이터 암호화 (Base64)
         String reqJsonString = "";
         try {
-            reqJsonString = new ObjectMapper().writeValueAsString(nicePopupRequest);
+            reqJsonString = new ObjectMapper().writeValueAsString(nicePopupDto);
         } catch (Exception e) {
             mapper.updtStTo80(userCertifyDto.getUserCertifyNo());
             logger.warn("직렬화 실패", e);
@@ -291,6 +289,7 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
         niceCirtificationResponse.setTokenVersionId(tokenVersionIdValue);
         niceCirtificationResponse.setUserCertifyNo(userCertifyDto.getUserCertifyNo());
 
+        logger.info(niceCirtificationResponse.toString());
         return niceCirtificationResponse;
     }
 
@@ -376,5 +375,183 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
         response.setSiteCode(siteCode);
         response.setTokenVersionId(tokenVersionId);
         return response;
+    }
+
+    @Override
+    public NiceCertificateAuthResponse userJoinCertificateAuth(NiceCertificateAuthRequest request) throws HopsException {
+
+        NiceCertificateAuthResponse niceCertificateAuthResponse = new NiceCertificateAuthResponse();
+
+        ValidUtil.validNull(request, "request");
+
+        /* 1. 대칭키 생성 정보 조회 */
+        String keyValue = "";
+        String ivValue = "";
+        String hmacValue = "";
+        String siteCodeValue = "";
+        String tokenVersionIdValue = "";
+
+        if (request.getUserCertifyType().equals("10")) { // 핸드폰 본인인증이라면
+            try {
+                keyValue = mapper.getServiceInfo(KEY_ID_PHONE);
+                ivValue = mapper.getServiceInfo(IV_ID_PHONE);
+                hmacValue = mapper.getServiceInfo(HMAC_ID_PHONE);
+                siteCodeValue = mapper.getServiceInfo(SITE_CODE_ID_PHONE);
+                tokenVersionIdValue = mapper.getServiceInfo(TOKEN_VERSION_ID_PHONE);
+            } catch (Exception e) {
+                mapper.updtStTo80(request.getUserCertifyNo());
+                logger.warn("DB error (GetServiceInfo)", e);
+                throw new HopsException(HopsCode.DATABASE_ERROR); // DB error
+            }
+        } else if(request.getUserCertifyType().equals("30")) { // 아이핀 본인인증이라면
+            try {
+                keyValue = mapper.getServiceInfo(KEY_ID_IPIN);
+                ivValue = mapper.getServiceInfo(IV_ID_IPIN);
+                hmacValue = mapper.getServiceInfo(HMAC_ID_IPIN);
+                siteCodeValue = mapper.getServiceInfo(SITE_CODE_ID_IPIN);
+                tokenVersionIdValue = mapper.getServiceInfo(TOKEN_VERSION_ID_IPIN);
+            } catch (Exception e) {
+                mapper.updtStTo80(request.getUserCertifyNo());
+                logger.warn("DB error (GetServiceInfo)", e);
+                throw new HopsException(HopsCode.DATABASE_ERROR); // DB error
+            }
+        }
+
+        // 대칭키 생성에 필요한 값들의 발급시간이 50분 초과되었을 경우
+        if (ValidUtil.isEmpty(keyValue) || ValidUtil.isEmpty(ivValue)
+                || ValidUtil.isEmpty(hmacValue) || ValidUtil.isEmpty(hmacValue)
+                || ValidUtil.isEmpty(siteCodeValue) || ValidUtil.isEmpty(tokenVersionIdValue)){
+            mapper.updtStTo80(request.getUserCertifyNo());
+            logger.info("본인인증 시간 50분 초과");
+            throw new HopsException(HopsCode.CERTIFICATE_TIME_ERROR); // 본인인증 시간이 초과되었습니다.
+        }
+
+        /* 2. 요청데이터 복호화 */
+        String resData = AES256Util.decrypt(keyValue, ivValue, request.getCiperText());
+
+        /* 3. string > Object (Jackson) */
+        NiceAuthDto niceAuthDto;
+        try {
+            niceAuthDto = new ObjectMapper().readValue(resData, NiceAuthDto.class);
+        } catch (Exception e) {
+            mapper.updtStTo80(request.getUserCertifyNo());
+            logger.warn("인증데이터 복호화 중 에러", e);
+            throw new HopsException(HopsCode.DEC_ERROR); // 내부에러
+        }
+
+        /* 4. 인증 데이터 처리 */
+
+        UserCertifyDto userCertifyDto = new UserCertifyDto();
+        userCertifyDto.setUserCertifyNo(request.getUserCertifyNo());
+        userCertifyDto.setCertifySt("50"); // 인증확인
+        userCertifyDto.setBirthday(niceAuthDto.getBirthdate());
+        if (niceAuthDto.getNationalinfo().equals("0")) { // 내국인이라면
+            userCertifyDto.setDomesticYn("Y");
+        } else if (niceAuthDto.getNationalinfo().equals("1")) { // 외국인이라면
+            userCertifyDto.setDomesticYn("N");
+        }
+        String decodeData = "";
+        try {
+            decodeData = URLDecoder.decode(niceAuthDto.getUtf8_name(), "UTF-8");
+        } catch (Exception e) {
+            mapper.updtStTo80(request.getUserCertifyNo());
+            logger.warn("문자열 변환 에러", e);
+            throw new HopsException(HopsCode.SYSTEM_ERROR); // 내부에러
+        }
+        userCertifyDto.setUserName(decodeData);
+        String ci = "";
+        if (request.getUserCertifyType().equals("10")) { // 휴대폰 본인인증이라면
+
+            if (!niceAuthDto.getResultcode().equals("0000")) {
+                mapper.updtStTo80(request.getUserCertifyNo());
+                logger.error("인증데이터 불일치");
+                throw new HopsException(HopsCode.CERTIFICATE_ERROR); //본인인증이 실패했습니다.
+            }
+
+            // 4-1. 인증 확인 처리
+            ci = niceAuthDto.getCi();
+            userCertifyDto.setCi(niceAuthDto.getCi());
+            userCertifyDto.setDi(niceAuthDto.getDi());
+            userCertifyDto.setCertifyConfirmNo(niceAuthDto.getResponseno());
+            userCertifyDto.setMobileNo(niceAuthDto.getMobileno());
+            if (niceAuthDto.getGender().equals("0")) {
+                userCertifyDto.setGederCd("20"); // 여성
+            } else if (niceAuthDto.getGender().equals("1")) {
+                userCertifyDto.setGederCd("10"); // 남성
+            }
+        } else if (request.getUserCertifyType().equals("30")) { // 아이핀 본인인증이라면
+
+            if (!niceAuthDto.getResultcode().equals("1")) {
+                mapper.updtStTo80(request.getUserCertifyNo());
+                logger.error("인증데이터 불일치");
+                throw new HopsException(HopsCode.CERTIFICATE_ERROR); //본인인증이 실패했습니다.
+            }
+
+            ci = niceAuthDto.getCoinfo1();
+            userCertifyDto.setCi(niceAuthDto.getCoinfo1());
+            userCertifyDto.setDi(niceAuthDto.getDupinfo());
+            userCertifyDto.setCertifyConfirmNo("0");
+            if (niceAuthDto.getGendercode().equals("0")) {
+                userCertifyDto.setGederCd("20"); // 여성
+            } else if (niceAuthDto.getGendercode().equals("1")) {
+                userCertifyDto.setGederCd("10"); // 남성
+            }
+        }
+
+        try {
+            mapper.updateUserCertify(userCertifyDto); // HC_USER_CERTIFY
+        } catch (Exception e) {
+            mapper.updtStTo80(request.getUserCertifyNo());
+            logger.warn("DB error (UpdtHcUserCertify)", e);
+            throw new HopsException(HopsCode.DATABASE_ERROR); // DB error
+        }
+
+        /* 5. 기가입 회원 여부 조회 */
+        Integer commonUserNo = 0;
+
+        try {
+            commonUserNo = mapper.getAlreadyCommonUserInfo(ci);
+        } catch (Exception e) {
+            logger.error("기존회원 정보 중 오류");
+            throw new HopsException(HopsCode.DATABASE_ERROR); // DB error
+        }
+        if (ValidUtil.isEmpty(commonUserNo)) {
+            commonUserNo = 0;
+        }
+
+        /* 6. 기존회원 기가입 여부 조회 : HC_USER */
+        UserDto user;
+        try {
+            user = mapper.getAlreadyUserInfo(ci);
+        } catch(Exception e) {
+            logger.error("기존회원 정보 중 오류");
+            throw new HopsException(HopsCode.DATABASE_ERROR); // DB error
+        }
+
+        /* 4. return response  */
+        niceCertificateAuthResponse.setUserCertifyNo(request.getUserCertifyNo());
+        niceCertificateAuthResponse.setCertifySuccessYn("Y");
+        niceCertificateAuthResponse.setCommonUserNo(commonUserNo);
+        niceCertificateAuthResponse.setBirthday(niceAuthDto.getBirthdate());
+
+        if(!ValidUtil.isEmpty(user) ) {
+            niceCertificateAuthResponse.setCommonUserNo(0);
+            niceCertificateAuthResponse.setAddress(user.getAddress());
+            niceCertificateAuthResponse.setAddressDetail(user.getAddressDetail());
+            niceCertificateAuthResponse.setUserId(user.getUserId());
+            niceCertificateAuthResponse.setUserName(user.getUserName());
+            niceCertificateAuthResponse.setZipCd(user.getZipCode());
+            niceCertificateAuthResponse.setEmail(user.getEmail());
+            niceCertificateAuthResponse.setPhoneNo(user.getPhoneNo());
+            niceCertificateAuthResponse.setBirthday(user.getBirthday());
+            niceCertificateAuthResponse.setMobileNo(user.getMobileNo());
+            niceCertificateAuthResponse.setCustomerName(user.getCustomerName());
+        }
+
+        niceCertificateAuthResponse.setMobileNo(niceAuthDto.getMobileno());
+        niceCertificateAuthResponse.setUserCi(niceAuthDto.getCi());
+        logger.debug("niceCertificateAuthResponse: {}", niceCertificateAuthResponse);
+
+        return niceCertificateAuthResponse;
     }
 }

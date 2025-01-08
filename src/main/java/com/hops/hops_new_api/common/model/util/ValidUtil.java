@@ -5,6 +5,8 @@ import com.hops.hops_new_api.common.exception.HopsException;
 import com.hops.hops_new_api.common.model.Constant.DataFormatEnum;
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ValidUtil {
@@ -54,5 +56,22 @@ public class ValidUtil {
 
     public static boolean isEmpty(List<?> value) {
         return value == null || value.isEmpty();
+    }
+
+    // 만나이 계산기
+    public static int getAmericanAge(String birthDate) {
+        LocalDate now = LocalDate.now();
+        LocalDate parsedBirthDate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+        int americanAge = now.minusYears(parsedBirthDate.getYear()).getYear(); // (1)2020-2007 = 13
+
+        // (2)
+        // 생일이 지났는지 여부를 판단하기 위해 (1)을 입력받은 생년월일의 연도에 더한다.
+        // 연도가 같아짐으로 생년월일만 판단할 수 있다!
+        if (parsedBirthDate.plusYears(americanAge).isAfter(now)) {
+            americanAge = americanAge -1;
+        }
+
+        return americanAge;
     }
 }

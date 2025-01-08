@@ -7,17 +7,22 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Getter
 @Setter
-public class ServiceInfoDto {
-    private String serviceInfoId;
-    private String infoValue;
-    private String keyId;
-    private String ivId;
-    private String hmacId;
-    private String siteCodeId;
-    private String tokenVersionId;
+public class UserDto {
+
+    private String customerName;
+    private String userId;
+    private String address;
+    private String addressDetail;
+    private String zipCode;
+    private String phoneNo;
+    private String mobileNo;
+    private String birthday;
+    private String userName;
+    private String email;
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, CustomToStringStyle.CUSTOM_STYLE);
     }
+
 }

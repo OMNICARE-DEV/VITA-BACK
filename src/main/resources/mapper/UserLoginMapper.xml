@@ -14,4 +14,90 @@
           and huc.LOGIN_PASSWORD = #{userPassword}
     </select>
 
+    <select id="getUserCi" parameterType="String" resultType="String">
+        select CI from HC_USER_CERTIFY
+        where USER_CERTIFY_DIV='10'
+          and CERTIFY_ST = '50'
+          and USER_CERTIFY_NO  = #{userCertigfyNo}
+    </select>
+
+    <select id="getCommonUserIdDupCheck" parameterType="com.hops.hops_new_api.common.model.data.UserIdDupCheckDto" resultType="int">
+        select count(huc.USER_ID)
+        from HC_USER_COMMON huc left join HC_USER hu
+        on huc.USER_ID = hu.USER_ID and huc.USER_CI = hu.USER_CI
+        where huc.USER_ID = #{userId}
+          and huc.USER_CI!= #{userCi}
+    </select>
+
+    <select id="getCertifyInfoByKey" parameterType="String" resultType="com.hops.hops_new_api.common.model.data.UserCertifyDto">
+        SELECT CI
+             , DI
+             , USER_NAME
+             , MOBILE_NO
+             , BIRTHDAY
+             , GENDER_CD
+             , DOMESTIC_YN
+        FROM HC_USER_CERTIFY
+        WHERE USER_CERTIFY_NO = #{userCertifyNo}
+          AND ((CERTIFY_ST = '50' AND USER_CERTIFY_DIV = '10') OR (CERTIFY_ST = '70' AND USER_CERTIFY_DIV = '80'))
+          AND REG_DT BETWEEN DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 10 MINUTE), '%Y%m%d%H%i%s') AND DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
+    </select>
+
+    <update id="updtCertifySt" parameterType="java.lang.String">
+        UPDATE HC_USER_CERTIFY SET CERTIFY_ST='70' WHERE USER_CERTIFY_NO = #{userCertifyNo}
+    </update>
+
+    <select id="getCommonUserCount" resultType="int">
+        SELECT COUNT(*)
+        FROM HC_USER_COMMON
+        WHERE USER_CI = #{ci}
+          AND USER_ST = '00'
+    </select>
+
+    <insert id="joinCommonUser" parameterType="com.hops.hops_new_api.common.model.data.CommonUserDto" useGeneratedKeys="true" keyProperty="commonUserNo">
+        INSERT INTO HC_USER_COMMON (
+            USER_ID,
+            USER_NAME,
+            MOBILE_NO,
+            BIRTHDAY,
+            GENDER_CD,
+            LOGIN_PASSWORD,
+            EMAIL,
+            ADDRESS,
+            ADDRESS_DETAIL,
+            ZIP_CD,
+            SERVICE_TERMS_OF_USE,
+            PRIVACY_POLICY,
+            JOIN_DT,
+            USER_ST,
+            USER_CI,
+            USER_DI,
+            DOMESTIC_YN,
+            AGREE_TERMS_LIST,
+            MARKETING_AGR_YN,
+            LAST_PASSWORD_CHANGE_DT
+        )
+        VALUES (
+                   #{userId},
+                   #{userName},
+                   #{mobileNo},
+                   #{birthday},
+                   #{genderCd},
+                   #{userPassword},
+                   #{email},
+                   #{address},
+                   #{addressDetail},
+                   #{zipCd},
+                   #{serviceTermsOfUse},
+                   #{privacyPolicy},
+                   DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s'),
+                   #{userSt},
+                   #{userCi},
+                   #{userDi},
+                   #{domesticYn},
+                   #{agreeTermsList},
+                   #{marketingAgrYn},
+                   DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
+               )
+    </insert>
 </mapper>

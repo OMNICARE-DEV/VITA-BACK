@@ -51,11 +51,11 @@ public class AES256Util {
         }
     }
 
-    public static String decrypt(String alg, String key, String iv, String cipherText) throws HopsException {
+    public static String decrypt(String key, String iv, String cipherText) throws HopsException {
 
         String decryptedStr = "";
         try {
-            Cipher cipher = Cipher.getInstance(alg);
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
             SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
             IvParameterSpec ivParamSpec = new IvParameterSpec(iv.getBytes());
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParamSpec);

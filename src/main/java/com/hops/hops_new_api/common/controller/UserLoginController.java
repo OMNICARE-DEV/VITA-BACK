@@ -4,6 +4,7 @@ import com.hops.hops_new_api.common.exception.HopsCode;
 import com.hops.hops_new_api.common.exception.HopsException;
 import com.hops.hops_new_api.common.model.Constant;
 import com.hops.hops_new_api.common.model.HopsResponse;
+import com.hops.hops_new_api.common.model.Request.RegCommonUserRequest;
 import com.hops.hops_new_api.common.model.Request.UserLoginRequest;
 import com.hops.hops_new_api.common.service.UserLoginService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,12 +12,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "AUTH", description = "로그인 등 인증관련 API")
+@Tag(name = "AUTH", description = "로그인/가입 API")
 @RestController
 @RequestMapping(value = "/user")
 @Slf4j
@@ -35,5 +33,21 @@ public class UserLoginController {
     public HopsResponse commonIdLogin(@RequestBody UserLoginRequest request) throws HopsException {
         logger.info("UserLoginController.commonIdLogin request: {}", request);
         return new HopsResponse<>(Constant.SUCCESS, service.userLogin(request));
+    }
+
+    // 통합로그인 아이디 중복체크
+    @Operation(summary = "중복체크", description = "아이디 중복체크")
+    @PostMapping("/commonIdDupCheck")
+    public HopsResponse commonIdDupCheck(@RequestBody UserLoginRequest request) throws HopsException {
+        logger.info("UserLoginController.commonIdDupCheck request: {}", request);
+        return new HopsResponse<>(Constant.SUCCESS, service.userIdDupCheck(request));
+    }
+
+    // 통합로그인 회원가입
+    @Operation(summary = "통합로그인 회원가입", description = "회원가입")
+    @PostMapping("/regCommonUser")
+    public HopsResponse regCommonUser(@RequestBody RegCommonUserRequest request) throws HopsException {
+        logger.info("UserLoginController.regCommonUser request: {}", request);
+        return new HopsResponse<>(Constant.SUCCESS, service.regCommonUser(request));
     }
 }

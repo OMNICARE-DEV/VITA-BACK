@@ -86,4 +86,44 @@
     <update id="updtTokenVersionIdIpin" parameterType="java.lang.String">
         update HC_SERVICE_INFO set info_value = #{info_value} where SERVICE_INFO_ID = '2015'
     </update>
+
+    <update id="updateUserCertify" parameterType="com.hops.hops_new_api.common.model.data.UserCertifyDto">
+        update HC_USER_CERTIFY
+        set CERTIFY_ST = #{certifySt}
+          , CI = #{ci}
+          , DI = #{di}
+          , USER_NAME = #{userName}
+          , BIRTHDAY = #{birthday}
+          , GENDER_CD = #{gederCd}
+          , DOMESTIC_YN = #{domesticYn}
+          , MOBILE_NO = #{mobileNo}
+        where USER_CERTIFY_NO = #{userCertifyNo} and CERTIFY_ST = '10'
+    </update>
+
+    <select id="getAlreadyCommonUserInfo" parameterType="String" resultType="Integer">
+        SELECT IFNULL(COMMON_USER_NO, 0) AS USER_NO
+        FROM HC_USER_COMMON
+        WHERE USER_CI = #{userCi}
+          AND USER_ST = '00'
+    </select>
+
+    <select id="getAlreadyUserInfo" parameterType="String" resultType="com.hops.hops_new_api.common.model.data.UserDto">
+        SELECT IFNULL(HU.USER_NO, 0) AS USER_NO
+             , HC.CUSTOMER_NAME
+             , HU.USER_ID
+             , HU.ADDRRESS
+             , HU.ADDRRESS_DETAIL
+             , HU.ZIP_CD
+             , HU.PHONE_NO
+             , HU.MOBILE_NO
+             , HU.BIRTHDAY
+             , HU.USER_NAME
+             , HU.EMAIL
+        FROM HC_USER HU
+         JOIN HC_CUSTOMER HC ON HU.CUSTOMER_ID = HC.CUSTOMER_ID
+        WHERE HU.USER_CI = #{ci}
+          AND HU.USER_ST = '00'
+        ORDER BY USER_NO DESC
+            LIMIT 1
+    </select>
 </mapper>

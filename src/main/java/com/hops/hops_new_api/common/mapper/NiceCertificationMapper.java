@@ -2,6 +2,7 @@ package com.hops.hops_new_api.common.mapper;
 
 import com.hops.hops_new_api.common.model.data.ServiceInfoDto;
 import com.hops.hops_new_api.common.model.data.UserCertifyDto;
+import com.hops.hops_new_api.common.model.data.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -35,4 +36,10 @@ public interface NiceCertificationMapper {
     void updtSiteCodeIpin(String siteCode);
 
     void updtTokenVersionIdIpin(String tokenVersionId);
+
+    void updateUserCertify(UserCertifyDto userCertifyDto);
+
+    Integer getAlreadyCommonUserInfo(String ci);
+
+    UserDto getAlreadyUserInfo(String ci);
 }

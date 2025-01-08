@@ -1,17 +1,27 @@
 package com.hops.hops_new_api.common.model.Response;
 
-import lombok.Data;
+import com.hops.hops_new_api.config.CustomToStringStyle;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class UserLoginResponse {
 
     private List<CustomerMapDto> loginMapList = new ArrayList<>();
     private List<UserDto> userDtoList = new ArrayList<>();
 
-    @Data
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, CustomToStringStyle.CUSTOM_STYLE);
+    }
+
+    @Getter
+    @Setter
     public static class UserDto {
 
         private String userId;
@@ -46,14 +56,25 @@ public class UserLoginResponse {
         private String dormantYn;
         private String loginDt;
 
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this, CustomToStringStyle.CUSTOM_STYLE);
+        }
+
     }
 
-    @Data
+    @Getter
+    @Setter
     public static class CustomerMapDto {
 
         private String commonUserNo;
         private String userNo;
         private String customerId;
+
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this, CustomToStringStyle.CUSTOM_STYLE);
+        }
 
     }
 }

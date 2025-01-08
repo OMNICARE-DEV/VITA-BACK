@@ -1,20 +1,15 @@
-package com.hops.hops_new_api.common.model.Request;
+package com.hops.hops_new_api.common.model.Response;
 
 import com.hops.hops_new_api.config.CustomToStringStyle;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Getter
 @Setter
-public class RegKeyRequest {
-    private String requestId;
-    private String reqDt;
-    private String certifyType;
-    private String productId;
-    private String accessToken;
-    private String clientId;
+public class RegCommonUserResponse {
+
+    public boolean joinSuccess;
 
     @Override
     public String toString() {
