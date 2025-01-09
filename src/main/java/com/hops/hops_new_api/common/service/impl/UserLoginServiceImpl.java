@@ -17,6 +17,8 @@ import com.hops.hops_new_api.common.service.UserLoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 @Service
 public class UserLoginServiceImpl implements UserLoginService {
@@ -79,6 +81,7 @@ public class UserLoginServiceImpl implements UserLoginService {
     }
 
     @Override
+    @Transactional(rollbackFor = {HopsException.class})
     public RegCommonUserResponse regCommonUser(RegCommonUserRequest request) throws HopsException {
 
         RegCommonUserResponse regCommonUserResponse = new RegCommonUserResponse();
@@ -90,9 +93,7 @@ public class UserLoginServiceImpl implements UserLoginService {
                 request.getUserName(),
                 request.getBirthday(),
                 request.getMobileNo(),
-                request.getUserCertifyNo(),
-                request.getAddress(),
-                request.getAddressDetail()
+                request.getUserCertifyNo()
         );
 
         //아이디 중복체크
@@ -108,6 +109,7 @@ public class UserLoginServiceImpl implements UserLoginService {
 
         //본인인증 조회
         UserCertifyDto userCertifyDto = mapper.getCertifyInfoByKey(request.getUserCertifyNo());
+        logger.info("userCertifyDto response: {}",userCertifyDto);
 
         if(ValidUtil.isEmpty(userCertifyDto)){
             throw new HopsException(HopsCode.CERTIFICATE_TIME_ERROR);
@@ -123,7 +125,7 @@ public class UserLoginServiceImpl implements UserLoginService {
 
         //회원가입 이력찾기
         UserIdDupCheckDto userCiDupCheckDto = new UserIdDupCheckDto();
-        userCiDupCheckDto.setUserCi(mapper.getUserCi(request.getUserCertifyNo()));
+        userCiDupCheckDto.setUserCi(userCertifyDto.getCi());
 
         int userCiCount = mapper.getCommonUserCount(userCiDupCheckDto);
         if (userCiCount > 0){
@@ -133,9 +135,9 @@ public class UserLoginServiceImpl implements UserLoginService {
                 CommonUserDto regCommonUser = new CommonUserDto();
                 regCommonUser.setUserId(request.getUserId());
                 regCommonUser.setUserName(request.getUserName());
-                regCommonUser.setMobile(request.getMobileNo());
+                regCommonUser.setMobileNo(request.getMobileNo());
                 regCommonUser.setBirthday(request.getBirthday());
-                regCommonUser.setGenderCd(userCertifyDto.getGederCd());
+                regCommonUser.setGenderCd(userCertifyDto.getGenderCd());
                 regCommonUser.setLoginPassword(request.getLoginPassword());
                 regCommonUser.setEmail(request.getEmail());
                 regCommonUser.setAddress(request.getAddress());
@@ -145,20 +147,23 @@ public class UserLoginServiceImpl implements UserLoginService {
                 regCommonUser.setUserCi(userCertifyDto.getCi());
                 regCommonUser.setUserDi(userCertifyDto.getDi());
                 regCommonUser.setServiceTermsOfUse(request.isServiceTermsOfUse() ? "Y" : "N");
-                regCommonUser.setPrivatePolicy(request.isPrivacyPolicy() ? "Y" : "N");
+                regCommonUser.setPrivacyPolicy(request.isPrivacyPolicy() ? "Y" : "N");
                 regCommonUser.setMarketingAgrYn(request.isMarketingAgree() ? "Y" : "N");
                 regCommonUser.setDomesticYn(userCertifyDto.getDomesticYn());
                 String userTermsAgreeList = "1,2" + (request.isMarketingAgree() ? ",3" : "");//1,2번은 필수
                 regCommonUser.setAgreeTermsList(userTermsAgreeList);
+                logger.info("regCommonUser response: {}",regCommonUser);
                 mapper.joinCommonUser(regCommonUser); // 회원 등록
                 regCommonUserResponse.setJoinSuccess(true);
             } catch (Exception e) {
+                e.printStackTrace();
+                // 강제로 롤백
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 throw new HopsException(HopsCode.DATABASE_ERROR);
             }
         }
-
-
-        return null;
+        logger.info("regCommonUserResponse response: {}",regCommonUserResponse);
+        return regCommonUserResponse;
     }
 
     ;

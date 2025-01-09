@@ -11,13 +11,13 @@
                  join HC_CUSTOMER_MAP hcm
                       on huc.COMMON_USER_NO = hcm.COMMON_USER_NO
         where huc.USER_ID = #{userId}
-          and huc.LOGIN_PASSWORD = #{userPassword}
+          and huc.LOGIN_PASSWORD = #{loginPassword}
     </select>
 
     <select id="getUserCi" parameterType="String" resultType="String">
         select CI from HC_USER_CERTIFY
         where USER_CERTIFY_DIV='10'
-          and CERTIFY_ST = '50'
+          and CERTIFY_ST != '10'
           and USER_CERTIFY_NO  = #{userCertigfyNo}
     </select>
 
@@ -50,7 +50,7 @@
     <select id="getCommonUserCount" resultType="int">
         SELECT COUNT(*)
         FROM HC_USER_COMMON
-        WHERE USER_CI = #{ci}
+        WHERE USER_CI = #{userCi}
           AND USER_ST = '00'
     </select>
 
@@ -83,7 +83,7 @@
                    #{mobileNo},
                    #{birthday},
                    #{genderCd},
-                   #{userPassword},
+                   #{loginPassword},
                    #{email},
                    #{address},
                    #{addressDetail},

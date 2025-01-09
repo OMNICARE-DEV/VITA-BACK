@@ -12,7 +12,7 @@ public class CommonUserDto {
     private String commonUserNo;
     private String userId;
     private String loginPassword;
-    private String mobile;
+    private String mobileNo;
     private String birthday;
     private String genderCd;
     private String userName;
@@ -21,7 +21,7 @@ public class CommonUserDto {
     private String addressDetail;
     private String zipCd;
     private String serviceTermsOfUse;
-    private String privatePolicy;
+    private String privacyPolicy;
     private String joinDt;
     private String userSt;
     private String phoneNo;

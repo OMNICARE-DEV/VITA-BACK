@@ -94,7 +94,7 @@
           , DI = #{di}
           , USER_NAME = #{userName}
           , BIRTHDAY = #{birthday}
-          , GENDER_CD = #{gederCd}
+          , GENDER_CD = #{genderCd}
           , DOMESTIC_YN = #{domesticYn}
           , MOBILE_NO = #{mobileNo}
         where USER_CERTIFY_NO = #{userCertifyNo} and CERTIFY_ST = '10'

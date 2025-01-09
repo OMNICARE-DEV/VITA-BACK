@@ -475,9 +475,9 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
             userCertifyDto.setCertifyConfirmNo(niceAuthDto.getResponseno());
             userCertifyDto.setMobileNo(niceAuthDto.getMobileno());
             if (niceAuthDto.getGender().equals("0")) {
-                userCertifyDto.setGederCd("20"); // 여성
+                userCertifyDto.setGenderCd("20"); // 여성
             } else if (niceAuthDto.getGender().equals("1")) {
-                userCertifyDto.setGederCd("10"); // 남성
+                userCertifyDto.setGenderCd("10"); // 남성
             }
         } else if (request.getUserCertifyType().equals("30")) { // 아이핀 본인인증이라면
 
@@ -492,9 +492,9 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
             userCertifyDto.setDi(niceAuthDto.getDupinfo());
             userCertifyDto.setCertifyConfirmNo("0");
             if (niceAuthDto.getGendercode().equals("0")) {
-                userCertifyDto.setGederCd("20"); // 여성
+                userCertifyDto.setGenderCd("20"); // 여성
             } else if (niceAuthDto.getGendercode().equals("1")) {
-                userCertifyDto.setGederCd("10"); // 남성
+                userCertifyDto.setGenderCd("10"); // 남성
             }
         }
 

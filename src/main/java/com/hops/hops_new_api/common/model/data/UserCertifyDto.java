@@ -21,7 +21,7 @@ public class UserCertifyDto {
     private String di;
     private String userName;
     private String birthday;
-    private String gederCd;
+    private String genderCd;
     private String domesticYn;
 
     @Override
