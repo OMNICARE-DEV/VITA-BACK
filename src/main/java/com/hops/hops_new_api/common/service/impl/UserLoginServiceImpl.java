@@ -7,10 +7,7 @@ import com.hops.hops_new_api.common.model.Request.RegCommonUserRequest;
 import com.hops.hops_new_api.common.model.Request.UserLoginRequest;
 import com.hops.hops_new_api.common.model.Response.RegCommonUserResponse;
 import com.hops.hops_new_api.common.model.Response.UserLoginResponse;
-import com.hops.hops_new_api.common.model.data.CommonUserDto;
-import com.hops.hops_new_api.common.model.data.UserCertifyDto;
-import com.hops.hops_new_api.common.model.data.UserDto;
-import com.hops.hops_new_api.common.model.data.UserIdDupCheckDto;
+import com.hops.hops_new_api.common.model.data.*;
 import com.hops.hops_new_api.common.model.util.ValidUtil;
 import com.hops.hops_new_api.common.service.UserLoginService;
 import org.slf4j.Logger;
@@ -18,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserLoginServiceImpl implements UserLoginService {
@@ -29,9 +29,9 @@ public class UserLoginServiceImpl implements UserLoginService {
         this.mapper = mapper;
     }
 
-
+    //통합회원 로그인
     public int userLogin(UserLoginRequest request) throws HopsException {
-
+        logger.info("통합회원 로그인 userLogin");
         /* 필수값 체크*/
         ValidUtil.validNull(
             request.getUserId(),
@@ -59,9 +59,11 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     }
 
+    //통합회원 B2C신규등록
     @Override
     @Transactional(rollbackFor = {HopsException.class})
     public int regB2CUser(int commonUserNo) throws HopsException {
+        logger.info("통합회원 B2C신규등록 regB2CUser");
         //기존 B2C유저등록 되어있는지 체크
         int regB2CUserCount = mapper.checkB2CUser(commonUserNo);
 
@@ -74,13 +76,21 @@ public class UserLoginServiceImpl implements UserLoginService {
             }else{
                 //B2C고객사 강제 지정
                 b2CUser.setCustomerId("C000008035");
-                b2CUser.setCommonUserNo(commonUserNo);
-                logger.info("regB2CUser 등록: {}",b2CUser);
-
                 //개인 회원 등록
                 regB2CUserCount = mapper.regB2CUser(b2CUser);
+                logger.info("regB2CUser 등록: {}",b2CUser);
+
                 //고객사맵핑 등록(개인회원)
-                int regCustomerMapCount = mapper.regCustomerMap(b2CUser);
+                CustomerMapDto customerMapDto = new CustomerMapDto();
+                customerMapDto.setCommonUserNo(commonUserNo);
+                customerMapDto.setUserNo(b2CUser.getUserNo());
+                customerMapDto.setCustomerId(b2CUser.getCustomerId());
+
+                List<CustomerMapDto> customerMaps = new ArrayList<>();
+                customerMaps.add(customerMapDto);
+
+                logger.info("regCustomerMap 등록: {}",customerMaps);
+                int regCustomerMapCount = mapper.regCustomerMap(customerMaps);
                 if(regCustomerMapCount == 0) {
                     throw new HopsException(HopsCode.REG_B2C_USER_ERROR);
                 }
@@ -90,8 +100,10 @@ public class UserLoginServiceImpl implements UserLoginService {
         return regB2CUserCount;
     }
 
+    //통합로그인 아이디 중복확인
+    @Override
     public int userIdDupCheck(UserLoginRequest request) throws HopsException {
-
+        logger.info("통합로그인 아이디 중복확인 userIdDupCheck");
         /* 필수값 체크*/
         ValidUtil.validNull(
                 request.getUserId(),
@@ -115,10 +127,11 @@ public class UserLoginServiceImpl implements UserLoginService {
         }
     }
 
+    //통합회원 등록
     @Override
     @Transactional(rollbackFor = {HopsException.class})
     public RegCommonUserResponse regCommonUser(RegCommonUserRequest request) throws HopsException {
-
+        logger.info("통합회원 등록 regCommonUser");
         RegCommonUserResponse regCommonUserResponse = new RegCommonUserResponse();
 
         /* 필수값 체크*/
@@ -161,35 +174,42 @@ public class UserLoginServiceImpl implements UserLoginService {
         //회원가입 이력찾기
         UserIdDupCheckDto userCiDupCheckDto = new UserIdDupCheckDto();
         userCiDupCheckDto.setUserCi(userCertifyDto.getCi());
-
         int userCiCount = mapper.getCommonUserCount(userCiDupCheckDto);
         if (userCiCount > 0){
             throw new HopsException(HopsCode.ALREADY_JOIN_USER);
         }else {
             try {
-                CommonUserDto regCommonUser = new CommonUserDto();
-                regCommonUser.setUserId(request.getUserId());
-                regCommonUser.setUserName(request.getUserName());
-                regCommonUser.setMobileNo(request.getMobileNo());
-                regCommonUser.setBirthday(request.getBirthday());
-                regCommonUser.setGenderCd(userCertifyDto.getGenderCd());
-                regCommonUser.setLoginPassword(request.getLoginPassword());
-                regCommonUser.setEmail(request.getEmail());
-                regCommonUser.setAddress(request.getAddress());
-                regCommonUser.setAddressDetail(request.getAddressDetail());
-                regCommonUser.setZipCd(request.getZipCd());
-                regCommonUser.setUserSt("00");
-                regCommonUser.setUserCi(userCertifyDto.getCi());
-                regCommonUser.setUserDi(userCertifyDto.getDi());
-                regCommonUser.setServiceTermsOfUse(request.isServiceTermsOfUse() ? "Y" : "N");
-                regCommonUser.setPrivacyPolicy(request.isPrivacyPolicy() ? "Y" : "N");
-                regCommonUser.setMarketingAgrYn(request.isMarketingAgree() ? "Y" : "N");
-                regCommonUser.setDomesticYn(userCertifyDto.getDomesticYn());
+                CommonUserDto regCommonUserDto = new CommonUserDto();
+                regCommonUserDto.setUserId(request.getUserId());
+                regCommonUserDto.setUserName(request.getUserName());
+                regCommonUserDto.setMobileNo(request.getMobileNo());
+                regCommonUserDto.setBirthday(request.getBirthday());
+                regCommonUserDto.setGenderCd(userCertifyDto.getGenderCd());
+                regCommonUserDto.setLoginPassword(request.getLoginPassword());
+                regCommonUserDto.setEmail(request.getEmail());
+                regCommonUserDto.setAddress(request.getAddress());
+                regCommonUserDto.setAddressDetail(request.getAddressDetail());
+                regCommonUserDto.setZipCd(request.getZipCd());
+                regCommonUserDto.setUserSt("00");
+                regCommonUserDto.setUserCi(userCertifyDto.getCi());
+                regCommonUserDto.setUserDi(userCertifyDto.getDi());
+                regCommonUserDto.setServiceTermsOfUse(request.isServiceTermsOfUse() ? "Y" : "N");
+                regCommonUserDto.setPrivacyPolicy(request.isPrivacyPolicy() ? "Y" : "N");
+                regCommonUserDto.setMarketingAgrYn(request.isMarketingAgree() ? "Y" : "N");
+                regCommonUserDto.setDomesticYn(userCertifyDto.getDomesticYn());
                 String userTermsAgreeList = "1,2" + (request.isMarketingAgree() ? ",3" : "");//1,2번은 필수
-                regCommonUser.setAgreeTermsList(userTermsAgreeList);
-                logger.info("regCommonUser response: {}",regCommonUser);
-                mapper.joinCommonUser(regCommonUser); // 회원 등록
-                regCommonUserResponse.setJoinSuccess(true);
+                regCommonUserDto.setAgreeTermsList(userTermsAgreeList);
+                mapper.joinCommonUser(regCommonUserDto); // 회원 등록
+
+                logger.info("regCommonUserDto response: {}",regCommonUserDto);
+
+                //기존 회원 매핑
+                boolean successRegCustomerMap = mappingCustomerUser(regCommonUserDto.getCommonUserNo());
+                if(successRegCustomerMap) {
+                    regCommonUserResponse.setJoinSuccess(true);
+                }else{
+                    throw new HopsException(HopsCode.DATABASE_ERROR);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 // 강제로 롤백
@@ -201,10 +221,32 @@ public class UserLoginServiceImpl implements UserLoginService {
         return regCommonUserResponse;
     }
 
+    //로그인 완료
     @Override
-    public UserLoginResponse getUserLoginResponse(int commonUserNo) {
-        return mapper.getUserLoginResponse(commonUserNo);
+    public UserLoginResponse getUserLoginResponse(int commonUserNo) throws HopsException {
+        logger.info("로그인 완료 getUserLoginResponse");
+        try {
+            return mapper.getUserLoginResponse(commonUserNo);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new HopsException(HopsCode.INVALID_PARAMETER);
+        }
     }
 
-    ;
+    //기존회원 통합회원 매핑
+    @Override
+    public boolean mappingCustomerUser(int commonUserNo) throws HopsException {
+        logger.info("기존회원 통합회원 매핑 mappingCustomerUser");
+
+        UserDto b2CUser = mapper.getCommonUser(commonUserNo);
+
+        List<CustomerMapDto> customerMaps = mapper.getMappingCustomerUser(b2CUser.getUserCi());
+
+        logger.info("mappingCustomerUser.mappingCustomerUsers response: {}", customerMaps);
+
+        int mappingCustomerUserCount = customerMaps.size();
+        int regCustomerUserCount = mapper.regCustomerMap(customerMaps);
+
+        return mappingCustomerUserCount == regCustomerUserCount;
+    }
 }

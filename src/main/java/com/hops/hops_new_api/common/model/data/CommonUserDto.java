@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Setter
 public class CommonUserDto {
 
-    private String commonUserNo;
+    private int commonUserNo;
     private String userId;
     private String loginPassword;
     private String mobileNo;

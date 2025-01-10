@@ -40,16 +40,23 @@ public class UserLoginController {
         //commonUserNO확인
         int commonUserNo = service.userLogin(request);
 
-        int regB2CUser = 0;
+        int regB2CUserCount = 0;
         if(commonUserNo > 0){
             //개인회원 등록
-            regB2CUser = service.regB2CUser(commonUserNo);
+            regB2CUserCount = service.regB2CUser(commonUserNo);
         }
 
-        if(regB2CUser == 0){
+        if(regB2CUserCount == 0){
             throw new HopsException(HopsCode.REG_B2C_USER_ERROR);
         }else{
-            userLoginResponse = service.getUserLoginResponse(commonUserNo);
+            //추가 등록된
+            boolean successRegCustomerMap = service.mappingCustomerUser(commonUserNo);
+
+            if(successRegCustomerMap) {
+                userLoginResponse = service.getUserLoginResponse(commonUserNo);
+            }else{
+                throw new HopsException(HopsCode.DATABASE_ERROR);
+            }
         }
 
         return new HopsResponse<>(Constant.SUCCESS, userLoginResponse);
@@ -68,17 +75,8 @@ public class UserLoginController {
     @PostMapping("/regCommonUser")
     public HopsResponse regCommonUser(@RequestBody RegCommonUserRequest request) throws HopsException {
         logger.info("UserLoginController.regCommonUser request: {}", request);
-
+        service.regCommonUser(request);
         return new HopsResponse<>(Constant.SUCCESS, service.regCommonUser(request));
     }
-
-    // 개인회원 등록
-    @Operation(summary = "개인회원 등록", description = "개인회원가입")
-    public int regB2CUser(int commonUserNo) throws HopsException {
-        logger.info("UserLoginController.regB2CUser commonUserNo: {}", commonUserNo);
-
-        return service.regB2CUser(commonUserNo);
-    }
-
 
 }

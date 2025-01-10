@@ -183,19 +183,19 @@
     </insert>
 
     <insert id="regCustomerMap" parameterType="com.hops.hops_new_api.common.model.Request.RegCommonUserRequest">
-        INSERT INTO HC_CUSTOMER_MAP
-        (
+        INSERT INTO HC_CUSTOMER_MAP (
             COMMON_USER_NO,
             USER_NO,
             CUSTOMER_ID,
             REG_DT
         )
-        VALUES (
-                   #{commonUserNo},
-                   #{userNo},
-                   #{customerId},
-                   DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
-               )
+        VALUES
+        <foreach item="item" index="index" collection="customerMaps" open="(" separator="),(" close=")">
+            #{item.commonUserNo},
+            #{item.userNo},
+            #{item.customerId},
+            DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
+        </foreach>
     </insert>
 
     <select id="getUserLoginResponse" resultType="com.hops.hops_new_api.common.model.Response.UserLoginResponse">
@@ -214,5 +214,17 @@
             on hcr.CHECKUP_ROSTER_NO = hr.CHECKUP_ROSTER_NO and hr.RESERV_ST not in ('80', '90')
         where huc.COMMON_USER_NO = #{commonUserNo}
         and hu.USER_ST not in ('90')
+    </select>
+
+    <select id="getMappingCustomerUser" resultType="com.hops.hops_new_api.common.model.data.CustomerMapDto">
+        select huc.COMMON_USER_NO, hu.USER_NO ,hu.CUSTOMER_ID
+        from HC_USER hu
+                 join HC_USER_COMMON huc
+                      on hu.USER_CI = huc.USER_CI
+                 left join HC_CUSTOMER_MAP hcm
+                           on hu.USER_NO = hcm.USER_NO and huc.COMMON_USER_NO = hcm.COMMON_USER_NO
+        where hu.USER_CI = #{userCi}
+          and hu.USER_ST not in ('90')
+          and hcm.USER_NO is null
     </select>
 </mapper>

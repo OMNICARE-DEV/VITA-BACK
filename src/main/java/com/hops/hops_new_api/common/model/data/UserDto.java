@@ -35,8 +35,6 @@ public class UserDto {
     private String dormantYn;
     private String loginDt;
 
-    private int commonUserNo;
-
 
 
     @Override

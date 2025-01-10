@@ -15,5 +15,7 @@ public interface UserLoginService {
 
     public RegCommonUserResponse regCommonUser(RegCommonUserRequest request) throws HopsException;
 
-    UserLoginResponse getUserLoginResponse(int commonUserNo);
+    public UserLoginResponse getUserLoginResponse(int commonUserNo) throws HopsException;
+
+    public boolean mappingCustomerUser(int commonUserNo) throws HopsException;
 }
