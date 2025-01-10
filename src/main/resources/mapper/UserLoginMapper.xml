@@ -3,13 +3,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.hops.hops_new_api.common.mapper.UserLoginMapper">
-    <select id="getCommonUser" parameterType="com.hops.hops_new_api.common.model.Request.UserLoginRequest" resultType="com.hops.hops_new_api.common.model.Response.UserLoginResponse$CustomerMapDto">
-        select hcm.COMMON_USER_NO,
-               hcm.USER_NO,
-               hcm.CUSTOMER_ID
+    <select id="getCommonUserNo" parameterType="com.hops.hops_new_api.common.model.Request.UserLoginRequest" resultType="Integer">
+        select huc.COMMON_USER_NO
         from HC_USER_COMMON huc
-                 join HC_CUSTOMER_MAP hcm
-                      on huc.COMMON_USER_NO = hcm.COMMON_USER_NO
         where huc.USER_ID = #{userId}
           and huc.LOGIN_PASSWORD = #{loginPassword}
     </select>
@@ -100,4 +96,123 @@
                    DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
                )
     </insert>
+
+    <select id="getCommonUser" parameterType="int" resultType="com.hops.hops_new_api.common.model.data.UserDto">
+        select USER_ID,
+               USER_NAME,
+               MOBILE_NO,
+               BIRTHDAY,
+               GENDER_CD,
+               LOGIN_PASSWORD,
+               EMAIL,
+               ADDRESS,
+               ADDRESS_DETAIL,
+               ZIP_CD,
+               SERVICE_TERMS_OF_USE,
+               PRIVACY_POLICY,
+               JOIN_DT,
+               USER_ST,
+               PHONE_NO,
+               USER_CI,
+               USER_DI,
+               LAST_PASSWORD_CHANGE_DT,
+               AGREE_TERMS_LIST,
+               MARKETING_AGR_YN,
+               DORMANT_YN,
+               LOGIN_PASSWORD,
+               LOGIN_DT
+        from HC_USER_COMMON
+        where COMMON_USER_NO = #{commonUserNo}
+    </select>
+
+    <select id="checkB2CUser" resultType="int">
+        select count(hu.USER_NO) from HC_USER_COMMON huc
+          join HC_CUSTOMER_MAP hcm on huc.COMMON_USER_NO = hcm.COMMON_USER_NO
+          join HC_USER hu on hcm.USER_NO = hu.USER_NO
+        where huc.COMMON_USER_NO = #{commonUserNo}
+          and hcm.CUSTOMER_ID = 'C000008035'
+    </select>
+
+    <insert id="regB2CUser" parameterType="com.hops.hops_new_api.common.model.data.UserDto" useGeneratedKeys="true" keyProperty="userNo">
+        INSERT INTO HC_USER (
+            USER_ID,
+            USER_NAME,
+            MOBILE_NO,
+            BIRTHDAY,
+            GENDER_CD,
+            LOGIN_PASSWORD,
+            EMAIL,
+            ADDRRESS,
+            ADDRRESS_DETAIL,
+            ZIP_CD,
+            SERVICE_TERMS_OF_USE,
+            PRIVACY_POLICY,
+            JOIN_DT,
+            USER_ST,
+            CUSTOMER_ID,
+            USER_CI,
+            USER_DI,
+            AGREE_TERMS_LIST,
+            MARKETING_AGR_YN,
+            DORMANT_YN,
+            LAST_PASSWORD_CHANGE_DT
+        )
+        VALUES (
+                   #{userId},
+                   #{userName},
+                   #{mobileNo},
+                   #{birthday},
+                   #{genderCd},
+                   #{loginPassword},
+                   #{email},
+                   #{address},
+                   #{addressDetail},
+                   #{zipCd},
+                   #{serviceTermsOfUse},
+                   #{privacyPolicy},
+                   #{joinDt},
+                   #{userSt},
+                   #{customerId},
+                   #{userCi},
+                   #{userDi},
+                   #{agreeTermsList},
+                   #{marketingAgrYn},
+                   #{dormantYn},
+                   #{lastPasswordChangeDt}
+               )
+    </insert>
+
+    <insert id="regCustomerMap" parameterType="com.hops.hops_new_api.common.model.Request.RegCommonUserRequest">
+        INSERT INTO HC_CUSTOMER_MAP
+        (
+            COMMON_USER_NO,
+            USER_NO,
+            CUSTOMER_ID,
+            REG_DT
+        )
+        VALUES (
+                   #{commonUserNo},
+                   #{userNo},
+                   #{customerId},
+                   DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+               )
+    </insert>
+
+    <select id="getUserLoginResponse" resultType="com.hops.hops_new_api.common.model.Response.UserLoginResponse">
+        select huc.COMMON_USER_NO,
+                huc.USER_NAME,
+                huc.GENDER_CD,
+                count(hr.RESERV_NO) reservCount
+        from HC_USER_COMMON huc
+        join HC_CUSTOMER_MAP hcm
+            on huc.COMMON_USER_NO = hcm.COMMON_USER_NO
+        join HC_USER hu
+            on hcm.USER_NO = hu.USER_NO
+        left join HC_CHECKUP_ROSTER hcr
+            on hu.USER_NO = hcr.USER_NO and hcr.CHECKUP_ROSTER_ST not in ('80', '90')
+        left join HC_RESERV hr
+            on hcr.CHECKUP_ROSTER_NO = hr.CHECKUP_ROSTER_NO and hr.RESERV_ST not in ('80', '90')
+        where huc.COMMON_USER_NO = #{commonUserNo}
+        and hu.USER_ST not in ('90')
+    </select>
 </mapper>

@@ -540,7 +540,7 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
             niceCertificateAuthResponse.setAddressDetail(user.getAddressDetail());
             niceCertificateAuthResponse.setUserId(user.getUserId());
             niceCertificateAuthResponse.setUserName(user.getUserName());
-            niceCertificateAuthResponse.setZipCd(user.getZipCode());
+            niceCertificateAuthResponse.setZipCd(user.getZipCd());
             niceCertificateAuthResponse.setEmail(user.getEmail());
             niceCertificateAuthResponse.setPhoneNo(user.getPhoneNo());
             niceCertificateAuthResponse.setBirthday(user.getBirthday());

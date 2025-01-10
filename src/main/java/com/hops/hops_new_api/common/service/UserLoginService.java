@@ -7,9 +7,13 @@ import com.hops.hops_new_api.common.model.Response.RegCommonUserResponse;
 import com.hops.hops_new_api.common.model.Response.UserLoginResponse;
 
 public interface UserLoginService {
-    public UserLoginResponse userLogin(UserLoginRequest request) throws HopsException;
+    public int userLogin(UserLoginRequest request) throws HopsException;
+
+    public int regB2CUser(int commonUserNo) throws HopsException;
 
     public int userIdDupCheck(UserLoginRequest request) throws HopsException;;
 
     public RegCommonUserResponse regCommonUser(RegCommonUserRequest request) throws HopsException;
+
+    UserLoginResponse getUserLoginResponse(int commonUserNo);
 }

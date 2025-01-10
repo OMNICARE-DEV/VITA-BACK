@@ -1,6 +1,5 @@
 package com.hops.hops_new_api.common.service.impl;
 
-import com.hops.hops_new_api.common.controller.UserLoginController;
 import com.hops.hops_new_api.common.exception.HopsCode;
 import com.hops.hops_new_api.common.exception.HopsException;
 import com.hops.hops_new_api.common.mapper.UserLoginMapper;
@@ -31,9 +30,7 @@ public class UserLoginServiceImpl implements UserLoginService {
     }
 
 
-    public UserLoginResponse userLogin(UserLoginRequest request) throws HopsException {
-
-        UserLoginResponse userLoginResponse = new UserLoginResponse();
+    public int userLogin(UserLoginRequest request) throws HopsException {
 
         /* 필수값 체크*/
         ValidUtil.validNull(
@@ -41,18 +38,56 @@ public class UserLoginServiceImpl implements UserLoginService {
             request.getLoginPassword()
         );
 
+        int commonUserNo = 0;
         try {
             //공통회원 db조회
-            userLoginResponse.setLoginMapList(mapper.getCommonUser(request));
+            Integer commonUserNoChk = mapper.getCommonUserNo(request);
+            if(commonUserNoChk != null) {
+                commonUserNo = commonUserNoChk;
+            }
 
-            logger.info("commonIdLogin response: {}",userLoginResponse);
-
-            return userLoginResponse;
+            logger.info("userLogin response: {}",commonUserNo);
+            if(commonUserNo == 0){
+                throw new HopsException(HopsCode.FAIL_LOGIN);
+            }else {
+                return commonUserNo;
+            }
         }catch (Exception e){
             e.printStackTrace();
             throw new HopsException(HopsCode.FAIL_LOGIN);
         }
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = {HopsException.class})
+    public int regB2CUser(int commonUserNo) throws HopsException {
+        //기존 B2C유저등록 되어있는지 체크
+        int regB2CUserCount = mapper.checkB2CUser(commonUserNo);
+
+        //등록이 안되어 있으면 등록
+        if(regB2CUserCount == 0) {
+            UserDto b2CUser = mapper.getCommonUser(commonUserNo);
+
+            if(ValidUtil.isEmpty(b2CUser)){
+                throw new HopsException(HopsCode.INVALID_PARAMETER);
+            }else{
+                //B2C고객사 강제 지정
+                b2CUser.setCustomerId("C000008035");
+                b2CUser.setCommonUserNo(commonUserNo);
+                logger.info("regB2CUser 등록: {}",b2CUser);
+
+                //개인 회원 등록
+                regB2CUserCount = mapper.regB2CUser(b2CUser);
+                //고객사맵핑 등록(개인회원)
+                int regCustomerMapCount = mapper.regCustomerMap(b2CUser);
+                if(regCustomerMapCount == 0) {
+                    throw new HopsException(HopsCode.REG_B2C_USER_ERROR);
+                }
+            }
+        }
+
+        return regB2CUserCount;
     }
 
     public int userIdDupCheck(UserLoginRequest request) throws HopsException {
@@ -164,6 +199,11 @@ public class UserLoginServiceImpl implements UserLoginService {
         }
         logger.info("regCommonUserResponse response: {}",regCommonUserResponse);
         return regCommonUserResponse;
+    }
+
+    @Override
+    public UserLoginResponse getUserLoginResponse(int commonUserNo) {
+        return mapper.getUserLoginResponse(commonUserNo);
     }
 
     ;

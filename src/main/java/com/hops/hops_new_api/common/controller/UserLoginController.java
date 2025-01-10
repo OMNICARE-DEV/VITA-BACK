@@ -6,6 +6,8 @@ import com.hops.hops_new_api.common.model.Constant;
 import com.hops.hops_new_api.common.model.HopsResponse;
 import com.hops.hops_new_api.common.model.Request.RegCommonUserRequest;
 import com.hops.hops_new_api.common.model.Request.UserLoginRequest;
+import com.hops.hops_new_api.common.model.Response.RegCommonUserResponse;
+import com.hops.hops_new_api.common.model.Response.UserLoginResponse;
 import com.hops.hops_new_api.common.service.UserLoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +34,25 @@ public class UserLoginController {
     @PostMapping("/commonIdLogin")
     public HopsResponse commonIdLogin(@RequestBody UserLoginRequest request) throws HopsException {
         logger.info("UserLoginController.commonIdLogin request: {}", request);
-        return new HopsResponse<>(Constant.SUCCESS, service.userLogin(request));
+        //Response
+        UserLoginResponse userLoginResponse = new UserLoginResponse();
+
+        //commonUserNO확인
+        int commonUserNo = service.userLogin(request);
+
+        int regB2CUser = 0;
+        if(commonUserNo > 0){
+            //개인회원 등록
+            regB2CUser = service.regB2CUser(commonUserNo);
+        }
+
+        if(regB2CUser == 0){
+            throw new HopsException(HopsCode.REG_B2C_USER_ERROR);
+        }else{
+            userLoginResponse = service.getUserLoginResponse(commonUserNo);
+        }
+
+        return new HopsResponse<>(Constant.SUCCESS, userLoginResponse);
     }
 
     // 통합로그인 아이디 중복체크
@@ -48,6 +68,17 @@ public class UserLoginController {
     @PostMapping("/regCommonUser")
     public HopsResponse regCommonUser(@RequestBody RegCommonUserRequest request) throws HopsException {
         logger.info("UserLoginController.regCommonUser request: {}", request);
+
         return new HopsResponse<>(Constant.SUCCESS, service.regCommonUser(request));
     }
+
+    // 개인회원 등록
+    @Operation(summary = "개인회원 등록", description = "개인회원가입")
+    public int regB2CUser(int commonUserNo) throws HopsException {
+        logger.info("UserLoginController.regB2CUser commonUserNo: {}", commonUserNo);
+
+        return service.regB2CUser(commonUserNo);
+    }
+
+
 }

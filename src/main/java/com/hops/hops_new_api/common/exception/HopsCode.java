@@ -12,6 +12,7 @@ public enum HopsCode {
     AES_ERROR("HE0004", "암호화 실패"),
     DEC_ERROR("HE0005", "복호화 실패"),
     CERTIFICATE_ERROR("HE0006", "본인인증 오류"),
+    REG_B2C_USER_ERROR("HE0007", "개인회원 등록 오류"),
 
     FORMAT_ERROR("HE9996", "데이터 포맷 오류"),
     PARSING_ERROR("HE9997", "파싱 오류"),
