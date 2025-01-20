@@ -203,7 +203,6 @@
                 huc.USER_NAME,
                 huc.GENDER_CD,
                 count(hr.RESERV_NO) reservCount,
-                LEFT(DATE_FORMAT(huc.LOGIN_DT, '%Y%m%d%H%i%S%f'), 16) loginDt
         from HC_USER_COMMON huc
         join HC_CUSTOMER_MAP hcm
             on huc.COMMON_USER_NO = hcm.COMMON_USER_NO

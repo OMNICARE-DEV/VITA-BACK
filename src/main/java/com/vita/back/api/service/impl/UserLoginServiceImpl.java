@@ -240,20 +240,6 @@ public class UserLoginServiceImpl implements UserLoginService {
         try {
             UserLoginResponse userLoginResponse = mapper.getUserLoginResponse(commonUserNo);
 
-            String data = Integer.toString(commonUserNo);
-            String loginDt = userLoginResponse.getLoginDt();
-            String key = Integer.toString(commonUserNo);
-
-            byte[] keyBytes = key.getBytes("UTF-8");
-            if(keyBytes.length != 16) {
-                key = "0".repeat(16-keyBytes.length) + commonUserNo;
-            }
-            log.info("암호화 key/iv"+key+"/"+loginDt);
-            AES256Util aes256Util = new AES256Util(key, loginDt);
-            String secretKey = aes256Util.encrypt(data);
-            log.info("암호화 값"+secretKey);
-            userLoginResponse.setSecretKey(secretKey);
-
             return userLoginResponse;
         }catch (Exception e){
             e.printStackTrace();
