@@ -1,5 +1,6 @@
 package com.hops.hops_new_api.common.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hops.hops_new_api.common.exception.HopsCode;
 import com.hops.hops_new_api.common.exception.HopsException;
 import com.hops.hops_new_api.common.mapper.UserLoginMapper;
@@ -8,6 +9,7 @@ import com.hops.hops_new_api.common.model.Request.UserLoginRequest;
 import com.hops.hops_new_api.common.model.Response.RegCommonUserResponse;
 import com.hops.hops_new_api.common.model.Response.UserLoginResponse;
 import com.hops.hops_new_api.common.model.data.*;
+import com.hops.hops_new_api.common.model.util.AES256Util;
 import com.hops.hops_new_api.common.model.util.ValidUtil;
 import com.hops.hops_new_api.common.service.UserLoginService;
 import org.slf4j.Logger;
@@ -16,17 +18,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class UserLoginServiceImpl implements UserLoginService {
     private static final Logger logger = LoggerFactory.getLogger(UserLoginServiceImpl.class);
 
     private final UserLoginMapper mapper;
+    private final CacheServiceImpl cacheService;
 
-    public UserLoginServiceImpl(UserLoginMapper mapper) {
+    public UserLoginServiceImpl(UserLoginMapper mapper, CacheServiceImpl cacheService) {
         this.mapper = mapper;
+        this.cacheService = cacheService;
     }
 
     //통합회원 로그인
@@ -224,9 +231,35 @@ public class UserLoginServiceImpl implements UserLoginService {
     //로그인 완료
     @Override
     public UserLoginResponse getUserLoginResponse(int commonUserNo) throws HopsException {
+        //TODO 비번 변경 90일/ 휴면계정 체크필요
         logger.info("로그인 완료 getUserLoginResponse");
         try {
-            return mapper.getUserLoginResponse(commonUserNo);
+            mapper.updateCommonUserLoginDt(commonUserNo);
+            mapper.updateUserLoginDt(commonUserNo);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new HopsException(HopsCode.DATABASE_ERROR);
+        }
+
+
+        try {
+            UserLoginResponse userLoginResponse = mapper.getUserLoginResponse(commonUserNo);
+
+            String data = Integer.toString(commonUserNo);
+            String loginDt = userLoginResponse.getLoginDt();
+            String key = Integer.toString(commonUserNo);
+
+            byte[] keyBytes = key.getBytes("UTF-8");
+            if(keyBytes.length != 16) {
+                key = "0".repeat(16-keyBytes.length) + commonUserNo;
+            }
+            logger.info("암호화 key/iv"+key+"/"+loginDt);
+            AES256Util aes256Util = new AES256Util(key, loginDt);
+            String secretKey = aes256Util.encrypt(data);
+            logger.info("암호화 값"+secretKey);
+            userLoginResponse.setSecretKey(secretKey);
+
+            return userLoginResponse;
         }catch (Exception e){
             e.printStackTrace();
             throw new HopsException(HopsCode.INVALID_PARAMETER);
@@ -245,7 +278,10 @@ public class UserLoginServiceImpl implements UserLoginService {
         logger.info("mappingCustomerUser.mappingCustomerUsers response: {}", customerMaps);
 
         int mappingCustomerUserCount = customerMaps.size();
-        int regCustomerUserCount = mapper.regCustomerMap(customerMaps);
+        int regCustomerUserCount = 0;
+        if(mappingCustomerUserCount != 0) {
+            regCustomerUserCount = mapper.regCustomerMap(customerMaps);
+        }
 
         return mappingCustomerUserCount == regCustomerUserCount;
     }

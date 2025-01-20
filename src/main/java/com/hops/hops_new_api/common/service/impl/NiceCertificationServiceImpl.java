@@ -259,9 +259,9 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
         }
 
         // 요청 데이터 암호화 (Base64)
-        String reqJsonString = "";
+        String data = "";
         try {
-            reqJsonString = new ObjectMapper().writeValueAsString(nicePopupDto);
+            data = new ObjectMapper().writeValueAsString(nicePopupDto);
         } catch (Exception e) {
             mapper.updtStTo80(userCertifyDto.getUserCertifyNo());
             logger.warn("직렬화 실패", e);
@@ -271,11 +271,12 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
         String encString = "";
         String integrityValue = "";
         try {
+            AES256Util aes256Util = new AES256Util(keyValue, ivValue);
             // encrypt
-            encString = AES256Util.encrypt(keyValue, ivValue, reqJsonString);
+            encString = aes256Util.encrypt(data);
 
             // 3-3. Hmac 무결성체크값(integrityValue) 생성 (sha-256)
-            byte[] hmacSha256 = AES256Util.hmac256(hmacValue.getBytes(), encString.getBytes());
+            byte[] hmacSha256 = aes256Util.hmac256(hmacValue.getBytes(), encString.getBytes());
             integrityValue = Base64.getEncoder().encodeToString(hmacSha256);
         } catch (Exception e) {
             mapper.updtStTo80(userCertifyDto.getUserCertifyNo());
@@ -426,8 +427,9 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
             throw new HopsException(HopsCode.CERTIFICATE_TIME_ERROR); // 본인인증 시간이 초과되었습니다.
         }
 
+        AES256Util aes256Util = new AES256Util(keyValue, ivValue);
         /* 2. 요청데이터 복호화 */
-        String resData = AES256Util.decrypt(keyValue, ivValue, request.getCiperText());
+        String resData = aes256Util.decrypt(request.getCiperText());
 
         /* 3. string > Object (Jackson) */
         NiceAuthDto niceAuthDto;
@@ -533,6 +535,7 @@ public class NiceCertificationServiceImpl implements NiceCertificationService {
         niceCertificateAuthResponse.setCertifySuccessYn("Y");
         niceCertificateAuthResponse.setCommonUserNo(commonUserNo);
         niceCertificateAuthResponse.setBirthday(niceAuthDto.getBirthdate());
+        niceCertificateAuthResponse.setGender(niceAuthDto.getGender().equals("1") ? "남" : "여");
 
         if(!ValidUtil.isEmpty(user) ) {
             niceCertificateAuthResponse.setCommonUserNo(0);

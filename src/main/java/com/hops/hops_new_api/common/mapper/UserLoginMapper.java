@@ -34,4 +34,8 @@ public interface UserLoginMapper {
     UserLoginResponse getUserLoginResponse(int commonUserNo);
 
     List<CustomerMapDto> getMappingCustomerUser(String userCi);
+
+    void updateCommonUserLoginDt(int commonUserNo);
+
+    void updateUserLoginDt(int commonUserNo);
 }

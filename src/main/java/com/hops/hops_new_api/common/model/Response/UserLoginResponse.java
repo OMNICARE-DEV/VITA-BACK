@@ -12,10 +12,12 @@ import java.util.List;
 @Setter
 public class UserLoginResponse {
 
-    private int commonUserNo;
+    private String secretKey;
+    private String commonUserNo;
     private String userName;
     private String genderCd;
     private int reservCount;
+    private String loginDt;
 
     @Override
     public String toString() {

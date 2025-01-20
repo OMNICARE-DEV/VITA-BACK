@@ -24,7 +24,8 @@ public class NiceCertificateAuthResponse {
     private String zipCd;
     private String email;
     private String userName;
-    private String birthday; 
+    private String birthday;
+    private String gender;
 
     @Override
     public String toString() {

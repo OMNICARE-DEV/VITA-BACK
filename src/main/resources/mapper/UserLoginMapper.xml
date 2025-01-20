@@ -202,7 +202,8 @@
         select huc.COMMON_USER_NO,
                 huc.USER_NAME,
                 huc.GENDER_CD,
-                count(hr.RESERV_NO) reservCount
+                count(hr.RESERV_NO) reservCount,
+                LEFT(DATE_FORMAT(huc.LOGIN_DT, '%Y%m%d%H%i%S%f'), 16) loginDt
         from HC_USER_COMMON huc
         join HC_CUSTOMER_MAP hcm
             on huc.COMMON_USER_NO = hcm.COMMON_USER_NO
@@ -227,4 +228,21 @@
           and hu.USER_ST not in ('90')
           and hcm.USER_NO is null
     </select>
+
+    <update id="updateCommonUserLoginDt">
+        UPDATE HC_USER_COMMON
+        SET LOGIN_DT = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+        WHERE COMMON_USER_NO = #{commonUserNo}
+    </update>
+
+    <update id="updateUserLoginDt">
+        UPDATE HC_USER
+        SET LOGIN_DT = (select LOGIN_DT from HC_USER_COMMON where COMMON_USER_NO = #{commonUserNo})
+        WHERE USER_NO in (
+            select common.USER_NO from
+            (select hc.USER_NO from HC_USER hc
+                join HC_CUSTOMER_MAP hcm on hc.USER_NO = hcm.USER_NO
+                where hcm.COMMON_USER_NO = '252'
+                and hc.USER_ST not in ('90')) common)
+    </update>
 </mapper>

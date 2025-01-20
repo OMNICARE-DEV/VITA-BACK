@@ -49,7 +49,7 @@ public class UserLoginController {
         if(regB2CUserCount == 0){
             throw new HopsException(HopsCode.REG_B2C_USER_ERROR);
         }else{
-            //추가 등록된
+            //추가 등록된 user mapping
             boolean successRegCustomerMap = service.mappingCustomerUser(commonUserNo);
 
             if(successRegCustomerMap) {
