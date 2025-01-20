@@ -202,7 +202,7 @@
         select huc.COMMON_USER_NO,
                 huc.USER_NAME,
                 huc.GENDER_CD,
-                count(hr.RESERV_NO) reservCount,
+                count(hr.RESERV_NO) reservCount
         from HC_USER_COMMON huc
         join HC_CUSTOMER_MAP hcm
             on huc.COMMON_USER_NO = hcm.COMMON_USER_NO

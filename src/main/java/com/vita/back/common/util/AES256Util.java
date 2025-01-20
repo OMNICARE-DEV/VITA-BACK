@@ -55,7 +55,7 @@ public class AES256Util {
             IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes(CHARSET));
 
             /* Use URL-safe Base64 decoder */
-            byte[] decodedData = Base64.getUrlDecoder().decode(encryptedData);
+            byte[] decodedData = Base64.getDecoder().decode(encryptedData);
 
             cipher.init(Cipher.DECRYPT_MODE, new javax.crypto.spec.SecretKeySpec(key.getBytes(CHARSET), "AES"),
                     ivParameterSpec);
@@ -63,6 +63,7 @@ public class AES256Util {
 
             return new String(decryptedBytes, CHARSET);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new VitaException(VitaCode.SYSTEM_ERROR);
         }
     }
