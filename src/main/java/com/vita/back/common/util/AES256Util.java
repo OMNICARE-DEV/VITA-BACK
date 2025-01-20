@@ -1,15 +1,14 @@
 package com.vita.back.common.util;
 
-import com.vita.back.common.exception.VitaCode;
-import com.vita.back.common.exception.VitaException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.Base64;
+
+import com.vita.back.common.exception.VitaCode;
+import com.vita.back.common.exception.VitaException;
 
 public class AES256Util {
     private static final String CHARSET = "UTF-8";

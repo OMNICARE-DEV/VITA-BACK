@@ -20,7 +20,6 @@ import com.vita.back.api.model.response.UserLoginResponse;
 import com.vita.back.api.service.UserLoginService;
 import com.vita.back.common.exception.VitaCode;
 import com.vita.back.common.exception.VitaException;
-import com.vita.back.common.util.AES256Util;
 import com.vita.back.common.util.ValidUtil;
 
 import lombok.extern.slf4j.Slf4j;
