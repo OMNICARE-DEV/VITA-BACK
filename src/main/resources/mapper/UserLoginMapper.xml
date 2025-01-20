@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.hops.hops_new_api.common.mapper.UserLoginMapper">
-    <select id="getCommonUserNo" parameterType="com.hops.hops_new_api.common.model.Request.UserLoginRequest" resultType="Integer">
+<mapper namespace="com.vita.back.api.mapper.UserLoginMapper">
+    <select id="getCommonUserNo" parameterType="com.vita.back.api.model.request.UserLoginRequest" resultType="Integer">
         select huc.COMMON_USER_NO
         from HC_USER_COMMON huc
         where huc.USER_ID = #{userId}
@@ -17,7 +17,7 @@
           and USER_CERTIFY_NO  = #{userCertigfyNo}
     </select>
 
-    <select id="getCommonUserIdDupCheck" parameterType="com.hops.hops_new_api.common.model.data.UserIdDupCheckDto" resultType="int">
+    <select id="getCommonUserIdDupCheck" parameterType="com.vita.back.api.model.data.UserIdDupCheckDto" resultType="int">
         select count(huc.USER_ID)
         from HC_USER_COMMON huc left join HC_USER hu
         on huc.USER_ID = hu.USER_ID and huc.USER_CI = hu.USER_CI
@@ -25,7 +25,7 @@
           and huc.USER_CI!= #{userCi}
     </select>
 
-    <select id="getCertifyInfoByKey" parameterType="String" resultType="com.hops.hops_new_api.common.model.data.UserCertifyDto">
+    <select id="getCertifyInfoByKey" parameterType="String" resultType="com.vita.back.api.model.data.UserCertifyDto">
         SELECT CI
              , DI
              , USER_NAME
@@ -50,7 +50,7 @@
           AND USER_ST = '00'
     </select>
 
-    <insert id="joinCommonUser" parameterType="com.hops.hops_new_api.common.model.data.CommonUserDto" useGeneratedKeys="true" keyProperty="commonUserNo">
+    <insert id="joinCommonUser" parameterType="com.vita.back.api.model.data.CommonUserDto" useGeneratedKeys="true" keyProperty="commonUserNo">
         INSERT INTO HC_USER_COMMON (
             USER_ID,
             USER_NAME,
@@ -97,7 +97,7 @@
                )
     </insert>
 
-    <select id="getCommonUser" parameterType="int" resultType="com.hops.hops_new_api.common.model.data.UserDto">
+    <select id="getCommonUser" parameterType="int" resultType="com.vita.back.api.model.data.UserDto">
         select USER_ID,
                USER_NAME,
                MOBILE_NO,
@@ -133,7 +133,7 @@
           and hcm.CUSTOMER_ID = 'C000008035'
     </select>
 
-    <insert id="regB2CUser" parameterType="com.hops.hops_new_api.common.model.data.UserDto" useGeneratedKeys="true" keyProperty="userNo">
+    <insert id="regB2CUser" parameterType="com.vita.back.api.model.data.UserDto" useGeneratedKeys="true" keyProperty="userNo">
         INSERT INTO HC_USER (
             USER_ID,
             USER_NAME,
@@ -182,7 +182,7 @@
                )
     </insert>
 
-    <insert id="regCustomerMap" parameterType="com.hops.hops_new_api.common.model.Request.RegCommonUserRequest">
+    <insert id="regCustomerMap" parameterType="com.vita.back.api.model.request.RegCommonUserRequest">
         INSERT INTO HC_CUSTOMER_MAP (
             COMMON_USER_NO,
             USER_NO,
@@ -198,7 +198,7 @@
         </foreach>
     </insert>
 
-    <select id="getUserLoginResponse" resultType="com.hops.hops_new_api.common.model.Response.UserLoginResponse">
+    <select id="getUserLoginResponse" resultType="com.vita.back.api.model.response.UserLoginResponse">
         select huc.COMMON_USER_NO,
                 huc.USER_NAME,
                 huc.GENDER_CD,
@@ -217,7 +217,7 @@
         and hu.USER_ST not in ('90')
     </select>
 
-    <select id="getMappingCustomerUser" resultType="com.hops.hops_new_api.common.model.data.CustomerMapDto">
+    <select id="getMappingCustomerUser" resultType="com.vita.back.api.model.data.CustomerMapDto">
         select huc.COMMON_USER_NO, hu.USER_NO ,hu.CUSTOMER_ID
         from HC_USER hu
                  join HC_USER_COMMON huc

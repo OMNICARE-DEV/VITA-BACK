@@ -1,6 +1,6 @@
 spring:
   application:
-    name: HOPS_NEW_API
+    name: VITA_BACK
   devtools:
     restart:
       enabled: false

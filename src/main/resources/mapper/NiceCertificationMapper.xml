@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.hops.hops_new_api.common.mapper.NiceCertificationMapper">
-    <insert id="regUserCertify" parameterType="com.hops.hops_new_api.common.model.data.UserCertifyDto" useGeneratedKeys="true" keyProperty="userCertifyNo">
+<mapper namespace="com.vita.back.api.mapper.NiceCertificationMapper">
+    <insert id="regUserCertify" parameterType="com.vita.back.api.model.data.UserCertifyDto" useGeneratedKeys="true" keyProperty="userCertifyNo">
         insert into HC_USER_CERTIFY (
             USER_CERTIFY_DIV,
             MOBILE_NO,
@@ -11,12 +11,12 @@
             REG_DT,
             CERTIFY_ST
         ) values (
-                     #{userCertifyDiv},
-                     #{mobileNo},
-                     #{userCertifyType},
-                     DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s'),
-                     #{certifySt}
-                 )
+             #{userCertifyDiv},
+             #{mobileNo},
+             #{userCertifyType},
+             DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s'),
+             #{certifySt}
+         )
     </insert>
 
     <select id="getServiceStaticInfo" resultType="String" parameterType="String">
@@ -41,7 +41,7 @@
         where USER_CERTIFY_NO = #{USER_CERTIFY_NO}
     </update>
 
-    <update id="updtServiceInfoRegDt" parameterType="com.hops.hops_new_api.common.model.data.ServiceInfoDto">
+    <update id="updtServiceInfoRegDt" parameterType="com.vita.back.api.model.data.ServiceInfoDto">
         UPDATE HC_SERVICE_INFO
         SET REG_DT = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
         WHERE service_info_id IN (#{keyId}, #{ivId}, #{hmacId}, #{siteCodeId}, #{tokenVersionId})
@@ -87,7 +87,7 @@
         update HC_SERVICE_INFO set info_value = #{info_value} where SERVICE_INFO_ID = '2015'
     </update>
 
-    <update id="updateUserCertify" parameterType="com.hops.hops_new_api.common.model.data.UserCertifyDto">
+    <update id="updateUserCertify" parameterType="com.vita.back.api.model.data.UserCertifyDto">
         update HC_USER_CERTIFY
         set CERTIFY_ST = #{certifySt}
           , CI = #{ci}
@@ -107,7 +107,7 @@
           AND USER_ST = '00'
     </select>
 
-    <select id="getAlreadyUserInfo" parameterType="String" resultType="com.hops.hops_new_api.common.model.data.UserDto">
+    <select id="getAlreadyUserInfo" parameterType="String" resultType="com.vita.back.api.model.data.UserDto">
         SELECT IFNULL(HU.USER_NO, 0) AS USER_NO
              , HC.CUSTOMER_NAME
              , HU.USER_ID

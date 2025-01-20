@@ -1,6 +1,6 @@
 spring:
   application:
-    name: HOPS_NEW_API
+    name: VITA_BACK
   devtools:
     restart:
       enabled: false
@@ -8,8 +8,8 @@ spring:
       enabled: false
   datasource:
     url: jdbc:mysql://db-een48.vpc-cdb.ntruss.com:3306/HOPS
-    username: vb_dev
-    password: kmi@1324
+    username: vb_api
+    password: kmi1234!@
     driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   port: 28080
