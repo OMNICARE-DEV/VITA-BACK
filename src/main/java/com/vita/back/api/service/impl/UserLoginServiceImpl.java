@@ -64,8 +64,7 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     }
 
-    //통합회원 B2C신규등록
-    @Override
+    /** 통합회원 B2C신규등록 */
     @Transactional(rollbackFor = {VitaException.class})
     public int regB2CUser(int commonUserNo) throws VitaException {
         log.info("통합회원 B2C신규등록 regB2CUser");
@@ -132,8 +131,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         }
     }
 
-    //통합회원 등록
-    @Override
+    /** 통합회원 등록 */
     @Transactional(rollbackFor = {VitaException.class})
     public RegCommonUserResponse regCommonUser(RegCommonUserRequest request) throws VitaException {
         log.info("통합회원 등록 regCommonUser");
@@ -226,8 +224,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         return regCommonUserResponse;
     }
 
-    //로그인 완료
-    @Override
+    /** 로그인 완료 */
     public UserLoginResponse getUserLoginResponse(int commonUserNo) throws VitaException {
         //TODO 비번 변경 90일/ 휴면계정 체크필요
         log.info("로그인 완료 getUserLoginResponse");
@@ -264,8 +261,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         }
     }
 
-    //기존회원 통합회원 매핑
-    @Override
+    /** 기존회원 통합회원 매핑 */
     public boolean mappingCustomerUser(int commonUserNo) throws VitaException {
         log.info("기존회원 통합회원 매핑 mappingCustomerUser");
 
