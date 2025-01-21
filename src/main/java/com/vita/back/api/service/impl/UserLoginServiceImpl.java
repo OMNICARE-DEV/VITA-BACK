@@ -3,6 +3,7 @@ package com.vita.back.api.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vita.back.api.mapper.NiceCertificationMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -28,9 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class UserLoginServiceImpl implements UserLoginService {
     private final UserLoginMapper mapper;
+    private final NiceCertificationMapper certificationMapper;
 
-    public UserLoginServiceImpl(UserLoginMapper mapper, CacheServiceImpl cacheService) {
+    public UserLoginServiceImpl(UserLoginMapper mapper, NiceCertificationMapper certificationMapper) {
         this.mapper = mapper;
+        this.certificationMapper = certificationMapper;
     }
 
     /** 통합회원 로그인 */
@@ -162,6 +165,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         log.info("userCertifyDto response: {}",userCertifyDto);
 
         if(ValidUtil.isEmpty(userCertifyDto)){
+            certificationMapper.updtStTo80(Integer.getInteger(request.getUserCertifyNo()));
             throw new VitaException(VitaCode.CERTIFICATE_TIME_ERROR);
         }
         // 본인인증값 사용완료 처리
@@ -170,6 +174,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         // 만 14세이하 가입불가 처리
         int americanAge = ValidUtil.getAmericanAge(userCertifyDto.getBirthday());
         if (americanAge <= 14 ) { // 만 14세 이하라면
+            certificationMapper.updtStTo80(userCertifyDto.getUserCertifyNo());
             throw new VitaException(VitaCode.JOIN_AGE_ERROR);
         }
 
@@ -178,6 +183,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         userCiDupCheckDto.setUserCi(userCertifyDto.getCi());
         int userCiCount = mapper.getCommonUserCount(userCiDupCheckDto);
         if (userCiCount > 0){
+            certificationMapper.updtStTo80(userCertifyDto.getUserCertifyNo());
             throw new VitaException(VitaCode.ALREADY_JOIN_USER);
         }else {
             try {
@@ -210,12 +216,14 @@ public class UserLoginServiceImpl implements UserLoginService {
                 if(successRegCustomerMap) {
                     regCommonUserResponse.setJoinSuccess(true);
                 }else{
+                    certificationMapper.updtStTo80(userCertifyDto.getUserCertifyNo());
                     throw new VitaException(VitaCode.DATABASE_ERROR);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 // 강제로 롤백
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                certificationMapper.updtStTo80(userCertifyDto.getUserCertifyNo());
                 throw new VitaException(VitaCode.DATABASE_ERROR);
             }
         }
