@@ -1,9 +1,6 @@
 package com.vita.back.api.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vita.back.api.model.Constant;
 import com.vita.back.api.model.VitaResponse;
@@ -64,7 +61,7 @@ public class UserLoginController {
 
     /** 통합로그인 아이디 중복체크 */
     @Operation(summary = "중복체크", description = "아이디 중복체크")
-    @PostMapping("/commonIdDupCheck")
+    @GetMapping("/commonIdDupCheck")
     public VitaResponse<?> commonIdDupCheck(@RequestBody UserLoginRequest request) throws VitaException {
         log.info("UserLoginController.commonIdDupCheck request: {}", request);
         return new VitaResponse<>(Constant.SUCCESS, service.userIdDupCheck(request));
