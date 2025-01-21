@@ -62,8 +62,12 @@ public class UserLoginController {
     /** 통합로그인 아이디 중복체크 */
     @Operation(summary = "중복체크", description = "아이디 중복체크")
     @GetMapping("/commonIdDupCheck")
-    public VitaResponse<?> commonIdDupCheck(@RequestBody UserLoginRequest request) throws VitaException {
-        log.info("UserLoginController.commonIdDupCheck request: {}", request);
+    public VitaResponse<?> commonIdDupCheck(@RequestParam(value = "userId") String userId,
+                                            @RequestParam(value = "userCertifyNo") String userCertifyNo) throws VitaException {
+        UserLoginRequest request = new UserLoginRequest();
+        request.setUserId(userId);
+        request.setUserCertifyNo(userCertifyNo);
+        log.info("UserLoginController.commonIdDupCheck reqest: {}", request);
         return new VitaResponse<>(Constant.SUCCESS, service.userIdDupCheck(request));
     }
 
@@ -72,7 +76,6 @@ public class UserLoginController {
     @PostMapping("/regCommonUser")
     public VitaResponse<?> regCommonUser(@RequestBody RegCommonUserRequest request) throws VitaException {
         log.info("UserLoginController.regCommonUser request: {}", request);
-        service.regCommonUser(request);
         return new VitaResponse<>(Constant.SUCCESS, service.regCommonUser(request));
     }
 

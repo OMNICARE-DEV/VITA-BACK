@@ -165,7 +165,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         log.info("userCertifyDto response: {}",userCertifyDto);
 
         if(ValidUtil.isEmpty(userCertifyDto)){
-            certificationMapper.updtStTo80(Integer.getInteger(request.getUserCertifyNo()));
+            certificationMapper.updtStTo80(Integer.parseInt(request.getUserCertifyNo()));
             throw new VitaException(VitaCode.CERTIFICATE_TIME_ERROR);
         }
         // 본인인증값 사용완료 처리
