@@ -6,7 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -28,8 +30,10 @@ public class LogAspect {
         this.objectMapper = objectMapper;
     }
 
-    @AfterReturning(pointcut = "execution(* com.vita.back.api.controller..*(..))", returning = "responseBody")
-    public void logRequestAndResponse(JoinPoint joinPoint, Object responseBody) throws JsonProcessingException {
+    @Around("execution(* com.vita.back.api.controller..*(..))")
+    public Object logRequestAndResponse(ProceedingJoinPoint joinPoint) throws Throwable {
+        // 시작 시간
+        long startTime = System.currentTimeMillis();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 
@@ -38,6 +42,7 @@ public class LogAspect {
         // 요청 정보
         log.info("Request INFO [{}] {}", request.getMethod(), request.getRequestURI());
 
+        // 요청 헤더
         Map<String, String> headers = new HashMap<>();
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
@@ -56,14 +61,33 @@ public class LogAspect {
         if (request instanceof ContentCachingRequestWrapper) {
             ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper) request;
             String requestBody = new String(cachingRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
-            if(!requestBody.isEmpty()) {
+            if (!requestBody.isEmpty()) {
                 log.info("Request Body: {}", requestBody);
             }
         }
 
-        // 응답 로깅 - response logging 원치 않으면 주석처리하기.
-        log.info("Response Body: {}", objectMapper.writeValueAsString(responseBody));
+        // 메서드 실행
+        Object result;
+        try {
+            result = joinPoint.proceed();
+        } catch (Throwable ex) {
+            throw ex;
+        }
+
+        // 종료 시간
+        long endTime = System.currentTimeMillis();
+        // 실행 시간
+        long executionTime = endTime - startTime;
+
+        // 응답 - 답
+        if (response != null) {
+            log.info("Response Status Code: {}", response.getStatus());
+        }
+        log.info("Response Body: {}", objectMapper.writeValueAsString(result));
+        log.info("Execution Time: {} ms", executionTime);
 
         log.info(">>>>>>>>>>>>>>>>>>>>> End of Log <<<<<<<<<<<<<<<<<<<<<<");
+
+        return result;
     }
 }
