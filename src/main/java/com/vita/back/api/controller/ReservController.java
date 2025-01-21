@@ -13,7 +13,7 @@ import com.vita.back.common.exception.VitaException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "AUTH", description = "예약관련 API")
+@Tag(name = "예약관련 API", description = "")
 @RestController
 @RequestMapping(value = "/reserv")
 public class ReservController {

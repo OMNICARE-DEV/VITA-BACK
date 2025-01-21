@@ -1,4 +1,4 @@
-package com.vita.back.config;
+package com.vita.back.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

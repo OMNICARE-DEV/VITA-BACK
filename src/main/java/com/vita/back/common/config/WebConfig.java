@@ -1,4 +1,4 @@
-package com.vita.back.config;
+package com.vita.back.common.config;
 
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

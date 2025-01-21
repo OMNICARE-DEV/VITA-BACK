@@ -15,7 +15,7 @@ import com.vita.back.common.exception.VitaException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "AUTH", description = "나이스 인증관련 API")
+@Tag(name = "나이스 인증관련 API", description = "")
 @RestController
 @RequestMapping(value = "/nice")
 public class NiceCertificationController {
