@@ -79,10 +79,12 @@ public class LogAspect {
         // 실행 시간
         long executionTime = endTime - startTime;
 
-        // 응답 - 답
+        // 응답 코드
         if (response != null) {
             log.info("Response Status Code: {}", response.getStatus());
         }
+
+        // 응답 본문 - 필요없으면 지우거나 수정하기~
         log.info("Response Body: {}", objectMapper.writeValueAsString(result));
         log.info("Execution Time: {} ms", executionTime);
 
