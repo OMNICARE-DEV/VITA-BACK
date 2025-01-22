@@ -1,15 +1,13 @@
 package com.vita.back.common.util;
 
 import com.vita.back.api.model.data.SendEmailDto;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import jakarta.mail.internet.MimeMessage;
-import java.util.Map;
 
 @Component
 public class EmailUtil {

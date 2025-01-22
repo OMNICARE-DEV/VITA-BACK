@@ -3,7 +3,6 @@ package com.vita.back.api.model.data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.Getter;
 
 import java.util.Map;
 

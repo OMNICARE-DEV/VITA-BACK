@@ -4,7 +4,6 @@ import com.vita.back.api.model.data.SendEmailDto;
 import com.vita.back.api.service.EmailService;
 import com.vita.back.common.exception.VitaException;
 import com.vita.back.common.util.EmailUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
