@@ -11,6 +11,26 @@ spring:
     username: hops
     password: kmi@124578
     driver-class-name: com.mysql.cj.jdbc.Driver
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    content-type: text/html
+    cache: false
+  mail:
+    host: smtp.naver.com
+    port: 587
+    username: moonja89
+    password: 78ZVSLSW9VMV
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+
 mybatis:
   mapper-locations: classpath:/mapper/**/*.xml
   configuration:
