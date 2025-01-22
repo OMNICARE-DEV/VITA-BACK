@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Template</title>
+</head>
+<body>
+<h1>안녕하세요, <span th:text="${name}"></span>님!</h1>
+<p>다음은 테스트 이메일입니다. 파라미터에 암거나 걍 넣어요</p>
+<p>이메일 내용: <span th:text="${content}"></span></p>
+<p>url : <span th:text="${url}"></span></p>
+</body>
+</html>
