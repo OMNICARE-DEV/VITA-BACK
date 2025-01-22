@@ -18,8 +18,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping(value = "/reserv")
 public class ReservController {
     @Operation(summary = "병원 조회", description = "병원 조회")
-    @GetMapping("/partnerCenterList")
-    public VitaResponse<?> partnerCenterList(@RequestParam(value="rosterNo") String request) throws VitaException {
+    @GetMapping("/partner-center-list")
+    public VitaResponse<?> selectPartnerCenterList(@RequestParam(value="rosterNo") String request) throws VitaException {
         CommonUserDto ccc = new CommonUserDto();
         ccc.setAddress("hjhjhjhjh");
         
