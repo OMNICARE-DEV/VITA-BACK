@@ -24,7 +24,7 @@ public class EmailController {
     }
 
     @Operation(summary = " 메일 발송 테스트 API")
-    @PostMapping("/send-auth")
+    @PostMapping("/send")
     public VitaResponse<?> sendAuthEmail(@RequestBody SendEmailDto request) throws VitaException {
         return new VitaResponse<>(Constant.SUCCESS, service.sendEmail(request));
     }
