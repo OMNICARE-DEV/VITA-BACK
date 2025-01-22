@@ -28,40 +28,15 @@ public class UserLoginController {
 
     /** 통합로그인 아이디 로그인 */
     @Operation(summary = "로그인", description = "로그인 정보 조회")
-    @PostMapping("/commonIdLogin")
+    @PostMapping("/common-id-login")
     public VitaResponse<?> commonIdLogin(@RequestBody UserLoginRequest request) throws VitaException {
         log.info("UserLoginController.commonIdLogin request: {}", request);
-        //Response
-        UserLoginResponse userLoginResponse = new UserLoginResponse();
-
-        //commonUserNO확인
-        int commonUserNo = service.userLogin(request);
-
-        int regB2CUserCount = 0;
-        if(commonUserNo > 0){
-            //개인회원 등록
-            regB2CUserCount = service.regB2CUser(commonUserNo);
-        }
-
-        if(regB2CUserCount == 0){
-            throw new VitaException(VitaCode.REG_B2C_USER_ERROR);
-        }else{
-            //추가 등록된 user mapping
-            boolean successRegCustomerMap = service.mappingCustomerUser(commonUserNo);
-
-            if(successRegCustomerMap) {
-                userLoginResponse = service.getUserLoginResponse(commonUserNo);
-            }else{
-                throw new VitaException(VitaCode.DATABASE_ERROR);
-            }
-        }
-
-        return new VitaResponse<>(Constant.SUCCESS, userLoginResponse);
+        return new VitaResponse<>(Constant.SUCCESS, service.getUserLoginResponse(request));
     }
 
     /** 통합로그인 아이디 중복체크 */
     @Operation(summary = "중복체크", description = "아이디 중복체크")
-    @GetMapping("/commonIdDupCheck")
+    @GetMapping("/common-id-duplicate-check")
     public VitaResponse<?> commonIdDupCheck(@RequestParam(value = "userId") String userId,
                                             @RequestParam(value = "userCertifyNo") String userCertifyNo) throws VitaException {
         UserLoginRequest request = new UserLoginRequest();
@@ -73,10 +48,10 @@ public class UserLoginController {
 
     /** 통합로그인 회원가입 */
     @Operation(summary = "통합로그인 회원가입", description = "회원가입")
-    @PostMapping("/regCommonUser")
-    public VitaResponse<?> regCommonUser(@RequestBody RegCommonUserRequest request) throws VitaException {
+    @PostMapping("/insert-common-user")
+    public VitaResponse<?> insertCommonUser(@RequestBody RegCommonUserRequest request) throws VitaException {
         log.info("UserLoginController.regCommonUser request: {}", request);
-        return new VitaResponse<>(Constant.SUCCESS, service.regCommonUser(request));
+        return new VitaResponse<>(Constant.SUCCESS, service.insertCommonUser(request));
     }
 
 }

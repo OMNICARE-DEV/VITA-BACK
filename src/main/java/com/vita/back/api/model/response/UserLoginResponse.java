@@ -19,4 +19,10 @@ public class UserLoginResponse {
     /** 전체 예약 수*/
     @Schema(description = "전체 예약 수")
     private int reservCount;
+    /** 발급 토큰*/
+    @Schema(description = "발급 토큰")
+    private String accessToken;
+    /** 재발급 토큰*/
+    @Schema(description = "재발급 토큰")
+    private String refreshToken;
 }
