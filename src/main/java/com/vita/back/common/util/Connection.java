@@ -2,11 +2,13 @@ package com.vita.back.common.util;
 
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,7 +17,12 @@ import com.vita.back.api.model.VitaResponse;
 import com.vita.back.common.exception.VitaCode;
 import com.vita.back.common.exception.VitaException;
 
+@Component
 public class Connection {
+	
+	@Value("${url.api}")
+	private String API_URL;
+	
     @SuppressWarnings("rawtypes")
     public <T, M> T request(M request, Class<T> res, String url, HttpMethod method) throws VitaException {
 
