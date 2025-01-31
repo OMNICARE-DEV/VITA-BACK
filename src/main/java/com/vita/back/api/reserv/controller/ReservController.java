@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vita.back.api.model.Constant;
 import com.vita.back.api.model.VitaResponse;
-import com.vita.back.api.reserv.model.ConnRegReservRequest;
-import com.vita.back.api.reserv.model.ReservRequest;
-import com.vita.back.api.reserv.model.ReservResponse;
+import com.vita.back.api.reserv.model.request.ConnRegReservRequest;
+import com.vita.back.api.reserv.model.request.ReservRequest;
+import com.vita.back.api.reserv.model.response.ReservResponse;
 import com.vita.back.api.reserv.service.ReservService;
 import com.vita.back.common.exception.VitaException;
 
