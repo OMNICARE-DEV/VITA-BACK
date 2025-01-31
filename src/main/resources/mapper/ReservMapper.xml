@@ -1,0 +1,1228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vita.back.api.reserv.mapper.ReservMapper">
+	<select id="selectSedationItem" parameterType="int" resultType="int">
+        SELECT IF(
+                   NOT EXISTS(
+                       SELECT 1
+                       FROM HC_RESERV_TEST_ITEM TEST
+                       WHERE RESERV_NO = #{reservNo}
+                       AND TEST.TEST_ITEM_CD IN (
+                           SELECT ITEM.TEST_ITEM_CD
+                           FROM HC_TEST_ITEM_CD ITEM
+                           WHERE ITEM.PARTNER_CENTER_ID = 'H00001'
+                           AND ITEM.TEST_ITEM_NAME LIKE '%수면%'
+                           AND ITEM.TEST_ITEM_CD NOT IN (
+                               'A0190','GM010'
+                           )
+                       )
+                   ), 1, 0
+               )
+    </select>
+	<select id="selectEchoItem" parameterType="int" resultType="int">
+        SELECT IF(
+               NOT EXISTS(
+                   SELECT 1
+                   FROM HC_RESERV_TEST_ITEM TEST
+                   WHERE RESERV_NO = #{reservNo}
+                     AND TEST.TEST_ITEM_CD IN (
+                       SELECT ITEM.TEST_ITEM_CD
+                       FROM HC_TEST_ITEM_CD ITEM
+                       WHERE ITEM.PARTNER_CENTER_ID = 'H00001'
+                       AND ITEM.TEST_ITEM_NAME LIKE '%심장초음파%'
+                   )
+               ), 1, 0)
+    </select>
+	<select id="selectRosterBirthday" parameterType="int" resultType="String">
+        SELECT ROSTER.BIRTHDAY
+        FROM HC_RESERV RESERV
+        JOIN HC_CHECKUP_ROSTER ROSTER
+        ON RESERV.CHECKUP_ROSTER_NO = ROSTER.CHECKUP_ROSTER_NO
+        AND RESERV.RESERV_NO = #{reservNo}
+    </select>
+	<select id="selectDivCd" parameterType="int" resultType="int">
+        SELECT IF(
+                   EXISTS(
+                       SELECT PRODUCT.CHECKUP_DIV_CD
+                       FROM HC_RESERV RESERV
+                       JOIN HC_CHECKUP_PRODUCT PRODUCT
+                       ON RESERV.RESERV_NO = #{reservNo}
+                       AND PRODUCT.CHECKUP_DIV_CD = '10'
+                       AND RESERV.CHECKUP_PRODUCT_NO = PRODUCT.CHECKUP_PRODUCT_NO
+                   ),
+                   1, 0
+               )
+    </select>
+	<update id="updateEKGItem" parameterType="int">
+        UPDATE HC_RESERV_TEST_ITEM
+        SET TEST_ITEM_CD = REPLACE(TEST_ITEM_CD,'XC290','XC291')
+        WHERE RESERV_NO = #{reservNo}
+    </update>
+	<select id="selectEKGItem" parameterType="int" resultType="int">
+        SELECT IF(
+               EXISTS(
+                   SELECT 1
+                   FROM HC_RESERV_TEST_ITEM TEST
+                   WHERE RESERV_NO = #{reservNo}
+                     AND TEST.TEST_ITEM_CD = 'XC290'
+               ), 1, 0)
+    </select>
+	<update id="updatePersonalPayerBilling">
+        <selectKey keyProperty="personalPayerBillingYn,companySupportType" resultType="map" order="BEFORE">
+            SELECT IFNULL(IFNULL(PRODUCT.PERSONAL_PAYER_BILLING_YN, PRODUCT_HIST.PERSONAL_PAYER_BILLING_YN), '') personalPayerBillingYn
+                 , ROSTER.COMPANY_SUPPORT_TYPE companySupportType
+            FROM HC_RESERV RESERV
+            LEFT JOIN HC_CHECKUP_PRODUCT PRODUCT ON RESERV.CHECKUP_PRODUCT_NO = PRODUCT.CHECKUP_PRODUCT_NO AND RESERV.PRODUCT_INDEX = PRODUCT.PRODUCT_INDEX
+            LEFT JOIN HC_CHECKUP_PRODUCT_HIST PRODUCT_HIST ON RESERV.CHECKUP_PRODUCT_NO = PRODUCT_HIST.CHECKUP_PRODUCT_NO AND RESERV.PRODUCT_INDEX = PRODUCT_HIST.PRODUCT_INDEX
+            LEFT JOIN HC_CHECKUP_ROSTER ROSTER ON RESERV.CHECKUP_ROSTER_NO = ROSTER.CHECKUP_ROSTER_NO
+            WHERE RESERV.RESERV_NO = #{reservNo}
+        </selectKey>
+
+        UPDATE HC_CHECKUP_ROSTER
+        <choose>
+            <when test='reservSt == "80"'>
+                SET PERSONAL_PAYER_BILLING_YN = 'N'
+                  , COMPANY_SUPPORT_AMOUNT = 0
+            </when>
+            <when test='companySupportType eq "00" and personalPayerBillingYn eq "Y"'>
+                SET PERSONAL_PAYER_BILLING_YN = 'Y'
+                  , COMPANY_SUPPORT_AMOUNT = #{companySupportAmount}
+            </when>
+            <otherwise>
+                SET PERSONAL_PAYER_BILLING_YN = 'N'
+                <if test='companySupportType eq "00"'>
+                  , COMPANY_SUPPORT_AMOUNT = 0
+                </if>
+            </otherwise>
+        </choose>
+        WHERE CHECKUP_ROSTER_NO = #{checkupRosterNo}
+        <if test='reservSt == "80"'>
+            AND PERSONAL_PAYER_BILLING_YN = 'Y'
+        </if>
+    </update>
+	<insert id="insertAgreeTerms" parameterType="com.vita.back.api.reserv.model.AgreeTermsDTO">
+        INSERT INTO HC_AGREE_TERMS (
+	        CHECKUP_ROSTER_NO,
+	        RESERV_NO,
+	        USER_NO,
+	        MOBILE_NO,
+	        EMPLOY_RELATION_TYPE,
+	        FIRST_SERVICE_INFO_ID,
+	        SECOND_SERVICE_INFO_ID,
+	        THIRD_SERVICE_INFO_ID,
+	        FIRST_REQUIRED_CONSENT,
+	        SECOND_REQUIRED_CONSENT,
+	        THIRD_SELECTIVE_CONSENT,
+	        AGREE_PATH,
+	        AGREE_DT
+	    )
+	    VALUES (
+	        #{checkupRosterNo},
+	        #{reservNo},
+	        #{userNo},
+	        #{mobileNo},
+	        #{employRelationType},
+	        #{firstServiceInfoId},
+	        #{secondServiceInfoId},
+	        #{thirdServiceInfoId},
+	        #{firstRequiredConsent},
+	        #{secondRequiredConsent},
+	        #{thirdSelectiveConsent},
+	        #{agreePath},
+	        #{agreeDt}
+	    )
+	    ON DUPLICATE KEY UPDATE
+	        RESERV_NO = #{reservNo},
+	        USER_NO = #{userNo},
+	        MOBILE_NO = #{mobileNo},
+	        EMPLOY_RELATION_TYPE = #{employRelationType},
+	        FIRST_SERVICE_INFO_ID = #{firstServiceInfoId},
+	        SECOND_SERVICE_INFO_ID = #{secondServiceInfoId},
+	        THIRD_SERVICE_INFO_ID = #{thirdServiceInfoId},
+	        FIRST_REQUIRED_CONSENT = #{firstRequiredConsent},
+	        SECOND_REQUIRED_CONSENT = #{secondRequiredConsent},
+	        THIRD_SELECTIVE_CONSENT = #{thirdSelectiveConsent},
+	        AGREE_PATH = #{agreePath},
+	        AGREE_DT = #{agreeDt};
+	</insert>
+	<select id="selectRosterInfo" parameterType="int" resultType="hashMap">
+        SELECT
+            B.RESERV_NO AS reservNo,
+            A.USER_NO AS userNo,
+            A.EMPLOY_RELATION_TYPE AS employRelationType,
+            B.MOBILE_NO AS mobileNo
+        FROM
+            HC_CHECKUP_ROSTER A, HC_RESERV B
+        WHERE
+            A.CHECKUP_ROSTER_NO = B.CHECKUP_ROSTER_NO
+        AND
+            A.CHECKUP_ROSTER_NO = #{checkupRosterNo}
+        AND
+            B.RESERV_ST NOT IN ('80','90', '79')
+    </select>
+	<select id="selectAgreeTerms" parameterType="hashMap" resultType="String">
+        SELECT
+            SERVICE_INFO_ID
+        FROM
+            HC_SERVICE_INFO
+        WHERE
+            SERVICE_INFO_NAME = #{serviceName}
+        AND
+            REG_DT <![CDATA[<]]> #{regDate}
+        ORDER BY REG_DT DESC LIMIT 1
+    </select>
+	<update id="updateSpecialYn">
+        UPDATE HC_CHECKUP_ROSTER
+        SET SPECIAL_CHECKUP_YN = 'Y'
+        WHERE CHECKUP_ROSTER_NO = #{checkupRosterNo}
+          AND SPECIAL_CHECKUP_YN != 'Y';
+    </update>
+	<update id="updateDeferReservConnResp" parameterType="com.vita.back.api.reserv.model.UpdtReservConnRespVo">
+	    UPDATE HC_DEFER_CHECKUP_RESERV
+	    SET 
+	        RESERV_ST = #{reservSt},
+	        RESERV_DT = #{reservDt},
+	        LAST_PATH = #{lastPath},
+	        LAST_MODIFIER = #{lastModifier},
+	        CENTER_DEFER_RESERV_ID = #{centerReservId}
+	    WHERE 
+	        DEFER_CHECKUP_RESERV_NO = #{deferCheckupReservNo}
+	        AND RESERV_NO = #{reservNo};
+	</update>
+	<update id="updateReservConnResp" parameterType="com.vita.back.api.reserv.model.UpdtReservConnRespVo">
+	    UPDATE HC_RESERV
+	    SET 
+	        CENTER_RESERV_ID = #{centerReservId},
+	        RESERV_ST = #{reservSt},
+	        RESERV_DAY = #{reservDay},
+	        LAST_PATH = #{lastPath},
+	        LAST_MODIFIER = #{lastModifier},
+	        MULTI_YN = #{multiYn}
+	    WHERE 
+	        RESERV_NO = #{reservNo};
+	</update>
+	<update id="updateCompanySupportUsageAmount">
+        UPDATE HC_CHECKUP_ROSTER
+        SET COMPANY_SUPPORT_USAGE_AMOUNT = #{companySupportAmt}
+        WHERE CHECKUP_ROSTER_NO =#{rosterNo}
+    </update>
+	<update id="updateRoster" parameterType="com.vita.back.api.reserv.model.UpdateRosterRequest">
+        UPDATE
+            HC_CHECKUP_ROSTER
+        SET
+            OT_YN = #{otYN},
+            VIP_YN = #{vipYN}
+        WHERE CHECKUP_ROSTER_NO = #{checkupRosterNo}
+    </update>
+	<update id="updateDefferReservSt" parameterType="com.vita.back.api.reserv.model.CommonUpdtReservStVo">
+	    UPDATE HC_DEFER_CHECKUP_RESERV
+	    SET 
+	        RESERV_ST = #{reservSt}
+	    WHERE 
+	        reserv_no = #{reservNo};
+	</update>
+	<update id="updateReservSt" parameterType="com.vita.back.api.reserv.model.CommonUpdtReservStVo">
+	    UPDATE HC_RESERV
+	    SET
+	        RESERV_ST = #{reservSt},
+	        RESERV_CHANGE_DT = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
+	        <if test="beforeReservSt != null and beforeReservSt != ''">
+	            , BEFORE_RESERV_ST = #{beforeReservSt}
+	        </if>
+	        <if test="reservDay != null and reservDay != ''">
+	            , RESERV_DAY = #{reservDay}
+	        </if>
+	        <if test="lastModifier != null and lastModifier != ''">
+	            , LAST_MODIFIER = #{lastModifier}
+	        </if>
+	        <if test="lastPath != null and lastPath != ''">
+	            , LAST_PATH = #{lastPath}
+	        </if>
+	        <if test="reservConfirmDt != null and reservConfirmDt != ''">
+	            , RESERV_CONFIRM_DT = #{reservConfirmDt}
+	        </if>
+	        <if test="kicsLastModifier != null and kicsLastModifier != ''">
+	            , KICS_LAST_MODIFIER = #{kicsLastModifier}
+	        </if>
+	    WHERE 
+	        RESERV_NO = #{reservNo}
+	</update>
+	<!-- VIP 상품 여부 조회 (50만원 이상) -->
+	<select id="selectPremiumCapaProduct" parameterType="int" resultType="java.lang.Boolean">
+	    <![CDATA[
+	    SELECT 
+	        IF(
+	            EXISTS (
+	                SELECT 1
+	                FROM HC_CHECKUP_PRODUCT
+	                WHERE CHECKUP_PRODUCT_NO = #{checkupProductNo}
+	                  AND SETTLE_PRICE >= 500000
+	                  AND CUSTOMER_ID NOT IN (
+	                      'C000026296', 
+	                      'C000024633', 
+	                      'C000026817', 
+	                      'C000026928', 
+	                      'C000027575'
+	                  )
+	            ), TRUE, FALSE
+	        )
+	    ]]>
+	</select>
+	<!-- VIP CAPA 대상여부 등록 -->
+    <update id="updateReservPremiumCapa">
+        UPDATE HC_RESERV
+        SET PREMIUM_CAPA_YN = #{premiumCapaYN}
+        WHERE RESERV_NO = #{reservNo}
+    </update>
+	<select id="selectUnRegEmployInfo" parameterType="int" resultType="com.vita.back.api.reserv.model.CheckupRosterVo">
+	    SELECT 
+	        UN_REG_EMPLOY_NAME,
+	        UN_REG_EMPLOY_DEPARTMENT,
+	        UN_REG_EMPLOY_NO
+	    FROM 
+	        HC_UN_REG_EMPLOY_INFO
+	    WHERE 
+	        CHECKUP_ROSTER_NO = #{checkupRosterNo};
+	</select>
+	
+	<select id="selectServiceCustomerId" resultType="java.lang.String" parameterType="com.vita.back.api.reserv.model.HcCenterCustomerInfoVo">
+	    SELECT 
+	        CUSTOMER_ID_BY_CENTER 
+	    FROM 
+	        HC_CENTER_CUSTOMER_INFO 
+	    WHERE 
+	        CUSTOMER_ID = #{customerId}
+	        AND CUSTOMER_INFO_ST = '00'
+	    LIMIT 1;
+	</select>
+	<select id="selectCenterIdByCenter" parameterType="java.lang.String" resultType="java.lang.String">
+	    SELECT 
+	        CENTER_ID_BY_CENTER 
+	    FROM 
+	        HC_PARTNER_CENTER 
+	    WHERE 
+	        PARTNER_CENTER_ID = #{partnerCenterId}
+	        AND PARTNER_CENTER_ST = '00';
+	</select>
+	<select id="selectCheckupHolidayInfo" resultType="String">
+        select HOLIDAY FROM HC_CHECKUP_HOLIDAY
+    </select>
+	<select id="selectBundleRoomInfo" parameterType="String" resultType="String">
+        SELECT
+            EQUIPROOM_NO
+        FROM
+            HC_BUNDLE_ITEM_INFO
+        WHERE
+            TEST_ITEM_CD = #{testItemCd}
+    </select>
+	<select id="selectRoomInfo" parameterType="com.vita.back.api.reserv.model.GetRoomInfoVo" resultType="java.lang.String">
+        SELECT 
+		    EQUIPROOM_ID_BY_CENTER
+		FROM 
+		    HC_CENTER_EQUIP_TEST
+		WHERE 
+		    EQUIP_TEST_ST = '00'
+		    AND PARTNER_CENTER_ID = #{partnerCenterId}
+		    AND TEST_EQUIP_NO IN (
+		        SELECT 
+		            TEST_EQUIP_NO
+		        FROM 
+		            HC_CENTER_EQUIP_TEST_ITEM
+		        WHERE 
+		            TEST_ITEM_CD = #{testItemCd}
+		            AND PARTNER_CENTER_ID = #{partnerCenterId}
+		    );
+    </select>
+	<!-- VIP CAPA 대상 원복(KICS CAPA 사용) -->
+    <update id="updateRestorePremiumCapaYN" parameterType="com.vita.back.api.reserv.model.ReservRequest">
+        UPDATE HC_RESERV
+        SET PREMIUM_CAPA_YN = REPLACE(PREMIUM_CAPA_YN, 'Y', 'N')
+        WHERE RESERV_NO = #{originReservNo}
+          AND RESERV_1TH_HOPE_DAY = #{reserv1stHopeDay}
+    </update>
+	<!-- VIP CAPA 차감 -->
+    <update id="updateMinusPremiumCapa" parameterType="map">
+        UPDATE HC_PREMIUM_CAPA
+        SET CAPA_COUNT =
+                IF(CAPA_REST > 0, CAPA_COUNT + 1, CAPA_COUNT)
+        WHERE CAPA_DATE = #{reserv1stHopeDay}
+          AND PARTNER_CENTER_ID = #{partnerCenterId}
+          AND CAPA_TIME = #{reserv1stHopeTime}
+          AND CAPA_REST > 0
+    </update>
+	 <select id="selectTestItem" resultType="String">
+        SELECT TEST_ITEM_CD
+        FROM HC_TEST_ITEM_CD
+        WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+          AND CHECKUP_ITEM_CD = #{checkupItemCd}
+    </select>
+	<update id="updateReservTestItem">
+	    <if test="holdTestItemList != null and holdTestItemList.size != 0">
+	        UPDATE HC_RESERV_TEST_ITEM
+	        SET HOLD_YN = 'Y'
+	        WHERE RESERV_NO = #{reservNo}
+	          AND TEST_ITEM_CD IN (
+	            <foreach collection="holdTestItemList" item="item" open="" close="" separator=",">
+	                #{item}
+	            </foreach>
+	          )
+	    </if>
+	</update>
+	<select id="selectSuperRosterInfo" parameterType="int" resultType="com.vita.back.api.reserv.model.CheckupRosterVo">
+	    SELECT
+	        b.ROSTER_NAME,
+	        b.EMPLOY_NO,
+	        b.DEPARTMENT
+	    FROM 
+	        HC_CHECKUP_ROSTER b
+	    WHERE 
+	        b.CHECKUP_ROSTER_NO = (
+	            SELECT 
+	                a.SUPER_CHECKUP_ROSTER_NO
+	            FROM 
+	                HC_CHECKUP_ROSTER a
+	            WHERE 
+	                a.CHECKUP_ROSTER_NO = #{checkupRosterNo}
+	                AND a.CHECKUP_ROSTER_ST NOT IN ('80', '90')
+	            LIMIT 1
+	        )
+	    LIMIT 1;
+	</select>
+	<select id="selectHcServiceInfo" resultType="com.vita.back.api.reserv.model.HcServiceInfoVo" parameterType="java.lang.String">
+	    SELECT 
+	        INFO_VALUE, 
+	        SERVICE_INFO_NAME 
+	    FROM 
+	        HC_SERVICE_INFO 
+	    WHERE 
+	        SERVICE_INFO_ID = #{serviceInfoId};
+	</select>
+	<!-- 알림톡발송이력조회 고객사ID 저장 -->
+    <!-- <select id="selectCustomerIdByRoster" parameterType="int" resultType="String">
+        SELECT  CUSTOMER_ID
+          FROM     HC_CHECKUP_ROSTER
+         WHERE  CHECKUP_ROSTER_NO = #{rosterNo}
+           AND  CHECKUP_ROSTER_ST not in ('80','90')
+    </select> -->
+	<select id="selectPartnerCenterName" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT 
+		    PARTNER_CENTER_NAME 
+		FROM 
+		    HC_PARTNER_CENTER 
+		WHERE 
+		    PARTNER_CENTER_ID = #{partnerCenterId}
+		    AND PARTNER_CENTER_ST = '00';
+    </select>
+	<select id="selectTestItemCdList" resultType="com.vita.back.api.reserv.model.HcReservTestItemVo">
+        SELECT
+	        a.RESERV_NO,
+	        a.TEST_ITEM_CD,
+	        a.CHECKUP_ITEM_CD,
+	        a.CHOICE_GROUP_NO,
+	        a.ADD_CHECKUP_YN,
+	        a.SELF_PAY_AMOUNT,
+	        a.DEFER_CHECKUP_RESERV_NO,
+	        a.RESERV_TEST_ITEM_ST,
+	        a.CHOICE_BUNDLE_NO,
+	        a.ONPAY_AMOUNT,
+	        a.ITEM_DIV_CD,
+	        a.NON_PRICE_YN,
+	        a.CUSTOM_PRICE_YN,
+	        a.CUSTOM_COMPANY_PRICE,
+	        a.CUSTOM_SELF_PRICE,
+	        IFNULL(b.PKG_CD, '') AS PKG_CD,
+	        c.TEST_ITEM_NAME,
+	        c.ADD_TEST_PRICE
+	    FROM
+	        HC_RESERV_TEST_ITEM a
+	    LEFT JOIN
+	        HC_PRODUCT_TEST_ITEM b
+	        ON a.CHOICE_GROUP_NO = b.CHOICE_GROUP_NO
+	           AND a.TEST_ITEM_CD = b.TEST_ITEM_CD
+	           AND b.PRODUCT_PROPOS_TYPE NOT IN ('20')
+	           AND b.CHECKUP_PRODUCT_NO = #{checkupProductNo}
+	    LEFT JOIN
+	        HC_TEST_ITEM_CD c
+	        ON c.PARTNER_CENTER_ID = #{partnerCenterId}
+	           AND a.TEST_ITEM_CD = c.TEST_ITEM_CD
+	    WHERE
+	        a.RESERV_NO = #{reservNo};
+    </select>
+	<select id="selectContractType" resultType="String">
+		SELECT 
+		    IFNULL(CONTRACT_TYPE, '10')
+		FROM 
+		    HC_CHECKUP_POLICY
+		WHERE 
+		    CUSTOMER_ID = #{customerId}
+		    AND POLICY_YEAR = #{policyYear};
+	</select>
+	<!-- 그룹 장비케파 증감 -->
+    <update id="updatePlusGroupEquipCapa" parameterType="Map">
+        UPDATE HC_CENTER_EQUIP_CAPA_GROUP
+            SET
+                capa = capa+1
+        WHERE
+                PARTNER_CENTER_ID = #{PARTNER_CENTER_ID}
+            AND TEST_EQUIP_NO = #{TEST_EQUIP_NO}
+            AND GROUP_NO = #{GROUP_NO}
+            AND CAPA_DAY = #{CAPA_DAY}
+            AND CAPA_TIME = #{CAPA_TIME}
+    </update>
+    <update id="updateMinusGroupEquipCapa" parameterType="Map">
+        UPDATE HC_CENTER_EQUIP_CAPA_GROUP
+            SET capa = capa-1
+        WHERE
+                PARTNER_CENTER_ID = #{PARTNER_CENTER_ID}
+            AND TEST_EQUIP_NO = #{TEST_EQUIP_NO}
+            AND GROUP_NO = #{GROUP_NO}
+            AND CAPA_DAY = #{CAPA_DAY}
+            AND CAPA_TIME = #{CAPA_TIME}
+    </update>
+	<!-- 그룹 장소 공통 케파 증가 -->
+    <update id="updatePlusGroupCapa" parameterType="Map">
+		UPDATE HC_CENTER_PLACE_CAPA_GROUP
+			SET
+				CAPA = CAPA+1
+		WHERE
+				PARTNER_CENTER_ID = #{partnerCenterId}
+			AND CENTER_PLACE_ID = #{checkupPlaceId}
+			AND GROUP_NO = #{groupNo}
+			AND CAPA_DAY = #{capaDay}
+			AND CAPA_TIME = #{capaTime}
+
+    </update>
+    <!-- 그룹 장소 케파 차감 -->
+    <update id="updateMinusGroupCapa" parameterType="Map">
+		UPDATE HC_CENTER_PLACE_CAPA_GROUP
+			SET
+				CAPA = CAPA-1
+		WHERE
+				PARTNER_CENTER_ID = #{partnerCenterId}
+			AND CENTER_PLACE_ID = #{checkupPlaceId}
+			AND GROUP_NO = #{groupNo}
+			AND CAPA_DAY = #{capaDay}
+			AND CAPA_TIME = #{capaTime}
+    </update>
+	<!-- 장비케파 증가 -->
+    <update id="updatePlusEquipCapa" parameterType="Map">
+        UPDATE HC_CENTER_EQUIP_CAPA
+           SET CAPA = CAPA+1
+         WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+           AND CAPA_DAY = #{capaDay}
+           AND CAPA_TIME = #{capaTime}
+           AND TEST_EQUIP_NO = #{testEquipNo}
+    </update>
+    <!-- 장비케파 차감 -->
+    <update id="updateMinusEquipCapa" parameterType="Map">
+        UPDATE HC_CENTER_EQUIP_CAPA
+           SET CAPA = CAPA-1
+         WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+           AND CAPA_DAY = #{capaDay}
+           AND CAPA_TIME = #{capaTime}
+           AND TEST_EQUIP_NO = #{testEquipNo}
+    </update>
+	<!-- 공통케파 증가 -->
+    <update id="updatePlusCapa" parameterType="Map">
+        UPDATE HC_CENTER_PLACE_CAPA
+           SET CAPA = CAPA+1
+         WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+           AND CAPA_DAY = #{capaDay}
+           AND CAPA_TIME = #{capaTime}
+           AND CENTER_PLACE_ID = #{checkupPlaceId}
+    </update>
+    <!-- 공통케파 차감 -->
+    <update id="updateMinusCapa" parameterType="Map">
+        UPDATE HC_CENTER_PLACE_CAPA
+           SET CAPA = CAPA-1
+         WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+           AND CAPA_DAY = #{capaDay}
+           AND CAPA_TIME = #{capaTime}
+           AND CENTER_PLACE_ID = #{checkupPlaceId}
+    </update>
+	<select id="selectEquipNo" resultType="String">
+	    SELECT TEST_EQUIP_NO
+	    FROM HC_CENTER_EQUIP_TEST
+	    WHERE TEST_EQUIP_NO IN (
+	        SELECT TEST_EQUIP_NO
+	        FROM HC_CENTER_EQUIP_TEST_ITEM
+	        WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+	          AND TEST_ITEM_CD = #{testItemCd}
+	    )
+	      AND EQUIP_TEST_ST != '90'
+	    ORDER BY TEST_EQUIP_NO DESC
+	    LIMIT 1;
+	</select>
+	<!-- 특검케파 차감 -->
+    <update id="updateMinusSpecialCapa" parameterType="Map">
+        UPDATE HC_CENTER_SPECIAL_CAPA
+           SET CAPA = CAPA-1
+         WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+           AND CAPA_DAY = #{capaDay}
+           AND CAPA_TIME = #{capaTime}
+    </update>
+	<!-- 특검케파 증가 -->
+    <update id="updatePlusSpecialCapa" parameterType="Map">
+        UPDATE HC_CENTER_SPECIAL_CAPA
+           SET CAPA = CAPA+1
+         WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+           AND CAPA_DAY = #{capaDay}
+           AND CAPA_TIME = #{capaTime}
+    </update>
+	<select id="selectSpecialRoster" parameterType="int" resultType="java.lang.String">
+	    SELECT SPECIAL_CHECKUP_YN
+	    FROM HC_CHECKUP_ROSTER
+	    WHERE CHECKUP_ROSTER_NO = #{checkupRosterNo}
+	      AND CHECKUP_ROSTER_ST = '00';
+	</select>
+	<select id="selectTestItemCdStringList" resultType="java.lang.String" parameterType="int">
+	    SELECT TEST_ITEM_CD 
+	    FROM HC_RESERV_TEST_ITEM 
+	    WHERE RESERV_NO = #{reservNo} 
+	    ORDER BY TEST_ITEM_CD;
+	</select>
+	<!-- 그룹 케파 번호 -->
+	<select id="selectGroupCapaNo" resultType="String">
+		SELECT
+		    GROUP_NO
+		FROM
+		    HC_CENTER_CAPA_GROUP_CUSTOMER_INFO
+		WHERE
+		    PARTNER_CENTER_ID = #{partnerCenterId}
+		    AND CUSTOMER_ID = #{customerId};
+	</select>
+	<insert id="insertReservTestItem" parameterType="com.vita.back.api.reserv.model.HcReservTestItemVo">
+        INSERT INTO HC_RESERV_TEST_ITEM (
+		    RESERV_NO,
+		    TEST_ITEM_CD,
+		    CHECKUP_ITEM_CD,
+		    CHOICE_GROUP_NO,
+		    ADD_CHECKUP_YN,
+		    SELF_PAY_AMOUNT,
+		    DEFER_CHECKUP_RESERV_NO,
+		    RESERV_TEST_ITEM_ST,
+		    CHOICE_BUNDLE_NO,
+		    ITEM_DIV_CD,
+		    RESERV_MOMENT_AMOUNT,
+		    DEFER_CHECKUP_YN,
+		    REPLACE_ITEM,
+		    HOLD_YN,
+		    NON_PRICE_YN,
+		    CUSTOM_PRICE_YN,
+		    CUSTOM_TOTAL_PRICE,
+		    CUSTOM_COMPANY_PRICE,
+		    CUSTOM_SELF_PRICE,
+		    PKG_CD
+		)
+		VALUES (
+		    #{reservNo},
+		    #{testItemCd},
+		    #{checkupItemCd},
+		    #{choiceGroupNo},
+		    #{addCheckupYn},
+		    #{selfPayAmount},
+		    #{deferCheckupReservNo},
+		    '00',
+		    #{choiceBundleNo},
+		    #{itemDivCd},
+		    -- RESERV_MOMENT_AMOUNT (예약 당시 기준 금액) 추가
+		    COALESCE(
+		        (
+		            SELECT
+		                ADD_TEST_PRICE
+		            FROM
+		                HC_TEST_ITEM_CD
+		            WHERE
+		                ADD_TEST_YN = 'Y'
+		                AND TEST_ITEM_CD = #{testItemCd}
+		                AND CHECKUP_ITEM_CD = #{checkupItemCd}
+		                AND PARTNER_CENTER_ID = (
+		                    SELECT
+		                        PARTNER_CENTER_ID
+		                    FROM
+		                        HC_RESERV
+		                    WHERE
+		                        RESERV_NO = #{reservNo}
+		                )
+		        ), 0
+		    ),
+		    #{deferCheckupYn},
+		    #{replaceItem},
+		    #{holdYn},
+		    #{nonPriceYn},
+		    #{customPriceYn},
+		    #{customTotalPrice},
+		    #{customCompanyPrice},
+		    #{customSelfPrice},
+		    #{pkgCd}
+		);
+    </insert>
+	<select id="selectMappingCd" resultType="com.vita.back.api.reserv.model.HcReservTestItemVo" parameterType="com.vita.back.api.reserv.model.GetTestItemCdVo">
+        SELECT 
+		    TEST_ITEM_CD, 
+		    CHECKUP_ITEM_CD
+		FROM 
+		    HC_TEST_ITEM_CD
+		WHERE 
+		    CHECKUP_ITEM_CD = #{checkupItemCd}
+		    AND PARTNER_CENTER_ID = #{partnerCenterId}
+		    AND TEST_ITEM_ST = '00';
+    </select>
+	<update id="updateDeferValidCheckupTestItem">
+	    UPDATE
+	        HC_DEFER_VALID_CHECKUP_TEST_ITEM
+	    SET
+	        ITEM_ST = '90',
+	        DEFER_CHECKUP_RESERV_NO = #{deferCheckupReservNo},
+	        USAGE_REG_DT = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s')
+	    WHERE
+	        RESERV_NO = #{reservNo}
+	</update>
+	<insert id="insertDeferReservTestItem">
+        INSERT INTO HC_DEFER_RESERV_TEST_ITEM (
+		    DEFER_CHECKUP_RESERV_NO,
+		    TEST_ITEM_CD,
+		    CHECKUP_ITEM_CD,
+		    CHOICE_GROUP_NO,
+		    ADD_CHECKUP_YN,
+		    DEFER_RESERV_TEST_ITEM_ST,
+		    ITEM_DIV_CD,
+		    DEFER_RESERV_MOMENT_AMOUNT
+		)
+		VALUES (
+		    #{deferCheckupReservNo},
+		    #{testItemCd},
+		    #{checkupItemCd},
+		    #{choiceGroupNo},
+		    #{addCheckupYn},
+		    '00',
+		    #{itemDivCd},
+		    #{deferReservMomentAmount}
+		);
+    </insert>
+	<insert id="insertDefferReserv" parameterType="com.vita.back.api.reserv.model.HcDeferCheckupReservVo" useGeneratedKeys="true" keyProperty="DEFER_CHECKUP_RESERV_NO">
+        INSERT INTO HC_DEFER_CHECKUP_RESERV (
+		    PARTNER_CENTER_ID,
+		    RESERV_NO,
+		    RESERV_DT,
+		    RESERV_REG_DT,
+		    RESERV_ST,
+		    RESERV_1ST_HOPE_DAY,
+		    LAST_MODIFIER,
+		    LAST_PATH
+		)
+		VALUES (
+		    #{partnerCenterId},
+		    #{reservNo},
+		    #{reservDt},
+		    DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s'),
+		    #{reservSt},
+		    #{reserv1stHopeDay},
+		    #{lastModifier},
+		    #{lastPath}
+		);
+    </insert>
+
+	<!-- 유효한 연기검진 항목 등록 -->
+    <insert id="insertDeferValIdCheckupTestItem">
+        INSERT INTO HC_DEFER_VALID_CHECKUP_TEST_ITEM (
+		    RESERV_NO,
+		    TEST_ITEM_CD,
+		    CHOICE_GROUP_NO,
+		    CHOICE_BUNDLE_NO,
+		    ITEM_ST,
+		    REG_DT,
+		    DEFER_CHECKUP_RESERV_NO
+		)
+		VALUES (
+		    #{reservNo},
+		    #{testItemCd},
+		    #{choiceGroupNo},
+		    #{choiceBundleNo},
+		    '00',
+		    DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s'),
+		    '0'
+		)
+		ON DUPLICATE KEY UPDATE
+		    RESERV_NO = #{reservNo},
+		    TEST_ITEM_CD = #{testItemCd},
+		    CHOICE_GROUP_NO = #{choiceGroupNo},
+		    CHOICE_BUNDLE_NO = #{choiceBundleNo},
+		    ITEM_ST = '00',
+		    REG_DT = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s'),
+		    DEFER_CHECKUP_RESERV_NO = '0';
+    </insert>
+	<select id="selectTestItemCd" resultType="String">
+        SELECT
+            TEST.TEST_ITEM_CD
+        FROM
+            HC_TEST_ITEM_CD TEST
+        JOIN
+            HC_CHECKUP_ITEM_CD CHECKUP
+          on
+            TEST.CHECKUP_ITEM_CD = CHECKUP.CHECKUP_ITEM_CD
+        WHERE
+            TEST.CHECKUP_ITEM_CD = #{checkupItemCd}
+          AND
+            TEST.PARTNER_CENTER_ID = #{partnerCenterId}
+    </select>
+	<select id="selectDeferCheckupItem" resultType="String">
+        SELECT 
+		    CHECKUP_ITEM_CD
+		FROM 
+		    HC_DEFER_CHECKUP_ITEM
+		WHERE 
+		    ITEM_NAME LIKE '%대장%'
+		    AND PARTNER_CENTER_ID = 'H00001';
+    </select>
+	<update id="updateCheckupRosterMobileNo">
+        UPDATE HC_CHECKUP_ROSTER
+        SET
+            MOBILE_NO = #{MOBILE_NO}
+        WHERE
+            CHECKUP_ROSTER_NO = #{CHECKUP_ROSTER_NO}
+    </update>
+    
+	<!-- <select id="selectCustomerId" resultType="String">
+        SELECT
+            IFNULL(CUSTOMER_ID, '')
+        FROM
+            HC_CHECKUP_ROSTER
+        where
+            CHECKUP_ROSTER_NO = #{CHECKUP_ROSTER_NO}
+    </select>
+    <select id="selectCheckupRosterMobileNo" resultType="String">
+        SELECT
+            IFNULL(MOBILE_NO, '')
+        FROM
+            HC_CHECKUP_ROSTER
+        where
+            CHECKUP_ROSTER_NO = #{CHECKUP_ROSTER_NO}
+    </select>
+    <select id="selectUnRegEmployYn" resultType="String">
+	    SELECT 
+	        IFNULL(UN_REG_EMPLOY_YN, 'N')
+	    FROM 
+	        HC_CHECKUP_ROSTER
+	    WHERE 
+	        CHECKUP_ROSTER_NO = #{checkupRosterNo};
+	</select> -->
+	
+	<!-- 검진대상자 개인정보 조회 -->
+    <!-- <select id="selectCheckupRoster" parameterType="int" resultType="com.vita.back.api.model.data.CheckupRosterVo">
+        SELECT
+		    RO.CHECKUP_ROSTER_NO,
+		    RO.MOBILE_NO,
+		    RO.PHONE_NO,
+		    RO.EMAIL,
+		    RO.ROSTER_NAME,
+		    RO.BIRTHDAY,
+		    RO.GENDER_CD,
+		    RO.DOMESTIC_YN,
+		    RO.SPECIAL_CHECKUP_YN,
+		    RO.EMPLOY_NO,
+		    RO.DEPARTMENT,
+		    RO.EMPLOY_RELATION_TYPE,
+		    RO.ROSTER_DI,
+		    RO.ROSTER_CI,
+		    RO.ROSTER_NAME,
+		    RO.CHECKUP_START_DT,
+		    RO.CHECKUP_END_DT,
+		    RO.SUPER_CHECKUP_ROSTER_NO,
+		    RO.VIP_YN,
+		    RO.CUSTOMER_ID,
+		    RO.POLICY_YEAR,
+		    CT.CUSTOMER_NAME,
+		    RO.NATIONALITY_CD,
+		    RO.ROSTER_ENGLISH_NAME
+		FROM
+		    HC_CHECKUP_ROSTER RO
+		LEFT JOIN
+		    HC_CUSTOMER CT
+		ON
+		    RO.CUSTOMER_ID = CT.CUSTOMER_ID
+		WHERE
+		    RO.CHECKUP_ROSTER_NO = #{checkupRosterNo}
+		    AND RO.CHECKUP_ROSTER_ST NOT IN ('80', '90');
+    </select>
+	<select id="selectCheckupRosterDetails" 
+        resultType="com.vita.back.api.reserv.modelfix.HcCheckupRosterResponse" 
+        parameterType="com.vita.back.api.reserv.modelfix.HcCheckupRosterRequest">
+	    SELECT
+	        IFNULL(CUSTOMER_ID, '') AS customerId,
+	        IFNULL(MOBILE_NO, '') AS mobileNo,
+	        IFNULL(UN_REG_EMPLOY_YN, 'N') AS unRegEmployYn
+	    FROM
+	        HC_CHECKUP_ROSTER
+	    WHERE
+	        CHECKUP_ROSTER_NO = #{checkupRosterNo};
+	</select> -->
+	<select id="selectCheckupRoster" 
+        parameterType="com.vita.back.api.reserv.modelfix.HcCheckupRosterRequest" 
+        resultType="com.vita.back.api.reserv.modelfix.HcCheckupRosterResponse">
+	    SELECT
+	        RO.CHECKUP_ROSTER_NO AS checkupRosterNo,
+	        IFNULL(RO.CUSTOMER_ID, '') AS customerId,
+	        IFNULL(RO.MOBILE_NO, '') AS mobileNo,
+	        IFNULL(RO.UN_REG_EMPLOY_YN, 'N') AS unRegEmployYn,
+	        RO.PHONE_NO AS phoneNo,
+	        RO.EMAIL AS email,
+	        RO.ROSTER_NAME AS rosterName,
+	        RO.BIRTHDAY AS birthday,
+	        RO.GENDER_CD AS genderCd,
+	        RO.DOMESTIC_YN AS domesticYn,
+	        RO.SPECIAL_CHECKUP_YN AS specialCheckupYn,
+	        RO.EMPLOY_NO AS employNo,
+	        RO.DEPARTMENT AS department,
+	        RO.EMPLOY_RELATION_TYPE AS employRelationType,
+	        RO.ROSTER_DI AS rosterDi,
+	        RO.ROSTER_CI AS rosterCi,
+	        RO.CHECKUP_START_DT AS checkupStartDt,
+	        RO.CHECKUP_END_DT AS checkupEndDt,
+	        RO.SUPER_CHECKUP_ROSTER_NO AS superCheckupRosterNo,
+	        RO.VIP_YN AS vipYn,
+	        RO.POLICY_YEAR AS policyYear,
+	        CT.CUSTOMER_NAME AS customerName,
+	        IFNULL(CT.MOBILE_NO_YN, '') AS mobileNoYn,
+	        RO.NATIONALITY_CD AS nationalityCd,
+	        RO.ROSTER_ENGLISH_NAME AS rosterEnglishName
+	    FROM
+	        HC_CHECKUP_ROSTER RO
+	    LEFT JOIN
+	        HC_CUSTOMER CT
+	    ON
+	        RO.CUSTOMER_ID = CT.CUSTOMER_ID
+	    WHERE
+	        RO.CHECKUP_ROSTER_NO = #{checkupRosterNo}
+	        AND RO.CHECKUP_ROSTER_ST NOT IN ('80', '90');
+	</select>
+    
+    <!-- <select id="selectMobileNoYn" resultType="String">
+        SELECT
+            IFNULL(MOBILE_NO_YN, '')
+        FROM
+            HC_CUSTOMER
+        where
+            CUSTOMER_ID = #{customerId}
+    </select> -->
+    
+    
+	<!-- 예약 등록 -->
+    <insert id="insertReserv" 
+        parameterType="com.vita.back.api.reserv.model.RegReservVo" 
+        useGeneratedKeys="true" 
+        keyProperty="RESERV_NO">
+	    INSERT INTO HC_RESERV (
+	        CHECKUP_PRODUCT_NO,
+	        CHECKUP_ROSTER_NO,
+	        PARTNER_CENTER_ID,
+	        CHECKUP_PLACE_ID,
+	        CHECKUP_DIV_CD,
+	        SELF_PAY_AMOUNT,
+	        COMPANY_SUPPORT_AMOUNT,
+	        ONPAY_AMOUNT,
+	        OFFPAY_EXPECT_AMOUNT,
+	        SUPER_RESERV_NO,
+	        NOTE,
+	        RESERV_REG_DT,
+	        REQUEST_CONTENTS,
+	        NHIS_RESULT_USES_AGREE_YN,
+	        PRIVACY_USES_AGREE_YN,
+	        HC_SHARE_AGREE_YN,
+	        COMPANY_ITSELF_AGREE_YN,
+	        PRIVACY_DISPLAY_AGREE_YN,
+	        HC_AGREE_YN,
+	        RESULT_RECEIVE_WAY_CD,
+	        FORCE_RESERV_YN,
+	        RESERV_DAY,
+	        RESERV_ST,
+	        RESERV_CHANGE_CONTENTS,
+	        RESERV_CHANGE_TYPE,
+	        RESERV_CHANGE_DT,
+	        RESERV_CHANGE_ST,
+	        RESERV_1TH_HOPE_DAY,
+	        RESERV_2ND_HOPE_DAY,
+	        RESERV_TIME,
+	        ORIGIN_RESERV_NO,
+	        RESERV_CONFIRM_DT,
+	        RESERV_2ND_ABLE_YN,
+	        SELFPAY_SEDATION_AMT,
+	        COMPANY_SUPPORT_SEDATION_AMT,
+	        MOBILE_NO,
+	        PHONE_NO,
+	        ADDRRESS,
+	        ZIP_CD,
+	        ADDRRESS_DETAIL,
+	        EMAIL,
+	        AGREE_TERMS_LIST,
+	        BATCH_RESERV_YN,
+	        SMS_YN,
+	        PREGNANCY_YN,
+	        POSSIBLE_PREGNANCY_YN,
+	        FEEDING_YN,
+	        MENSES_YN,
+	        ANTICOAGULANT_YN,
+	        MELITURIA_YN,
+	        ARTERIOTONY_YN,
+	        MEDICATION_TEXT,
+	        NEPHROPATHY_YN,
+	        CARDIOPATHY_YN,
+	        RENAL_FAILURE_YN,
+	        PERITONEAL_DIALYSIS_YN,
+	        HEMODIALYSIS_YN,
+	        CASE_HISTORY_TEXT,
+	        LAST_MODIFIER,
+	        LAST_PATH,
+	        VIP_YN,
+	        TRANS_CUSTOMER_YN,
+	        PRE_ACCEPT_YN,
+	        CENTER_RESERV_ID,
+	        KICS_LAST_MODIFIER,
+	        RESERV_FLOOR,
+	        PRODUCT_PRICE,
+	        PRODUCT_INDEX,
+	        RE_CHECKUP_YN,
+	        GENDER_CD,
+	        CAMPAIGN_REG_NM,
+	        RESERV_FIX_YN,
+	        BULK_BATCH_NO,
+	        BULK_ROW_NO,
+	        PREMIUM_CAPA_YN,
+	        SUPPLIES_ZIP_CD,
+	        SUPPLIES_ADDRESS,
+	        SUPPLIES_ADDRESS_DETAIL
+	    ) VALUES (
+	        #{CHECKUP_PRODUCT_NO},
+	        #{CHECKUP_ROSTER_NO},
+	        #{PARTNER_CENTER_ID},
+	        #{CHECKUP_PLACE_ID},
+	        #{CHECKUP_DIV_CD},
+	        #{SELF_PAY_AMOUNT},
+	        #{COMPANY_SUPPORT_AMOUNT},
+	        #{ONPAY_AMOUNT},
+	        #{OFFPAY_EXPECT_AMOUNT},
+	        #{SUPER_RESERV_NO},
+	        #{NOTE},
+	        DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s'),
+	        #{REQUEST_CONTENTS},
+	        #{NHIS_RESULT_USES_AGREE_YN},
+	        #{PRIVACY_USES_AGREE_YN},
+	        #{HC_SHARE_AGREE_YN},
+	        #{COMPANY_ITSELF_AGREE_YN},
+	        #{PRIVACY_DISPLAY_AGREE_YN},
+	        #{HC_AGREE_YN},
+	        #{RESULT_RECEIVE_WAY_CD},
+	        #{FORCE_RESERV_YN},
+	        #{RESERV_DAY},
+	        #{RESERV_ST},
+	        #{RESERV_CHANGE_CONTENTS},
+	        #{RESERV_CHANGE_TYPE},
+	        #{RESERV_CHANGE_DT},
+	        #{RESERV_CHANGE_ST},
+	        #{RESERV_1TH_HOPE_DAY},
+	        #{RESERV_2ND_HOPE_DAY},
+	        #{RESERV_TIME},
+	        #{ORIGIN_RESERV_NO},
+	        #{RESERV_CONFIRM_DT},
+	        #{RESERV_2ND_ABLE_YN},
+	        #{SELFPAY_SEDATION_AMT},
+	        #{COMPANY_SUPPORT_SEDATION_AMT},
+	        #{MOBILE_NO},
+	        #{PHONE_NO},
+	        #{ADDRRESS},
+	        #{ZIP_CD},
+	        #{ADDRRESS_DETAIL},
+	        #{EMAIL},
+	        #{AGREE_TERMS_LIST},
+	        #{BATCH_RESERV_YN},
+	        #{SMS_YN},
+	        #{PREGNANCY_YN},
+	        #{POSSIBLE_PREGNANCY_YN},
+	        #{FEEDING_YN},
+	        #{MENSES_YN},
+	        #{ANTICOAGULANT_YN},
+	        #{MELITURIA_YN},
+	        #{ARTERIOTONY_YN},
+	        #{MEDICATION_TEXT},
+	        #{NEPHROPATHY_YN},
+	        #{CARDIOPATHY_YN},
+	        #{RENAL_FAILURE_YN},
+	        #{PERITONEAL_DIALYSIS_YN},
+	        #{HEMODIALYSIS_YN},
+	        #{CASE_HISTORY_TEXT},
+	        #{LAST_MODIFIER},
+	        #{LAST_PATH},
+	        #{VIP_YN},
+	        #{TRANS_CUSTOMER_YN},
+	        #{PRE_ACCEPT_YN},
+	        #{CENTER_RESERV_ID},
+	        #{KICS_LAST_MODIFIER},
+	        #{RESERV_FLOOR},
+	        #{PRODUCT_PRICE},
+	        #{PRODUCT_INDEX},
+	        #{RE_CHECKUP_YN},
+	        #{GENDER_CD},
+	        #{CAMPAIGN_REG_NM},
+	        #{RESERV_FIX_YN},
+	        #{BULK_BATCH_NO},
+	        #{BULK_ROW_NO},
+	        #{PREMIUM_CAPA_YN},
+	        #{SUPPLIES_ZIP_CD},
+	        #{SUPPLIES_ADDRESS},
+	        #{SUPPLIES_ADDRESS_DETAIL}
+	    )
+	</insert>
+
+	<select id="selectCompanySup" resultType="com.vita.back.api.reserv.model.UpdtCompanySupAmtVo">
+        SELECT 
+	       HCR.EMPLOY_RELATION_TYPE,
+	       HCR.ROSTER_MGMT_TYPE,
+	       HCR.COMPANY_SUPPORT_USAGE_AMOUNT,
+	       HCR.SUPER_CHECKUP_ROSTER_NO,
+	       (SELECT 
+	               HCR2.COMPANY_SUPPORT_USAGE_AMOUNT  
+	        FROM 
+	               HC_CHECKUP_ROSTER HCR2 
+	        WHERE 
+	               HCR2.CHECKUP_ROSTER_NO = HCR.SUPER_CHECKUP_ROSTER_NO),
+	       (SELECT 
+	               HCP.FAMILY_SUPPORT_TYPE  
+	        FROM 
+	               HC_CHECKUP_POLICY HCP 
+	        WHERE 
+	               HCP.CUSTOMER_ID = HCR.CUSTOMER_ID 
+	               AND HCP.POLICY_YEAR = HCR.POLICY_YEAR),
+	       HCR.COMPANY_SUPPORT_CHARGE_AMOUNT,
+	       (SELECT 
+	               HCR2.COMPANY_SUPPORT_CHARGE_AMOUNT  
+	        FROM 
+	               HC_CHECKUP_ROSTER HCR2 
+	        WHERE 
+	               HCR2.CHECKUP_ROSTER_NO = HCR.SUPER_CHECKUP_ROSTER_NO),
+	       IF(
+	           EXISTS(
+	               SELECT 
+	                      CHECKUP_ROSTER_NO
+	               FROM 
+	                      HC_CHECKUP_ROSTER_HIST SQ
+	               WHERE 
+	                      SQ.CHECKUP_ROSTER_NO = HCR.CHECKUP_ROSTER_NO
+	           ), 
+	           (SELECT 
+	                   IFNULL(SQ.LAST_PATH, '') 
+	            FROM 
+	                   HC_CHECKUP_ROSTER_HIST SQ
+	            WHERE 
+	                   SQ.CHECKUP_ROSTER_NO = HCR.CHECKUP_ROSTER_NO
+	            ORDER BY 
+	                   CHECKUP_ROSTER_HIST_NO
+	            LIMIT 1),
+	           IFNULL(HCR.LAST_PATH, '')
+	       )
+	FROM 
+	       HC_CHECKUP_ROSTER HCR
+	WHERE 
+	       CHECKUP_ROSTER_NO = #{rosterNo};
+    </select>
+    
+	<select id="selectCheckupPlaceVo" parameterType="com.vita.back.api.reserv.model.CheckupPlaceVo" resultType="com.vita.back.api.reserv.model.CheckupPlaceVo">
+        SELECT
+		    CASE
+		        WHEN CENTER_PLACE_ID IS NULL OR CENTER_PLACE_ID = '' THEN (
+		            SELECT
+		                B.CENTER_PLACE_ID
+		            FROM
+		                HC_CHECKUP_PRODUCT A
+		            JOIN
+		                HC_CENTER_PLACE B
+		            ON
+		                A.PARTNER_CENTER_ID = B.PARTNER_CENTER_ID
+		            WHERE
+		                A.CHECKUP_PRICE BETWEEN B.PRODUCT_MIN_PRICE AND B.PRODUCT_MAX_PRICE
+		                AND A.PARTNER_CENTER_ID = #{partnerCenterId}
+		                AND CHECKUP_PRODUCT_ST = '70'
+		                AND CHECKUP_PRODUCT_NO = #{checkupProductNo}
+		                AND B.CHECKUP_PLACE_ST = '00'
+		            LIMIT 1
+		        )
+		        ELSE CENTER_PLACE_ID
+		    END AS CENTER_PLACE_ID
+		FROM
+		    HC_CHECKUP_PRODUCT
+		WHERE
+		    CHECKUP_PRODUCT_NO = #{checkupProductNo};
+    </select>
+
+	<select id="selectCheckupProduct" parameterType="com.vita.back.api.reserv.model.CheckupProductVo" resultType="com.vita.back.api.reserv.model.CheckupProductVo">
+		SELECT 
+		    CHECKUP_PRODUCT_NO,
+		    CENTER_PRODUCT_ID,
+		    IFNULL(RESERV_START_DT, 
+		           (SELECT RESERV_START_DT 
+		            FROM HC_CHECKUP_POLICY 
+		            WHERE HC_CHECKUP_POLICY.CUSTOMER_ID = #{customerId} 
+		              AND HC_CHECKUP_POLICY.POLICY_YEAR = #{policyYear})) AS RESERV_START_DT,
+		    IFNULL(RESERV_END_DT, 
+		           (SELECT RESERV_END_DT 
+		            FROM HC_CHECKUP_POLICY 
+		            WHERE HC_CHECKUP_POLICY.CUSTOMER_ID = #{customerId} 
+		              AND HC_CHECKUP_POLICY.POLICY_YEAR = #{policyYear})) AS RESERV_END_DT,
+		    IFNULL(CHECKUP_START_DT, 
+		           (SELECT CHECKUP_START_DT 
+		            FROM HC_CHECKUP_POLICY 
+		            WHERE HC_CHECKUP_POLICY.CUSTOMER_ID = #{customerId} 
+		              AND HC_CHECKUP_POLICY.POLICY_YEAR = #{policyYear})) AS CHECKUP_START_DT,
+		    IFNULL(CHECKUP_END_DT, 
+		           (SELECT CHECKUP_END_DT 
+		            FROM HC_CHECKUP_POLICY 
+		            WHERE HC_CHECKUP_POLICY.CUSTOMER_ID = #{customerId} 
+		              AND HC_CHECKUP_POLICY.POLICY_YEAR = #{policyYear})) AS CHECKUP_END_DT,
+		    SETTLE_PRICE,
+		    MIG_YN,
+		    PRODUCT_INDEX,
+		    IFNULL(CHECKUP_PRICE, 0) AS CHECKUP_PRICE,
+		    IFNULL(SYSTEM_USAGE_FEE, 0) AS SYSTEM_USAGE_FEE,
+		    CENTER_PRODUCT_NO,
+		    CHECKUP_PRODUCT_TITLE,
+		    IFNULL(SPECIAL_PRODUCT_ID_BY_CENTER, '') AS SPECIAL_PRODUCT_ID_BY_CENTER
+		FROM 
+		    HC_CHECKUP_PRODUCT 
+		WHERE 
+		    CHECKUP_PRODUCT_NO = #{checkupProductNo} 
+		    AND CHECKUP_PRODUCT_ST = '70';
+    </select>
+
+	<select id="selectExtConnection" resultType="com.vita.back.api.model.data.CommonExtInfo">
+        SELECT 
+		    ITG.PARTNER_CENTER_ID, 
+		    ITG.ITG_URL, 
+		    ITG.ITG_ID, 
+		    ITG.ITG_PWD, 
+		    ITG.ITG_TARGET
+		FROM 
+		    HC_PARTNER_CENTER PARTNER
+		JOIN 
+		    HC_EXT_INTEGRATION ITG 
+		ON 
+		    PARTNER.PARTNER_CENTER_ID = ITG.PARTNER_CENTER_ID
+		    AND ITG.ITG_YN = TRUE
+		WHERE 
+		    PARTNER.PARTNER_CENTER_ID = #{partnerCenterId}
+    </select>
+														
+	<select id="selectHcCenterConnecter" 
+	parameterType="com.vita.back.api.model.data.CommonConnecterInfoVo" 
+	resultType="com.vita.back.api.model.data.CommonConnecterInfoVo">
+		SELECT 
+		    CONNECTER_TYPE, 
+		    CONNECTER_URL 
+		FROM 
+		    HC_CENTER_CONNECTER_INFO 
+		WHERE 
+		    CENTER_ID = #{centerId} 
+		    AND CONNECTER_ID = #{connecterId}
+    </select>
+
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vita.back.api.pay.mapper.PayMapper">
+	<select id="getPayMappedReserv" parameterType="Integer" resultType="Integer">
+	    SELECT 
+	        RESERV_NO AS mappedReservNo
+	    FROM 
+	        HC_PAY
+	    WHERE 
+	        PAY_NO = #{payNo}
+	</select>
+	<update id="updatePayReservNo">
+        UPDATE HC_PAY
+        SET RESERV_NO = #{reservNo}
+        WHERE PAY_NO = #{payNo}
+    </update>
+    <insert id="insertPayHist">
+        INSERT INTO HC_PAY_HIST
+        (
+            PAY_NO,
+            RESERV_NO,
+            PAY_AMOUNT,
+            PAY_REQ_AMOUNT,
+            PAY_REQ_TYPE,
+            DEVICE_TYPE,
+            PAYWAY_TYPE,
+            PAY_REG_DT,
+            REG_DT,
+            UPDATE_DT,
+            PAY_ST,
+            PG_TXN_ID,
+            PG_CERTIFY_KEY,
+            PAY_RESULT_CD,
+            PAY_COMPLETE_DT,
+            CANCEL_REQ_CD,
+            CANCEL_REQ_DT,
+            CANCEL_COMPLETE_DT,
+            CANCEL_PG_TXN_ID,
+            CANCEL_RESULT_CD,
+            PAY_ONLY_SMS_REQUESTER
+        )
+        SELECT
+            PAY_NO,
+            RESERV_NO,
+            PAY_AMOUNT,
+            PAY_REQ_AMOUNT,
+            PAY_REQ_TYPE,
+            DEVICE_TYPE,
+            PAYWAY_TYPE,
+            REG_DT,
+            DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s'),
+            UPDATE_DT,
+            PAY_ST,
+            PG_TXN_ID,
+            PG_CERTIFY_KEY,
+            PAY_RESULT_CD,
+            PAY_COMPLETE_DT,
+            CANCEL_REQ_CD,
+            CANCEL_REQ_DT,
+            CANCEL_COMPLETE_DT,
+            CANCEL_PG_TXN_ID,
+            CANCEL_RESULT_CD,
+            PAY_ONLY_SMS_REQUESTER
+        FROM HC_PAY
+        WHERE PAY_NO = #{payNo}
+    </insert>
+
+</mapper>
