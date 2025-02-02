@@ -15,7 +15,7 @@ import com.vita.back.common.exception.VitaException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "AUTH", description = "나이스 인증관련 API")
+@Tag(name = "나이스 인증관련 API", description = "")
 @RestController
 @RequestMapping(value = "/nice")
 public class NiceCertificationController {
@@ -27,13 +27,13 @@ public class NiceCertificationController {
     }
 
     @Operation(summary = "nice 인증", description = "회원가입 nice 인증")
-    @PostMapping("/userJoinCertification")
+    @PostMapping("/user-join-certification")
     public VitaResponse<?> userJoinCertification(@RequestBody NiceCertificationRequest request) throws VitaException {
         return new VitaResponse<>(Constant.SUCCESS, service.userJoinCertification(request));
     }
 
     @Operation(summary = "nice 인증결과", description = "회원가입 nice 인증결과")
-    @PostMapping("/userJoinCertificateAuth")
+    @PostMapping("/user-join-certificate-auth")
     public VitaResponse<?> userJoinCertificateAuth(@RequestBody NiceCertificateAuthRequest request) throws VitaException {
         return new VitaResponse<>(Constant.SUCCESS, service.userJoinCertificateAuth(request));
     }

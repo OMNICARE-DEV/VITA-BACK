@@ -9,13 +9,11 @@ import com.vita.back.common.exception.VitaException;
 public interface UserLoginService {
     public int userLogin(UserLoginRequest request) throws VitaException;
 
-    public int regB2CUser(int commonUserNo) throws VitaException;
-
     public int userIdDupCheck(UserLoginRequest request) throws VitaException;;
 
-    public RegCommonUserResponse regCommonUser(RegCommonUserRequest request) throws VitaException;
+    public RegCommonUserResponse insertCommonUser(RegCommonUserRequest request) throws VitaException;
 
-    public UserLoginResponse getUserLoginResponse(int commonUserNo) throws VitaException;
+    public UserLoginResponse getUserLoginResponse(UserLoginRequest request) throws VitaException;
 
     public boolean mappingCustomerUser(int commonUserNo) throws VitaException;
 }

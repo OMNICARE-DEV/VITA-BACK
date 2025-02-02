@@ -3,6 +3,8 @@ package com.vita.back.api.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vita.back.api.mapper.NiceCertificationMapper;
+import com.vita.back.common.util.JwTokenUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -28,9 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class UserLoginServiceImpl implements UserLoginService {
     private final UserLoginMapper mapper;
+    private final NiceCertificationMapper certificationMapper;
+    private final JwTokenUtil jwtTokenUtil;
 
-    public UserLoginServiceImpl(UserLoginMapper mapper, CacheServiceImpl cacheService) {
+
+    public UserLoginServiceImpl(UserLoginMapper mapper, NiceCertificationMapper certificationMapper, JwTokenUtil jwTokenUtil) {
         this.mapper = mapper;
+        this.certificationMapper = certificationMapper;
+        this.jwtTokenUtil = jwTokenUtil;
     }
 
     /** 통합회원 로그인 */
@@ -62,48 +69,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         }
 
     }
-
-    /** 통합회원 B2C신규등록 */
-    @Transactional(rollbackFor = {VitaException.class})
-    public int regB2CUser(int commonUserNo) throws VitaException {
-        log.info("통합회원 B2C신규등록 regB2CUser");
-        //기존 B2C유저등록 되어있는지 체크
-        int regB2CUserCount = mapper.checkB2CUser(commonUserNo);
-
-        //등록이 안되어 있으면 등록
-        if(regB2CUserCount == 0) {
-            UserDto b2CUser = mapper.getCommonUser(commonUserNo);
-
-            if(ValidUtil.isEmpty(b2CUser)){
-                throw new VitaException(VitaCode.INVALID_PARAMETER);
-            }else{
-                //B2C고객사 강제 지정
-                b2CUser.setCustomerId("C000008035");
-                //개인 회원 등록
-                regB2CUserCount = mapper.regB2CUser(b2CUser);
-                log.info("regB2CUser 등록: {}",b2CUser);
-
-                //고객사맵핑 등록(개인회원)
-                CustomerMapDto customerMapDto = new CustomerMapDto();
-                customerMapDto.setCommonUserNo(commonUserNo);
-                customerMapDto.setUserNo(b2CUser.getUserNo());
-                customerMapDto.setCustomerId(b2CUser.getCustomerId());
-
-                List<CustomerMapDto> customerMaps = new ArrayList<>();
-                customerMaps.add(customerMapDto);
-
-                log.info("regCustomerMap 등록: {}",customerMaps);
-                int regCustomerMapCount = mapper.regCustomerMap(customerMaps);
-                if(regCustomerMapCount == 0) {
-                    throw new VitaException(VitaCode.REG_B2C_USER_ERROR);
-                }
-            }
-        }
-
-        return regB2CUserCount;
-    }
-
-    //통합로그인 아이디 중복확인
+    /** 통합로그인 아이디 중복확인*/
     @Override
     public int userIdDupCheck(UserLoginRequest request) throws VitaException {
         log.info("통합로그인 아이디 중복확인 userIdDupCheck");
@@ -132,7 +98,7 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     /** 통합회원 등록 */
     @Transactional(rollbackFor = {VitaException.class})
-    public RegCommonUserResponse regCommonUser(RegCommonUserRequest request) throws VitaException {
+    public RegCommonUserResponse insertCommonUser(RegCommonUserRequest request) throws VitaException {
         log.info("통합회원 등록 regCommonUser");
         RegCommonUserResponse regCommonUserResponse = new RegCommonUserResponse();
 
@@ -146,7 +112,7 @@ public class UserLoginServiceImpl implements UserLoginService {
                 request.getUserCertifyNo()
         );
 
-        //아이디 중복체크
+        /*아이디 중복체크*/
         UserLoginRequest userLoginRequest = new UserLoginRequest();
         userLoginRequest.setUserId(request.getUserId());
         userLoginRequest.setUserCertifyNo(request.getUserCertifyNo());
@@ -157,27 +123,30 @@ public class UserLoginServiceImpl implements UserLoginService {
             throw new VitaException(VitaCode.ID_DUPLICATE_ERROR);
         }
 
-        //본인인증 조회
+        /* 본인인증 조회*/
         UserCertifyDto userCertifyDto = mapper.getCertifyInfoByKey(request.getUserCertifyNo());
         log.info("userCertifyDto response: {}",userCertifyDto);
 
         if(ValidUtil.isEmpty(userCertifyDto)){
+            certificationMapper.updtStTo80(Integer.parseInt(request.getUserCertifyNo()));
             throw new VitaException(VitaCode.CERTIFICATE_TIME_ERROR);
         }
-        // 본인인증값 사용완료 처리
+        /* 본인인증값 사용완료 처리*/
         mapper.updtCertifySt(request.getUserCertifyNo());
 
-        // 만 14세이하 가입불가 처리
+        /* 만 14세이하 가입불가 처리*/
         int americanAge = ValidUtil.getAmericanAge(userCertifyDto.getBirthday());
         if (americanAge <= 14 ) { // 만 14세 이하라면
+            certificationMapper.updtStTo80(userCertifyDto.getUserCertifyNo());
             throw new VitaException(VitaCode.JOIN_AGE_ERROR);
         }
 
-        //회원가입 이력찾기
+        /* 회원가입 이력찾기*/
         UserIdDupCheckDto userCiDupCheckDto = new UserIdDupCheckDto();
         userCiDupCheckDto.setUserCi(userCertifyDto.getCi());
         int userCiCount = mapper.getCommonUserCount(userCiDupCheckDto);
         if (userCiCount > 0){
+            certificationMapper.updtStTo80(userCertifyDto.getUserCertifyNo());
             throw new VitaException(VitaCode.ALREADY_JOIN_USER);
         }else {
             try {
@@ -205,17 +174,19 @@ public class UserLoginServiceImpl implements UserLoginService {
 
                 log.info("regCommonUserDto response: {}",regCommonUserDto);
 
-                //기존 회원 매핑
+                /*기존 회원 매핑*/
                 boolean successRegCustomerMap = mappingCustomerUser(regCommonUserDto.getCommonUserNo());
                 if(successRegCustomerMap) {
                     regCommonUserResponse.setJoinSuccess(true);
                 }else{
+                    certificationMapper.updtStTo80(userCertifyDto.getUserCertifyNo());
                     throw new VitaException(VitaCode.DATABASE_ERROR);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                // 강제로 롤백
+                /* 강제로 롤백*/
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                certificationMapper.updtStTo80(userCertifyDto.getUserCertifyNo());
                 throw new VitaException(VitaCode.DATABASE_ERROR);
             }
         }
@@ -223,10 +194,70 @@ public class UserLoginServiceImpl implements UserLoginService {
         return regCommonUserResponse;
     }
 
-    /** 로그인 완료 */
-    public UserLoginResponse getUserLoginResponse(int commonUserNo) throws VitaException {
-        //TODO 비번 변경 90일/ 휴면계정 체크필요
-        log.info("로그인 완료 getUserLoginResponse");
+    /** 로그인 */
+    @Transactional(rollbackFor = {VitaException.class})
+    public UserLoginResponse getUserLoginResponse(UserLoginRequest request) throws VitaException {
+        //commonUserNO확인
+        int commonUserNo = userLogin(request);
+
+        int regB2CUserCount = 0;
+        if(commonUserNo > 0){
+            /* 개인회원 등록
+            기존 B2C유저등록 되어있는지 체크
+            */
+            regB2CUserCount = mapper.checkB2CUser(commonUserNo);
+
+            /* 등록이 안되어 있으면 등록*/
+            if(regB2CUserCount == 0) {
+                UserDto b2CUser = mapper.getCommonUser(commonUserNo);
+
+                if(ValidUtil.isEmpty(b2CUser)){
+                    throw new VitaException(VitaCode.INVALID_PARAMETER);
+                }else{
+                    try {
+                        /* B2C고객사 강제 지정*/
+                        b2CUser.setCustomerId("C000008035");
+                        /* 개인 회원 등록*/
+                        regB2CUserCount = mapper.regB2CUser(b2CUser);
+                        log.info("regB2CUser 등록: {}", b2CUser);
+
+                        /* 고객사맵핑 등록(개인회원)*/
+                        CustomerMapDto customerMapDto = new CustomerMapDto();
+                        customerMapDto.setCommonUserNo(commonUserNo);
+                        customerMapDto.setUserNo(b2CUser.getUserNo());
+                        customerMapDto.setCustomerId(b2CUser.getCustomerId());
+
+                        List<CustomerMapDto> customerMaps = new ArrayList<>();
+                        customerMaps.add(customerMapDto);
+
+                        log.info("regCustomerMap 등록: {}", customerMaps);
+                        int regCustomerMapCount = mapper.regCustomerMap(customerMaps);
+                        if (regCustomerMapCount == 0) {
+                            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                            throw new VitaException(VitaCode.REG_B2C_USER_ERROR);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        /* 강제로 롤백*/
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                        throw new VitaException(VitaCode.DATABASE_ERROR);
+                    }
+                }
+            }
+        }
+
+        if(regB2CUserCount == 0){
+            throw new VitaException(VitaCode.REG_B2C_USER_ERROR);
+        }else{
+            /* 추가 등록된 user mapping*/
+            boolean successRegCustomerMap = mappingCustomerUser(commonUserNo);
+
+            if(!successRegCustomerMap) {
+                throw new VitaException(VitaCode.DATABASE_ERROR);
+            }
+        }
+
+        /*로그인 일시 업데이트*/
         try {
             mapper.updateCommonUserLoginDt(commonUserNo);
             mapper.updateUserLoginDt(commonUserNo);
@@ -238,6 +269,10 @@ public class UserLoginServiceImpl implements UserLoginService {
 
         try {
             UserLoginResponse userLoginResponse = mapper.getUserLoginResponse(commonUserNo);
+            String accessToken = jwtTokenUtil.generateToken(userLoginResponse.getCommonUserNo());
+            String refresToken = jwtTokenUtil.generateRefreshToken(userLoginResponse.getCommonUserNo());
+            userLoginResponse.setAccessToken(accessToken);
+            userLoginResponse.setRefreshToken(refresToken);
 
             return userLoginResponse;
         }catch (Exception e){

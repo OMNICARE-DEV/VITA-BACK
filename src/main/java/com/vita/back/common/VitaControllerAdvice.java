@@ -24,12 +24,12 @@ public class VitaControllerAdvice implements ResponseBodyAdvice<Object> {
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return true;
     }
-    
+
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
-            Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
-            ServerHttpResponse response) {
-        
+                                  Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
+                                  ServerHttpResponse response) {
+
         if(body instanceof VitaResponse) {
             if(((VitaResponse<?>) body).isResult()) {
                 ((VitaResponse<?>) body).setCode(VitaCode.SUCCESS.getCode());
@@ -37,8 +37,6 @@ public class VitaControllerAdvice implements ResponseBodyAdvice<Object> {
             }
         }
 
-        log.info("Response Body: {}", body);
-        
         return body;
     }
 }
