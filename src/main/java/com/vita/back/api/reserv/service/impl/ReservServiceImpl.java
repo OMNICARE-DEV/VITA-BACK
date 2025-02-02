@@ -63,7 +63,8 @@ import com.vita.back.api.reserv.model.request.RegReservTestItemRequest;
 import com.vita.back.api.reserv.model.request.RegSpecialReservRequest;
 import com.vita.back.api.reserv.model.request.ReqMessageRequest;
 import com.vita.back.api.reserv.model.request.ReservRequest;
-import com.vita.back.api.reserv.model.request.U2bioReservAvailableDateRequest;
+import com.vita.back.api.reserv.model.request.RosterRequest;
+import com.vita.back.api.reserv.model.request.RosterResponse;
 import com.vita.back.api.reserv.model.request.UpdateRosterRequest;
 import com.vita.back.api.reserv.model.response.ConnGetCheckupAbleDaysResponse;
 import com.vita.back.api.reserv.model.response.ConnRegReservResponse;
@@ -73,6 +74,7 @@ import com.vita.back.api.reserv.model.response.ReservResponse;
 import com.vita.back.api.reserv.model.response.UpdtReservConnResponse;
 import com.vita.back.api.reserv.service.ReservService;
 import com.vita.back.api.u2bio.model.data.U2bioPatientDto;
+import com.vita.back.api.u2bio.model.request.U2bioReservAvailableDateRequest;
 import com.vita.back.api.u2bio.service.U2BioService;
 import com.vita.back.api.u2bio.service.impl.U2BioServiceImpl;
 import com.vita.back.common.exception.VitaCode;
@@ -113,12 +115,9 @@ public class ReservServiceImpl implements ReservService {
 	private int globalOriginAmount = 0;
 	private int globalOriginRosterNo = 0;
 	private int globalFinalReservCompanySupportAmount = 0;
-	
+
 	@Override
 	public ReservResponse processReserv(ReservRequest request) throws VitaException {
-
-		// 요청값 유효성 검사
-		validateRequest(request);
 
 		// 누락된 주소 업데이트
 		updateMissingAddresses(request);
@@ -128,7 +127,6 @@ public class ReservServiceImpl implements ReservService {
 		CheckupProductDto checkupProductDto = fetchCheckupProductInfo(request);
 		CenterConnecterInfoDto centerConnecterInfoDto = fetchCenterConnecterInfo(request);
 		ExtIntegrationDto extIntegrationDto = fetchExternalIntegrationInfo(request);
-		// RegReservVo regReservVo = new RegReservVo(); // HC_RESERV Insert VO
 
 		RegReservDto regReservVo = makeRegReservVo(request, checkupRosterDto, checkupProductDto);
 		request.setCheckupPlaceId(regReservVo.getCheckupPlaceId());
@@ -138,9 +136,8 @@ public class ReservServiceImpl implements ReservService {
 			throw new VitaException(VitaCode.PRODUCT_NOT_FOUND);
 		}
 
-		/*
-		 * 검진대상자 조회 결과 없을 경우?(어드민 요청이거나 기타 유입경로일 경우) 선등록 안된 로스터일 경우 등록 후 다시 조회하여 가져와야 함
-		 */
+		// 요청값 유효성 검사
+		validateRequest(request, checkupRosterDto, checkupProductDto);
 
 		/*
 		 * 검증로직 추후 검토
@@ -161,8 +158,7 @@ public class ReservServiceImpl implements ReservService {
 		 * );
 		 */
 
-		int reservNo = processReservation(regReservVo, request, checkupRosterDto, checkupProductDto,
-				extIntegrationDto);
+		int reservNo = processReservation(regReservVo, request, checkupRosterDto, checkupProductDto, extIntegrationDto);
 		int deferReservNo = processDeferredCheckup(request);
 
 		request.setReservNo(reservNo);
@@ -253,11 +249,11 @@ public class ReservServiceImpl implements ReservService {
 
 			sendKakaoMsg(MSG_RESERV_DONE, regReservVo, confirmReservDay);
 		} else { // 연계정보 유효할 경우
-			
+
 			if ("10".equals(centerConnecterInfoDto.getConnecterType())) {
 
-				ConnRegReservResponse connRegReservResponse = connToCenter(request, testItemInfoList,
-						checkupRosterDto, regReservVo, centerConnecterInfoDto);
+				ConnRegReservResponse connRegReservResponse = connToCenter(request, testItemInfoList, checkupRosterDto,
+						regReservVo, centerConnecterInfoDto);
 
 				confirmReservDay = connRegReservResponse.getReservDay();
 
@@ -282,7 +278,7 @@ public class ReservServiceImpl implements ReservService {
 				deferReservIdByCenter = connRegReservResponse.getDeferReservIdByCenter();
 				confirmDeferReservDay = request.getDeferReservHopeDay(); // 성공했을 경우 connecter로부터 연기검진 일자가 반환되고 있지 않으므로
 																			// request값을 넣는다.
-				
+
 				updateHoldItemStatus(reservNo, connRegReservResponse.getHoldTestItemList());
 			}
 
@@ -311,16 +307,16 @@ public class ReservServiceImpl implements ReservService {
 		}
 
 		updateReservConnResp(reservSt, reservNo, centerReservId, confirmReservDay, request);
-		
+
 		if (!ValidUtil.isEmpty(request.getDeferReservHopeDay())) {
-		    updateDeferReservConnResp(reservNo, deferReservNo, deferReservIdByCenter, 
-		                              deferReservSt, confirmDeferReservDay, request);
+			updateDeferReservConnResp(reservNo, deferReservNo, deferReservIdByCenter, deferReservSt,
+					confirmDeferReservDay, request);
 		}
-		
+
 		if (!ValidUtil.isEmpty(checkupProductDto.getSpecialProductIdByCenter())) {
 			addProductSpecialReserv(reservNo, request, checkupProductDto.getSpecialProductIdByCenter());
 		}
-		
+
 		updateEKGItem(reservNo);
 
 		insertAgreeTerms(regReservVo, request);
@@ -331,77 +327,148 @@ public class ReservServiceImpl implements ReservService {
 		response.setReservSt(reservSt);
 		response.setReservDay(confirmReservDay);
 		response.setDeferReservDay(confirmDeferReservDay);
-		
 
 		return response;
 	}
-	
-	
+
+	/** 검진대상자 등록(없을 시) */
+	public RosterResponse registRoster(ReservRequest request) throws VitaException {
+		RosterRequest req = new RosterRequest();
+		RosterResponse resp = new RosterResponse();
+		req.setUserNo(request.getRegRosterRequest().getUserNo());
+		req.setCustomerId(request.getRegRosterRequest().getCustomerId());
+		req.setRosterName(request.getRegRosterRequest().getRosterName());
+		req.setEmail(request.getRegRosterRequest().getEmail());
+		req.setBirthday(request.getRegRosterRequest().getBirthday());
+		req.setEmployNo(request.getRegRosterRequest().getEmployNo());
+		req.setGenderCd(request.getRegRosterRequest().getGenderCd());
+		req.setMobileNo(request.getRegRosterRequest().getMobileNo());
+		req.setPhoneNo(request.getRegRosterRequest().getPhoneNo());
+		req.setDepartment(request.getRegRosterRequest().getDepartment());
+		req.setJobType(request.getRegRosterRequest().getJobType());
+		req.setDomesticYn(request.getRegRosterRequest().getDomesticYn());
+		req.setVipYn(request.getRegRosterRequest().getVipYn());
+		req.setCheckupDivCd(request.getRegRosterRequest().getCheckupDivCd());
+		req.setCompanySupportAmount(request.getRegRosterRequest().getCompanySupportAmount());
+		req.setCompanySupporType(request.getRegRosterRequest().getCompanySupporType());
+		req.setNhisTargetYn(request.getRegRosterRequest().getNhisTargetYn());
+		req.setSpecialCheckupYn(request.getRegRosterRequest().getSpecialCheckupYn());
+		req.setNighttimeTargetYn(request.getRegRosterRequest().getNighttimeTargetYn());
+		req.setSpecialCheckupText(request.getRegRosterRequest().getSpecialCheckupText());
+		req.setBeforeWorkTestYn(request.getRegRosterRequest().getBeforeWorkTestYn());
+		req.setBeforeWorkTestText(request.getRegRosterRequest().getBeforeWorkTestText());
+		req.setVisitCheckupTargetYn(request.getRegRosterRequest().getVisitCheckupTargetYn());
+		req.setCheckupStartDt(request.getRegRosterRequest().getCheckupStartDt());
+		req.setCheckupEndDt(request.getRegRosterRequest().getCheckupEndDt());
+		req.setVaccineText(request.getRegRosterRequest().getVaccineText());
+		req.setPrivacyAgreeYn(request.getRegRosterRequest().getPrivacyAgreeYn());
+		req.setServiceAgreeYn(request.getRegRosterRequest().getServiceAgreeYn());
+		req.setInfoShareAgreeYn(request.getRegRosterRequest().getInfoShareAgreeYn());
+		req.setSensitiveInfoAgreeYn(request.getRegRosterRequest().getSensitiveInfoAgreeYn());
+		req.setCheckupProposNo(request.getRegRosterRequest().getCheckupProposNo());
+		req.setEmployRelationType(request.getRegRosterRequest().getEmployRelationType());
+		req.setRelationEmployNo(request.getRegRosterRequest().getRelationEmployNo());
+		req.setRelationRosterName(request.getRegRosterRequest().getRelationRosterName());
+		req.setRelationBirthday(request.getRegRosterRequest().getRelationBirthday());
+		req.setRelationMobileNo(request.getRegRosterRequest().getRelationMobileNo());
+		req.setPolicyYear(request.getRegRosterRequest().getPolicyYear());
+		req.setRegAdminId(request.getRegRosterRequest().getRegAdminId());
+		req.setRosterMgmtType(request.getRegRosterRequest().getRosterMgmtType());
+		req.setMemoContents(request.getRegRosterRequest().getMemoContents());
+
+		req.setMerchantShipYn(request.getRegRosterRequest().getMerchantShipYn());
+		req.setTransCustomerYN(request.getRegRosterRequest().getTransCustomerYN());
+
+		// 임직원 미등록 대상자
+		req.setUnRegEmployYN(request.getRegRosterRequest().getUnRegEmployYN());
+		req.setRelationEmployGender(request.getRegRosterRequest().getRelationEmployGender());
+		req.setRelationEmployEmail(request.getRegRosterRequest().getRelationEmployEmail());
+		req.setRelationEmployJobtype(request.getRegRosterRequest().getRelationEmployJobtype());
+		req.setRelationEmployPhone(request.getRegRosterRequest().getRelationEmployPhone());
+		req.setRelationEmployDepartment(request.getRegRosterRequest().getRelationEmployDepartment());
+
+		// 최초등록 경로
+		req.setLastPath(request.getRegRosterRequest().getLastPath());
+
+		// restTemplate
+		try {
+			resp = connection.request(req, RosterResponse.class, "customer/regroster", HttpMethod.POST);
+		} catch (Exception e) {
+			log.warn("연계실패 to (customer/regroster)", e);
+			throw new VitaException(VitaCode.API_ERROR);
+		}
+
+		return resp;
+	}
 
 	/**
-	 * 동의서 등
+	 * 동의서 등록
+	 * 
 	 * @param regReservVo
 	 * @param request
 	 * @throws VitaException
 	 */
 	private void insertAgreeTerms(RegReservDto regReservVo, ReservRequest request) throws VitaException {
-	    /* 7. 동의서 등록처리 */
-	    AgreeTermsDto agreeTerms = new AgreeTermsDto();
+		/* 7. 동의서 등록처리 */
+		AgreeTermsDto agreeTerms = new AgreeTermsDto();
 
-	    agreeTerms.setAgreePath(regReservVo.getLastPath());
-	    agreeTerms.setMobileNo(regReservVo.getMobileNo());
-	    agreeTerms.setCheckupRosterNo(regReservVo.getCheckupRosterNo());
+		agreeTerms.setAgreePath(regReservVo.getLastPath());
+		agreeTerms.setMobileNo(regReservVo.getMobileNo());
+		agreeTerms.setCheckupRosterNo(regReservVo.getCheckupRosterNo());
 
-	    String[] agreeList = request.getUserTermsAgreeList().split(",");
-	    List<String> termsList = new ArrayList<>(Arrays.asList(agreeList));
+		String[] agreeList = request.getUserTermsAgreeList().split(",");
+		List<String> termsList = new ArrayList<>(Arrays.asList(agreeList));
 
-	    for (String terms : termsList) {
-	        switch (terms) {
-	            case "1":
-	                agreeTerms.setFirstConsent("Y");
-	                break;
-	            case "2":
-	                agreeTerms.setSecondConsent("Y");
-	                break;
-	            case "3":
-	                agreeTerms.setThirdConsent("Y");
-	                break;
-	        }
-	    }
+		for (String terms : termsList) {
+			switch (terms) {
+			case "1":
+				agreeTerms.setFirstConsent("Y");
+				break;
+			case "2":
+				agreeTerms.setSecondConsent("Y");
+				break;
+			case "3":
+				agreeTerms.setThirdConsent("Y");
+				break;
+			}
+		}
 
-	    log.debug("동의서 등록: {}", agreeTerms);
-	    
-	    AgreeTermsRequest termsDTO = buildTermsDTO(agreeTerms);
-	    insertAgreeTerms(termsDTO);
-	    
-	    log.debug("동의서 등록 완료");
+		log.debug("동의서 등록: {}", agreeTerms);
+
+		AgreeTermsRequest termsDTO = buildTermsDTO(agreeTerms);
+		insertAgreeTerms(termsDTO);
+
+		log.debug("동의서 등록 완료");
 	}
-	
+
 	/**
 	 * 특수검진 처리
+	 * 
 	 * @param reservNo
 	 * @param request
 	 * @param specialProductIdByCenter
 	 * @throws VitaException
 	 */
-	private void addProductSpecialReserv(int reservNo, ReservRequest request, String specialProductIdByCenter) 
-            throws VitaException {
+	private void addProductSpecialReserv(int reservNo, ReservRequest request, String specialProductIdByCenter)
+			throws VitaException {
 		/* 특수검진 동시 진행 */
 		RegSpecialReservRequest regSpecialReservRequest = new RegSpecialReservRequest();
 		regSpecialReservRequest.setReservNo(reservNo);
 		regSpecialReservRequest.setLastPath(request.getLastPath());
 		regSpecialReservRequest.setCenterProductId(specialProductIdByCenter);
-		
+
 		ReservResponse resp = connection.request(regSpecialReservRequest, ReservResponse.class,
 				"/reserv/addproductspecialreserv", HttpMethod.POST);
-		
+
 		if (List.of("50", "40", "41").contains(resp.getReservSt())) {
 			/* 특수검진 대상여부 업데이트 */
 			mapper.updateSpecialYn(request.getCheckupRosterNo());
 		}
 	}
+
 	/**
 	 * 연기검진 예약 결과 처리(HC_DEFER_CHECKUP_RESERV 업데이트)
+	 * 
 	 * @param reservNo
 	 * @param deferReservNo
 	 * @param deferReservIdByCenter
@@ -411,8 +478,7 @@ public class ReservServiceImpl implements ReservService {
 	 * @throws VitaException
 	 */
 	private void updateDeferReservConnResp(int reservNo, int deferReservNo, String deferReservIdByCenter,
-            String deferReservSt, String confirmDeferReservDay, ReservRequest request) 
-            throws VitaException {
+			String deferReservSt, String confirmDeferReservDay, ReservRequest request) throws VitaException {
 		UpdtReservConnResponse updtReservConnRespVo = new UpdtReservConnResponse();
 		updtReservConnRespVo.setReservNo(reservNo);
 		updtReservConnRespVo.setDeferCheckupReservNo(deferReservNo);
@@ -421,7 +487,7 @@ public class ReservServiceImpl implements ReservService {
 		updtReservConnRespVo.setReservDt(confirmDeferReservDay);
 		updtReservConnRespVo.setLastPath(request.getLastPath());
 		updtReservConnRespVo.setLastModifier(request.getLastModifier());
-		
+
 		try {
 			mapper.updateDeferReservConnResp(updtReservConnRespVo);
 		} catch (Exception e) {
@@ -430,9 +496,10 @@ public class ReservServiceImpl implements ReservService {
 			throw new VitaException(VitaCode.DATABASE_ERROR); // DB error
 		}
 	}
-	
+
 	/**
 	 * 예약 결과 처리(HC_RESERV 업데이트)
+	 * 
 	 * @param reservSt
 	 * @param reservNo
 	 * @param centerReservId
@@ -440,17 +507,17 @@ public class ReservServiceImpl implements ReservService {
 	 * @param request
 	 * @throws VitaException
 	 */
-	private void updateReservConnResp(String reservSt, int reservNo, String centerReservId, 
-            String confirmReservDay, ReservRequest request) throws VitaException {
-		
-		UpdtReservConnResponse updtReservConnRespVo = new UpdtReservConnResponse();	
+	private void updateReservConnResp(String reservSt, int reservNo, String centerReservId, String confirmReservDay,
+			ReservRequest request) throws VitaException {
+
+		UpdtReservConnResponse updtReservConnRespVo = new UpdtReservConnResponse();
 		updtReservConnRespVo.setReservSt(reservSt); // 예약확정
 		updtReservConnRespVo.setReservNo(reservNo);
 		updtReservConnRespVo.setCenterReservId(centerReservId);
 		updtReservConnRespVo.setReservDay(confirmReservDay);
 		updtReservConnRespVo.setLastPath(request.getLastPath());
 		updtReservConnRespVo.setLastModifier(request.getLastModifier());
-		
+
 		try {
 			mapper.updateReservConnResp(updtReservConnRespVo);
 		} catch (Exception e) {
@@ -461,7 +528,7 @@ public class ReservServiceImpl implements ReservService {
 			throw new VitaException(VitaCode.DATABASE_ERROR); // DB error
 		}
 	}
-	
+
 	/**
 	 * 유투바이오에서 예약 가능한 시간을 조회하여 설정
 	 * 
@@ -596,6 +663,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 유투바이오에서 예약가능일 유무 확인
+	 * 
 	 * @param request
 	 * @param commonExtInfo
 	 * @return
@@ -868,7 +936,8 @@ public class ReservServiceImpl implements ReservService {
 				if ("Y".equals(addCheckupYn) || "Y".equals(request.getCheckupItemList().get(i).getNonPriceYN())
 						|| "Y".equals(request.getCheckupItemList().get(i).getCustomPriceYN())) {
 					reservTestItemDto.setCustomTotalPrice(request.getCheckupItemList().get(i).getCustomTotalPrice());
-					reservTestItemDto.setCustomCompanyPrice(request.getCheckupItemList().get(i).getCustomCompanyPrice());
+					reservTestItemDto
+							.setCustomCompanyPrice(request.getCheckupItemList().get(i).getCustomCompanyPrice());
 					reservTestItemDto.setCustomSelfPrice(request.getCheckupItemList().get(i).getCustomSelfPrice());
 				}
 
@@ -893,17 +962,40 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 사전 요청값 검증
+	 * 
 	 * @param request
+	 * @param checkupProductDto
+	 * @param checkupRosterDto
 	 * @throws VitaException
 	 */
-	private void validateRequest(ReservRequest request) throws VitaException {
+	private void validateRequest(ReservRequest request, CheckupRosterDto checkupRosterDto,
+			CheckupProductDto checkupProductDto) throws VitaException {
+		
 		ValidUtil.validNull(request.getCustomerId(), request.getPolicyYear(), request.getPartnerCenterId(),
 				request.getCheckupProductNo(), request.getCheckupDivCd(), request.getReserv1stHopeDay(),
 				request.getForceReservYn());
+		
+		if ("60".equals(checkupRosterDto.getEmployRelationType())) { // 임직원 관계타입이 미지정일 경우
+            log.error("예약전문에 미지정자가 들어옴");
+            throw new VitaException("VR000", "수검자와 임직원의 관계가 부정확합니다."); //유효하지않은 값
+        }
+		
+		String startDt = checkupProductDto.getReservStartDt();
+		String endDt = checkupProductDto.getReservEndDt();
+		
+		if (ValidUtil.isEmpty(startDt) || ValidUtil.isEmpty(endDt)) {
+            log.warn("DB에 해당하는 날짜 정보가 없음");
+            throw new VitaException("VR000", "예약 시작/종료일시가 부정확합니다."); // 유효하지 않은 값
+        }
+		
+		
+		
+		
 	}
 
 	/**
 	 * 결과지 수령 주소값 세팅
+	 * 
 	 * @param request
 	 */
 	private void updateMissingAddresses(ReservRequest request) {
@@ -924,6 +1016,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 검진 대상자 조회
+	 * 
 	 * @param request
 	 * @return
 	 * @throws VitaException
@@ -932,7 +1025,35 @@ public class ReservServiceImpl implements ReservService {
 		try {
 			CheckupRosterRequest hcCheckupRosterRequest = new CheckupRosterRequest();
 			hcCheckupRosterRequest.setCheckupRosterNo(request.getCheckupRosterNo());
-			return mapper.selectCheckupRoster(hcCheckupRosterRequest);
+
+			CheckupRosterDto checkupRosterDto = new CheckupRosterDto();
+			checkupRosterDto = mapper.selectCheckupRoster(hcCheckupRosterRequest);
+
+			/*
+			 * 검진대상자 조회 결과 없을 경우?(어드민 요청이거나 기타 유입경로일 경우) 선등록 안된 로스터일 경우 등록 후 다시 조회하여 가져와야 함
+			 */
+
+			if (ValidUtil.isEmpty(checkupRosterDto) // 대상자 정보가 없을 경우
+					&& request.getAdminReqYn().equals("Y") // 어드민 요청일 경우
+					&& !ValidUtil.isEmpty(request.getRegRosterRequest())) { // 대상자등록요청값이 유효할 경우
+
+				if ("60".equals(request.getRegRosterRequest().getEmployRelationType())) { // 요청등록대상자의 타입이 미지정자일 경우
+					log.error("예약전문에 미지정자가 들어옴");
+					throw new VitaException(VitaCode.REQUIRED_VALUE_FAIL); // 유효하지않은 값
+				}
+
+				RosterResponse response = registRoster(request);
+				hcCheckupRosterRequest.setCheckupRosterNo(response.getCheckupRosterNo());
+				// 등록된 대상자 정보 조회
+				checkupRosterDto = mapper.selectCheckupRoster(hcCheckupRosterRequest);
+			}
+
+			if (ValidUtil.isEmpty(checkupRosterDto.getCheckupRosterNo())) { // 대상자 정보가 없을 경우
+				log.warn("미등록 대상자로 진행 불가, 요청값:{}", request);
+				throw new VitaException(VitaCode.REQUIRED_VALUE_FAIL); // 유효하지 않은 값
+			}
+
+			return checkupRosterDto;
 		} catch (Exception e) {
 			log.error("검진 대상자 정보 조회 오류", e);
 			throw new VitaException(VitaCode.DATABASE_ERROR);
@@ -941,6 +1062,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 검진상품 조회
+	 * 
 	 * @param request
 	 * @return
 	 * @throws VitaException
@@ -960,6 +1082,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 연계 협력병원 조회
+	 * 
 	 * @param request
 	 * @return
 	 * @throws VitaException
@@ -973,6 +1096,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 외부 EMR 연동정보 조회
+	 * 
 	 * @param request
 	 * @return
 	 * @throws VitaException
@@ -1006,9 +1130,10 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 예약 보류된 검진항목 상태값 업데이트
+	 * 
 	 * @param reservNo
 	 * @param holdTestItemList
-	 * @throws VitaException 
+	 * @throws VitaException
 	 */
 	private void updateHoldItemStatus(int reservNo, List<String> holdTestItemList) throws VitaException {
 		/* 예약보류 항목 여부 업데이트 */
@@ -1022,6 +1147,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 심전도 항목 교체 대상 처리
+	 * 
 	 * @param reservNo
 	 */
 	public void updateEKGItem(int reservNo) {
@@ -1101,6 +1227,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 동의서 등록용 요청값 세팅
+	 * 
 	 * @param request
 	 * @return
 	 * @throws VitaException
@@ -1181,6 +1308,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 회사지원 사용금액 복원
+	 * 
 	 * @param globalOriginAmount
 	 * @param globalOriginRosterNo
 	 */
@@ -1215,7 +1343,7 @@ public class ReservServiceImpl implements ReservService {
 	 * 프리미엄 케파 갱신 및 KICS 연계
 	 * 
 	 * @param request
-	 * @param centerConnecterInfoDto 
+	 * @param centerConnecterInfoDto
 	 * @param connRegReservReq
 	 * @param targetUrl
 	 * @param path
@@ -1224,16 +1352,17 @@ public class ReservServiceImpl implements ReservService {
 	 * @throws VitaException
 	 */
 	public ConnRegReservResponse connToCenter(ReservRequest request, List<ReservTestItemDto> testItemInfoList,
-			CheckupRosterDto hcCheckupRosterResponse, RegReservDto regReservVo, CenterConnecterInfoDto centerConnecterInfoDto) throws VitaException {
+			CheckupRosterDto hcCheckupRosterResponse, RegReservDto regReservVo,
+			CenterConnecterInfoDto centerConnecterInfoDto) throws VitaException {
 
 		ConnRegReservRequest connRegReservReq = makeRegReservConnModel(request, testItemInfoList,
 				hcCheckupRosterResponse, regReservVo);
 
 		updateReservStatus("90", regReservVo.getReservNo(), request.getLastPath(), request.getLastModifier());
 		log.warn("URL:{}, request:{}", centerConnecterInfoDto.getConnecterUrl(), connRegReservReq);
-		
+
 		request.setOriginReservNo(regReservVo.getReservNo());
-		
+
 		// 프리미엄 CAPA 적용여부 검수
 		if ("Y".equals(connRegReservReq.getPremiumCapaYN())) {
 			boolean isPremium = checkKICSReservDay(request);
@@ -1266,14 +1395,19 @@ public class ReservServiceImpl implements ReservService {
 
 		ConnRegReservResponse resp;
 		try {
-			resp = connection.request(connRegReservReq, ConnRegReservResponse.class, centerConnecterInfoDto.getConnecterUrl(), HttpMethod.POST);
+			resp = connection.request(connRegReservReq, ConnRegReservResponse.class,
+					centerConnecterInfoDto.getConnecterUrl(), HttpMethod.POST);
 		} catch (VitaException e) {
 			updateReservStatus("90", connRegReservReq.getReservNo(), request.getLastPath(), request.getLastModifier());
-			log.warn("통신 실패로 인한 예약 실패 to {}. 예약번호:{}", centerConnecterInfoDto.getConnecterUrl(), connRegReservReq.getReservNo(), e);
+			log.warn("통신 실패로 인한 예약 실패 to {}. 예약번호:{}", centerConnecterInfoDto.getConnecterUrl(),
+					connRegReservReq.getReservNo(), e);
 			throw new VitaException(VitaCode.NETWORK_ERROR);
 		}
 		if (ValidUtil.isEmpty(resp)) { // 응답값이 비었을 경우
-			updateReservStatus("90", connRegReservReq.getReservNo(), request.getLastPath(), request.getLastModifier()); // 상태값 설정 : 예약실패
+			updateReservStatus("90", connRegReservReq.getReservNo(), request.getLastPath(), request.getLastModifier()); // 상태값
+																														// 설정
+																														// :
+																														// 예약실패
 			log.warn("통신 응답값 null. 예약번호:{}", connRegReservReq.getReservNo());
 			throw new VitaException(VitaCode.NETWORK_ERROR); // 내부 에러
 		}
@@ -1281,7 +1415,8 @@ public class ReservServiceImpl implements ReservService {
 
 		// 일괄예약시 선택미정, 예약보류 케이스 추가 40 : 예약보류 , 41 : 선택미정
 		if (resp.getReservSt().equals("40") || resp.getReservSt().equals("41")) {
-			updateReservStatus(resp.getReservSt(), connRegReservReq.getReservNo(), request.getLastPath(), request.getLastModifier());
+			updateReservStatus(resp.getReservSt(), connRegReservReq.getReservNo(), request.getLastPath(),
+					request.getLastModifier());
 		} else if (!resp.getReservSt().equals("50")) {
 			updateReservStatus("90", connRegReservReq.getReservNo(), request.getLastPath(), request.getLastModifier());
 			log.error("연계 응답값이 정상이 아님. 예약번호:{}", connRegReservReq.getReservNo());
@@ -1393,6 +1528,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 병원 연계용 VO Setting
+	 * 
 	 * @param request
 	 * @param testItemInfoList
 	 * @param hcCheckupRosterResponse
@@ -1589,6 +1725,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 병원측 병원ID 조회
+	 * 
 	 * @param partnerCenterId
 	 * @param reservNo
 	 * @param path
@@ -1709,12 +1846,14 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 카카오 알림톡 전송 처리
+	 * 
 	 * @param serviceInfoId
 	 * @param reservVo
 	 * @param confirmReservDay
 	 * @throws VitaException
 	 */
-	public void sendKakaoMsg(String serviceInfoId, RegReservDto reservVo, String confirmReservDay) throws VitaException {
+	public void sendKakaoMsg(String serviceInfoId, RegReservDto reservVo, String confirmReservDay)
+			throws VitaException {
 
 		if (!"Y".equals(reservVo.getSmsYn())) {
 			return;
@@ -1927,6 +2066,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 그룹 케파 증감처리
+	 * 
 	 * @param flag
 	 * @param capaDayTime
 	 * @param checkupPlaceId
@@ -1969,6 +2109,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 장비/장소 케파 갱신
+	 * 
 	 * @param flag
 	 * @param firstHopeDay
 	 * @param secondHopeDay
@@ -2016,6 +2157,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 특검 케파 증감처리(HC_CENTER_SPECIAL_CAPA)
+	 * 
 	 * @param flag
 	 * @param capaDayTime
 	 * @param partnerCenterId
@@ -2059,6 +2201,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 장비 케파 갱신(changeEquipCapa 호출)
+	 * 
 	 * @param flag
 	 * @param testItemCd
 	 * @param partnerCenterId
@@ -2104,6 +2247,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 케파 증감 처리(HC_CENTER_PLACE_CAPA)
+	 * 
 	 * @param flag
 	 * @param capaDayTime
 	 * @param checkupPlaceId
@@ -2142,6 +2286,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 장비 케파 증감 처리(HC_CENTER_EQUIP_CAPA)
+	 * 
 	 * @param flag
 	 * @param capaDayTime
 	 * @param testEquipNo
@@ -2180,6 +2325,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 그룹 케파넘버 조회
+	 * 
 	 * @param partnerCenterId
 	 * @param customerId
 	 * @return
@@ -2196,6 +2342,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 검사항목코드 조회(HC_TEST_ITEM_CD)
+	 * 
 	 * @param partnerCenterId
 	 * @param nowCheckupItemCd
 	 * @param reservNo
@@ -2232,6 +2379,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 연기검진 항목 등록
+	 * 
 	 * @param request
 	 * @return
 	 * @throws VitaException
@@ -2429,6 +2577,7 @@ public class ReservServiceImpl implements ReservService {
 
 	/**
 	 * 예약 등록 VO Setting
+	 * 
 	 * @param request
 	 * @param hcCheckupRosterResponse
 	 * @param checkupProductVo

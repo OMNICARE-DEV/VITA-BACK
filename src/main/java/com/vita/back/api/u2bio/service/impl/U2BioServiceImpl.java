@@ -26,12 +26,12 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vita.back.api.model.data.ExtIntegrationDto;
 import com.vita.back.api.reserv.model.data.ReserveDataDto;
-import com.vita.back.api.reserv.model.request.U2bioReservAvailableDateRequest;
-import com.vita.back.api.reserv.model.response.U2bioReservAvailableDateResponse;
 import com.vita.back.api.u2bio.model.data.U2bioPatientDto;
 import com.vita.back.api.u2bio.model.data.U2bioReservAvailableTimeDto;
 import com.vita.back.api.u2bio.model.request.ExchangeRequest;
+import com.vita.back.api.u2bio.model.request.U2bioReservAvailableDateRequest;
 import com.vita.back.api.u2bio.model.response.U2bioPatientResponse;
+import com.vita.back.api.u2bio.model.response.U2bioReservAvailableDateResponse;
 import com.vita.back.api.u2bio.service.U2BioService;
 import com.vita.back.common.exception.VitaException;
 

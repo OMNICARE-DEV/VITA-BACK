@@ -1,4 +1,4 @@
-package com.vita.back.api.reserv.model.request;
+package com.vita.back.api.u2bio.model.request;
 
 import lombok.Data;
 
