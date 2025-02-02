@@ -102,7 +102,7 @@
             AND PERSONAL_PAYER_BILLING_YN = 'Y'
         </if>
     </update>
-	<insert id="insertAgreeTerms" parameterType="com.vita.back.api.reserv.model.AgreeTermsDTO">
+	<insert id="insertAgreeTerms" parameterType="com.vita.back.api.reserv.model.data.AgreeTermsDto">
         INSERT INTO HC_AGREE_TERMS (
 	        CHECKUP_ROSTER_NO,
 	        RESERV_NO,
@@ -179,7 +179,7 @@
         WHERE CHECKUP_ROSTER_NO = #{checkupRosterNo}
           AND SPECIAL_CHECKUP_YN != 'Y';
     </update>
-	<update id="updateDeferReservConnResp" parameterType="com.vita.back.api.reserv.model.UpdtReservConnRespVo">
+	<update id="updateDeferReservConnResp" parameterType="com.vita.back.api.reserv.model.response.UpdtReservConnResponse">
 	    UPDATE HC_DEFER_CHECKUP_RESERV
 	    SET 
 	        RESERV_ST = #{reservSt},
@@ -191,7 +191,7 @@
 	        DEFER_CHECKUP_RESERV_NO = #{deferCheckupReservNo}
 	        AND RESERV_NO = #{reservNo};
 	</update>
-	<update id="updateReservConnResp" parameterType="com.vita.back.api.reserv.model.UpdtReservConnRespVo">
+	<update id="updateReservConnResp" parameterType="com.vita.back.api.reserv.model.response.UpdtReservConnResponse">
 	    UPDATE HC_RESERV
 	    SET 
 	        CENTER_RESERV_ID = #{centerReservId},
@@ -208,7 +208,7 @@
         SET COMPANY_SUPPORT_USAGE_AMOUNT = #{companySupportAmt}
         WHERE CHECKUP_ROSTER_NO =#{rosterNo}
     </update>
-	<update id="updateRoster" parameterType="com.vita.back.api.reserv.model.UpdateRosterRequest">
+	<update id="updateRoster" parameterType="com.vita.back.api.reserv.model.request.UpdateRosterRequest">
         UPDATE
             HC_CHECKUP_ROSTER
         SET
@@ -216,14 +216,14 @@
             VIP_YN = #{vipYN}
         WHERE CHECKUP_ROSTER_NO = #{checkupRosterNo}
     </update>
-	<update id="updateDefferReservSt" parameterType="com.vita.back.api.reserv.model.CommonUpdtReservStVo">
+	<update id="updateDefferReservSt" parameterType="com.vita.back.api.reserv.model.data.CommonUpdtReservStDto">
 	    UPDATE HC_DEFER_CHECKUP_RESERV
 	    SET 
 	        RESERV_ST = #{reservSt}
 	    WHERE 
 	        reserv_no = #{reservNo};
 	</update>
-	<update id="updateReservSt" parameterType="com.vita.back.api.reserv.model.CommonUpdtReservStVo">
+	<update id="updateReservSt" parameterType="com.vita.back.api.reserv.model.data.CommonUpdtReservStDto">
 	    UPDATE HC_RESERV
 	    SET
 	        RESERV_ST = #{reservSt},
@@ -276,7 +276,7 @@
         SET PREMIUM_CAPA_YN = #{premiumCapaYN}
         WHERE RESERV_NO = #{reservNo}
     </update>
-	<select id="selectUnRegEmployInfo" parameterType="int" resultType="com.vita.back.api.reserv.model.CheckupRosterVo">
+	<select id="selectUnRegEmployInfo" parameterType="int" resultType="com.vita.back.api.reserv.model.data.CheckupRosterDto">
 	    SELECT 
 	        UN_REG_EMPLOY_NAME,
 	        UN_REG_EMPLOY_DEPARTMENT,
@@ -287,7 +287,7 @@
 	        CHECKUP_ROSTER_NO = #{checkupRosterNo};
 	</select>
 	
-	<select id="selectServiceCustomerId" resultType="java.lang.String" parameterType="com.vita.back.api.reserv.model.HcCenterCustomerInfoVo">
+	<select id="selectServiceCustomerId" resultType="java.lang.String" parameterType="com.vita.back.api.reserv.model.data.CenterCustomerInfoDto">
 	    SELECT 
 	        CUSTOMER_ID_BY_CENTER 
 	    FROM 
@@ -317,7 +317,7 @@
         WHERE
             TEST_ITEM_CD = #{testItemCd}
     </select>
-	<select id="selectRoomInfo" parameterType="com.vita.back.api.reserv.model.GetRoomInfoVo" resultType="java.lang.String">
+	<select id="selectRoomInfo" parameterType="com.vita.back.api.reserv.model.data.GetRoomInfoDto" resultType="java.lang.String">
         SELECT 
 		    EQUIPROOM_ID_BY_CENTER
 		FROM 
@@ -336,7 +336,7 @@
 		    );
     </select>
 	<!-- VIP CAPA 대상 원복(KICS CAPA 사용) -->
-    <update id="updateRestorePremiumCapaYN" parameterType="com.vita.back.api.reserv.model.ReservRequest">
+    <update id="updateRestorePremiumCapaYN" parameterType="com.vita.back.api.reserv.model.request.ReservRequest">
         UPDATE HC_RESERV
         SET PREMIUM_CAPA_YN = REPLACE(PREMIUM_CAPA_YN, 'Y', 'N')
         WHERE RESERV_NO = #{originReservNo}
@@ -370,7 +370,7 @@
 	          )
 	    </if>
 	</update>
-	<select id="selectSuperRosterInfo" parameterType="int" resultType="com.vita.back.api.reserv.model.CheckupRosterVo">
+	<select id="selectSuperRosterInfo" parameterType="int" resultType="com.vita.back.api.reserv.model.data.CheckupRosterDto">
 	    SELECT
 	        b.ROSTER_NAME,
 	        b.EMPLOY_NO,
@@ -390,7 +390,7 @@
 	        )
 	    LIMIT 1;
 	</select>
-	<select id="selectHcServiceInfo" resultType="com.vita.back.api.reserv.model.HcServiceInfoVo" parameterType="java.lang.String">
+	<select id="selectHcServiceInfo" resultType="com.vita.back.api.reserv.model.data.ServiceInfoDto" parameterType="java.lang.String">
 	    SELECT 
 	        INFO_VALUE, 
 	        SERVICE_INFO_NAME 
@@ -415,7 +415,7 @@
 		    PARTNER_CENTER_ID = #{partnerCenterId}
 		    AND PARTNER_CENTER_ST = '00';
     </select>
-	<select id="selectTestItemCdList" resultType="com.vita.back.api.reserv.model.HcReservTestItemVo">
+	<select id="selectTestItemCdList" resultType="com.vita.back.api.reserv.model.data.ReservTestItemDto">
         SELECT
 	        a.RESERV_NO,
 	        a.TEST_ITEM_CD,
@@ -593,7 +593,7 @@
 		    PARTNER_CENTER_ID = #{partnerCenterId}
 		    AND CUSTOMER_ID = #{customerId};
 	</select>
-	<insert id="insertReservTestItem" parameterType="com.vita.back.api.reserv.model.HcReservTestItemVo">
+	<insert id="insertReservTestItem" parameterType="com.vita.back.api.reserv.model.data.ReservTestItemDto">
         INSERT INTO HC_RESERV_TEST_ITEM (
 		    RESERV_NO,
 		    TEST_ITEM_CD,
@@ -659,7 +659,7 @@
 		    #{pkgCd}
 		);
     </insert>
-	<select id="selectMappingCd" resultType="com.vita.back.api.reserv.model.HcReservTestItemVo" parameterType="com.vita.back.api.reserv.model.GetTestItemCdVo">
+	<select id="selectMappingCd" resultType="com.vita.back.api.reserv.model.data.ReservTestItemDto" parameterType="com.vita.back.api.reserv.model.data.GetTestItemCdDto">
         SELECT 
 		    TEST_ITEM_CD, 
 		    CHECKUP_ITEM_CD
@@ -702,7 +702,7 @@
 		    #{deferReservMomentAmount}
 		);
     </insert>
-	<insert id="insertDefferReserv" parameterType="com.vita.back.api.reserv.model.HcDeferCheckupReservVo" useGeneratedKeys="true" keyProperty="DEFER_CHECKUP_RESERV_NO">
+	<insert id="insertDefferReserv" parameterType="com.vita.back.api.reserv.model.data.DeferCheckupReservDto" useGeneratedKeys="true" keyProperty="DEFER_CHECKUP_RESERV_NO">
         INSERT INTO HC_DEFER_CHECKUP_RESERV (
 		    PARTNER_CENTER_ID,
 		    RESERV_NO,
@@ -860,8 +860,8 @@
 	        CHECKUP_ROSTER_NO = #{checkupRosterNo};
 	</select> -->
 	<select id="selectCheckupRoster" 
-        parameterType="com.vita.back.api.reserv.modelfix.HcCheckupRosterRequest" 
-        resultType="com.vita.back.api.reserv.modelfix.HcCheckupRosterResponse">
+        parameterType="com.vita.back.api.reserv.model.request.CheckupRosterRequest" 
+        resultType="com.vita.back.api.reserv.model.data.CheckupRosterDto">
 	    SELECT
 	        RO.CHECKUP_ROSTER_NO AS checkupRosterNo,
 	        IFNULL(RO.CUSTOMER_ID, '') AS customerId,
@@ -911,7 +911,7 @@
     
 	<!-- 예약 등록 -->
     <insert id="insertReserv" 
-        parameterType="com.vita.back.api.reserv.model.RegReservVo" 
+        parameterType="com.vita.back.api.reserv.model.data.RegReservDto" 
         useGeneratedKeys="true" 
         keyProperty="RESERV_NO">
 	    INSERT INTO HC_RESERV (
@@ -1075,7 +1075,7 @@
 	    )
 	</insert>
 
-	<select id="selectCompanySup" resultType="com.vita.back.api.reserv.model.UpdtCompanySupAmtVo">
+	<select id="selectCompanySup" resultType="com.vita.back.api.reserv.model.data.UpdtCompanySupAmtDto">
         SELECT 
 	       HCR.EMPLOY_RELATION_TYPE,
 	       HCR.ROSTER_MGMT_TYPE,
@@ -1127,7 +1127,7 @@
 	       CHECKUP_ROSTER_NO = #{rosterNo};
     </select>
     
-	<select id="selectCheckupPlaceVo" parameterType="com.vita.back.api.reserv.model.CheckupPlaceVo" resultType="com.vita.back.api.reserv.model.CheckupPlaceVo">
+	<select id="selectCheckupPlaceVo" parameterType="com.vita.back.api.reserv.model.data.CheckupPlaceDto" resultType="com.vita.back.api.reserv.model.data.CheckupPlaceDto">
         SELECT
 		    CASE
 		        WHEN CENTER_PLACE_ID IS NULL OR CENTER_PLACE_ID = '' THEN (
@@ -1155,7 +1155,7 @@
 		    CHECKUP_PRODUCT_NO = #{checkupProductNo};
     </select>
 
-	<select id="selectCheckupProduct" parameterType="com.vita.back.api.reserv.model.CheckupProductVo" resultType="com.vita.back.api.reserv.model.CheckupProductVo">
+	<select id="selectCheckupProduct" parameterType="com.vita.back.api.reserv.model.data.CheckupProductDto" resultType="com.vita.back.api.reserv.model.data.CheckupProductDto">
 		SELECT 
 		    CHECKUP_PRODUCT_NO,
 		    CENTER_PRODUCT_ID,
@@ -1194,7 +1194,7 @@
 		    AND CHECKUP_PRODUCT_ST = '70';
     </select>
 
-	<select id="selectExtConnection" resultType="com.vita.back.api.model.data.CommonExtInfo">
+	<select id="selectExtConnection" resultType="com.vita.back.api.model.data.ExtIntegrationDto">
         SELECT 
 		    ITG.PARTNER_CENTER_ID, 
 		    ITG.ITG_URL, 
@@ -1213,8 +1213,8 @@
     </select>
 														
 	<select id="selectHcCenterConnecter" 
-	parameterType="com.vita.back.api.model.data.CommonConnecterInfoVo" 
-	resultType="com.vita.back.api.model.data.CommonConnecterInfoVo">
+	parameterType="com.vita.back.api.model.data.CenterConnecterInfoDto" 
+	resultType="com.vita.back.api.model.data.CenterConnecterInfoDto">
 		SELECT 
 		    CONNECTER_TYPE, 
 		    CONNECTER_URL 
