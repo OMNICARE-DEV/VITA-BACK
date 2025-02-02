@@ -6,8 +6,8 @@ import org.springframework.http.HttpMethod;
 
 import com.vita.back.api.model.data.ExtIntegrationDto;
 import com.vita.back.api.reserv.model.data.ReserveDataDto;
-import com.vita.back.api.reserv.model.request.U2bioReservAvailableDateRequest;
 import com.vita.back.api.u2bio.model.data.U2bioPatientDto;
+import com.vita.back.api.u2bio.model.request.U2bioReservAvailableDateRequest;
 
 public interface U2BioService {
 

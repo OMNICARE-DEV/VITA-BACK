@@ -1,4 +1,4 @@
-package com.vita.back.api.reserv.model.response;
+package com.vita.back.api.u2bio.model.response;
 
 import java.util.List;
 

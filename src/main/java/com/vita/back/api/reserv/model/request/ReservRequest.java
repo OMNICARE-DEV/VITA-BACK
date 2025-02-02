@@ -3,6 +3,8 @@ package com.vita.back.api.reserv.model.request;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -113,7 +115,7 @@ public class ReservRequest {
     private List<CheckupItemList> checkupItemList = new  ArrayList<>();
     //private List<ReplaceCheckupItemList> replaceCheckupItemList = new ArrayList<>();
     //private Memo memo = new Memo();
-    //private RegRosterRequest regRosterRequest = new RegRosterRequest();
+    private RegRosterRequest regRosterRequest = new RegRosterRequest();
     private List<String> deferCheckupItemList = new ArrayList<>();
     private List<String> deferCheckupAddItemList = new ArrayList<>();
     private Integer payNo;
@@ -143,5 +145,63 @@ public class ReservRequest {
         private String pkgCd;
         private String ReplaceItem = "";
         private String testItemCd;
+    }
+    
+    @Data
+    public static class RegRosterRequest {
+        private String memoContents = "";
+        private int userNo = 0;
+        private String customerId = "";
+        private String rosterName = "";
+        private String email = "";
+        private String birthday = "";
+        private String employNo = "";
+        private String genderCd = "";
+        private String mobileNo = "";
+        private String phoneNo = "";
+        private String department = "";
+        private String jobType = "";
+        private String domesticYn = "";
+        private String vipYn = "";
+        private String checkupDivCd = "";
+        private int companySupportAmount = 0;
+        private String companySupporType = "";
+        private String nhisTargetYn = "";
+        private String specialCheckupYn = "";
+        private String nighttimeTargetYn = "";
+        private String etcCheckupText = "";
+        private String specialCheckupText = "";
+        private String beforeWorkTestYn = "";
+        private String beforeWorkTestText = "";
+        private String visitCheckupTargetYn = "";
+        private String checkupStartDt = "";
+        private String checkupEndDt = "";
+        private String vaccineText = "";
+        private String privacyAgreeYn = "";
+        private String serviceAgreeYn = "";
+        private String infoShareAgreeYn = "";
+        private String sensitiveInfoAgreeYn = "";
+        private int checkupProposNo = 0;
+        private String employRelationType = "";
+        private String relationEmployNo = "";
+        private String relationRosterName = "";
+        private String relationBirthday = "";
+        private String relationMobileNo = "";
+        private String policyYear = "";
+        private String regAdminId = "";
+        private String rosterMgmtType = "";
+
+        private String merchantShipYn = "N";
+
+        // 임직원 미등록 대상자 추가
+        private String unRegEmployYN = "N";
+        private String relationEmployGender = "";
+        private String relationEmployEmail = "";
+        private String relationEmployJobtype = "";
+        private String relationEmployPhone = "";
+        private String relationEmployDepartment = "";
+        private String transCustomerYN = "";
+
+        private String lastPath = "";
     }
 }

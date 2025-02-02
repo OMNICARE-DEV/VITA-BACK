@@ -35,7 +35,6 @@ public enum VitaCode {
     NO_AVAILABLE_RESERV_TIME("VR003", "예약 가능한 시간이 없습니다."),
 	NO_DEFERRED_CHECKUP("VR004", "일치하는 연기검사항목이 없습니다."),
 	KAKAO_MSG_SEND_FAILED("VR005", "카카오 알림톡 전송에 실패하였습니다.");
-    
 
     private String code;
     private String message;
