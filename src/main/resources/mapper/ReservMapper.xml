@@ -510,23 +510,23 @@
 	<!-- 그룹 장비케파 증감 -->
     <update id="updatePlusGroupEquipCapa" parameterType="Map">
         UPDATE HC_CENTER_EQUIP_CAPA_GROUP
-            SET capa = capa+1
-        WHERE PARTNER_CENTER_ID = #{PARTNER_CENTER_ID}
-            AND TEST_EQUIP_NO = #{TEST_EQUIP_NO}
-            AND GROUP_NO = #{GROUP_NO}
-            AND CAPA_DAY = #{CAPA_DAY}
-            AND CAPA_TIME = #{CAPA_TIME}
-    </update>
+            SET capa = capa + 1
+        WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+            AND TEST_EQUIP_NO = #{testEquipNo}
+            AND GROUP_NO = #{groupNo}
+            AND CAPA_DAY = #{capaDay}
+            AND CAPA_TIME = #{capaTime}
+	</update>
     <update id="updateMinusGroupEquipCapa" parameterType="Map">
         UPDATE HC_CENTER_EQUIP_CAPA_GROUP
-            SET capa = capa-1
+            SET capa = capa - 1
         WHERE
-                PARTNER_CENTER_ID = #{PARTNER_CENTER_ID}
-            AND TEST_EQUIP_NO = #{TEST_EQUIP_NO}
-            AND GROUP_NO = #{GROUP_NO}
-            AND CAPA_DAY = #{CAPA_DAY}
-            AND CAPA_TIME = #{CAPA_TIME}
-    </update>
+                PARTNER_CENTER_ID = #{partnerCenterId}
+            AND TEST_EQUIP_NO = #{testEquipNo}
+            AND GROUP_NO = #{groupNo}
+            AND CAPA_DAY = #{capaDay}
+            AND CAPA_TIME = #{capaTime}
+	</update>
 	<!-- 그룹 장소 공통 케파 증가 -->
     <update id="updatePlusGroupCapa" parameterType="Map">
 		UPDATE HC_CENTER_PLACE_CAPA_GROUP
@@ -1038,84 +1038,84 @@
 	        SUPPLIES_ADDRESS,
 	        SUPPLIES_ADDRESS_DETAIL
 	    ) VALUES (
-	        #{CHECKUP_PRODUCT_NO},
-	        #{CHECKUP_ROSTER_NO},
-	        #{PARTNER_CENTER_ID},
-	        #{CHECKUP_PLACE_ID},
-	        #{CHECKUP_DIV_CD},
-	        #{SELF_PAY_AMOUNT},
-	        #{COMPANY_SUPPORT_AMOUNT},
-	        #{ONPAY_AMOUNT},
-	        #{OFFPAY_EXPECT_AMOUNT},
-	        #{SUPER_RESERV_NO},
-	        #{NOTE},
+	        #{checkupProductNo},
+	        #{checkupRosterNo},
+	        #{partnerCenterId},
+	        #{checkupPlaceId},
+	        #{checkupDivCd},
+	        #{selfPayAmount},
+	        #{companySupportAmount},
+	        #{onpayAmount},
+	        #{offpayExpectAmount},
+	        #{superReservNo},
+	        #{note},
 	        DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%s'),
-	        #{REQUEST_CONTENTS},
-	        #{NHIS_RESULT_USES_AGREE_YN},
-	        #{PRIVACY_USES_AGREE_YN},
-	        #{HC_SHARE_AGREE_YN},
-	        #{COMPANY_ITSELF_AGREE_YN},
-	        #{PRIVACY_DISPLAY_AGREE_YN},
-	        #{HC_AGREE_YN},
-	        #{RESULT_RECEIVE_WAY_CD},
-	        #{FORCE_RESERV_YN},
-	        #{RESERV_DAY},
-	        #{RESERV_ST},
-	        #{RESERV_CHANGE_CONTENTS},
-	        #{RESERV_CHANGE_TYPE},
-	        #{RESERV_CHANGE_DT},
-	        #{RESERV_CHANGE_ST},
-	        #{RESERV_1TH_HOPE_DAY},
-	        #{RESERV_2ND_HOPE_DAY},
-	        #{RESERV_TIME},
-	        #{ORIGIN_RESERV_NO},
-	        #{RESERV_CONFIRM_DT},
-	        #{RESERV_2ND_ABLE_YN},
-	        #{SELFPAY_SEDATION_AMT},
-	        #{COMPANY_SUPPORT_SEDATION_AMT},
-	        #{MOBILE_NO},
-	        #{PHONE_NO},
-	        #{ADDRRESS},
-	        #{ZIP_CD},
-	        #{ADDRRESS_DETAIL},
-	        #{EMAIL},
-	        #{AGREE_TERMS_LIST},
-	        #{BATCH_RESERV_YN},
-	        #{SMS_YN},
-	        #{PREGNANCY_YN},
-	        #{POSSIBLE_PREGNANCY_YN},
-	        #{FEEDING_YN},
-	        #{MENSES_YN},
-	        #{ANTICOAGULANT_YN},
-	        #{MELITURIA_YN},
-	        #{ARTERIOTONY_YN},
-	        #{MEDICATION_TEXT},
-	        #{NEPHROPATHY_YN},
-	        #{CARDIOPATHY_YN},
-	        #{RENAL_FAILURE_YN},
-	        #{PERITONEAL_DIALYSIS_YN},
-	        #{HEMODIALYSIS_YN},
-	        #{CASE_HISTORY_TEXT},
-	        #{LAST_MODIFIER},
-	        #{LAST_PATH},
-	        #{VIP_YN},
-	        #{TRANS_CUSTOMER_YN},
-	        #{PRE_ACCEPT_YN},
-	        #{CENTER_RESERV_ID},
-	        #{KICS_LAST_MODIFIER},
-	        #{RESERV_FLOOR},
-	        #{PRODUCT_PRICE},
-	        #{PRODUCT_INDEX},
-	        #{RE_CHECKUP_YN},
-	        #{GENDER_CD},
-	        #{CAMPAIGN_REG_NM},
-	        #{RESERV_FIX_YN},
-	        #{BULK_BATCH_NO},
-	        #{BULK_ROW_NO},
-	        #{PREMIUM_CAPA_YN},
-	        #{SUPPLIES_ZIP_CD},
-	        #{SUPPLIES_ADDRESS},
-	        #{SUPPLIES_ADDRESS_DETAIL}
+	        #{requestContents},
+	        #{nhisResultUsesAgreeYn},
+	        #{privacyUsesAgreeYn},
+	        #{hcShareAgreeYn},
+	        #{companyItselfAgreeYn},
+	        #{privacyDisplayAgreeYn},
+	        #{hcAgreeYn},
+	        #{resultReceiveWayCd},
+	        #{forceReservYn},
+	        #{reservDay},
+	        #{reservSt},
+	        #{reservChangeContents},
+	        #{reservChangeType},
+	        #{reservChangeDt},
+	        #{reservChangeSt},
+	        #{reserv1ThHopeDay},
+	        #{reserv2NdHopeDay},
+	        #{reservTime},
+	        #{originReservNo},
+	        #{reservConfirmDt},
+	        #{reserv2NdAbleYn},
+	        #{selfpaySedationAmt},
+	        #{companySupportSedationAmt},
+	        #{mobileNo},
+	        #{phoneNo},
+	        #{address},
+	        #{zipCd},
+	        #{addressDetail},
+	        #{email},
+	        #{agreeTermsList},
+	        #{batchReservYn},
+	        #{smsYn},
+	        #{pregnancyYn},
+	        #{possiblePregnancyYn},
+	        #{feedingYn},
+	        #{mensesYn},
+	        #{anticoagulantYn},
+	        #{melituriaYn},
+	        #{arteriotonyYn},
+	        #{medicationText},
+	        #{nephropathyYn},
+	        #{cardiopathyYn},
+	        #{renalFailureYn},
+	        #{peritonealDialysisYn},
+	        #{hemodialysisYn},
+	        #{caseHistoryText},
+	        #{lastModifier},
+	        #{lastPath},
+	        #{vipYn},
+	        #{transCustomerYn},
+	        #{preAcceptYn},
+	        #{centerReservId},
+	        #{kicsLastModifier},
+	        #{reservFloor},
+	        #{productPrice},
+	        #{productIndex},
+	        #{reCheckupYn},
+	        #{genderCd},
+	        #{campaignRegNm},
+	        #{reservFixYn},
+	        #{bulkBatchNo},
+	        #{bulkRowNo},
+	        #{premiumCapaYn},
+	        #{suppliesZipCd},
+	        #{suppliesAddress},
+	        #{suppliesAddressDetail}
 	    )
 	</insert>
 
