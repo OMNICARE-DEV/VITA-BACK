@@ -17,6 +17,7 @@ import com.vita.back.api.model.request.UserLoginRequest;
 import com.vita.back.api.model.response.UserLoginResponse;
 import com.vita.back.api.reserv.model.data.CenterCustomerInfoDto;
 import com.vita.back.api.reserv.model.data.CheckupPlaceDto;
+import com.vita.back.api.reserv.model.data.CheckupPolicyDto;
 import com.vita.back.api.reserv.model.data.CheckupProductDto;
 import com.vita.back.api.reserv.model.data.CheckupRosterDto;
 import com.vita.back.api.reserv.model.data.CheckupSuperRosterDto;
@@ -27,8 +28,10 @@ import com.vita.back.api.reserv.model.data.GetEquipNoDto;
 import com.vita.back.api.reserv.model.data.GetRemainCapaDto;
 import com.vita.back.api.reserv.model.data.GetRoomInfoDto;
 import com.vita.back.api.reserv.model.data.GetTestItemCdDto;
+import com.vita.back.api.reserv.model.data.PartnerCenterDto;
 import com.vita.back.api.reserv.model.data.RegDeferReservValIdDto;
 import com.vita.back.api.reserv.model.data.RegReservDto;
+import com.vita.back.api.reserv.model.data.ReservMemoDto;
 import com.vita.back.api.reserv.model.data.ReservTestItemDto;
 import com.vita.back.api.reserv.model.data.ServiceInfoDto;
 import com.vita.back.api.reserv.model.data.UpdtCompanySupAmtDto;
@@ -112,8 +115,6 @@ public interface ReservMapper {
 
 	List<ReservTestItemDto> selectTestItemCdList(RegReservDto regReservVo);
 
-	String selectPartnerCenterName(String partnerCenterId);
-
 	// String selectCustomerIdByRoster(int rosterNo);
 
 	ServiceInfoDto selectHcServiceInfo(String serviceInfoId);
@@ -133,8 +134,6 @@ public interface ReservMapper {
 	List<String> selectBundleRoomInfo(String testItemCd);
 
 	List<String> selectCheckupHolidayInfo();
-
-	String selectCenterIdByCenter(String partnerCenterId);
 
 	String selectServiceCustomerId(CenterCustomerInfoDto hcCenterCustomerInfoVo);
 
@@ -179,6 +178,14 @@ public interface ReservMapper {
 	int selectEchoItem(int reservNo);
 
 	int selectSedationItem(int reservNo);
+
+	CheckupPolicyDto selectCheckupPolicy(CheckupPolicyDto checkupPolicyDto);
+
+	PartnerCenterDto selectPartnerCenter(PartnerCenterDto partnerCenterDto);
+
+	List<RegReservDto> selectReservInfo(RegReservDto reservDto);
+
+	ReservMemoDto selectReservMemo(int checkupRosterNo);
 
 	//HcCheckupRosterResponse selectCheckupRosterDetails(HcCheckupRosterRequest hcCheckupRosterRequest);
 
