@@ -9,8 +9,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +41,7 @@ import com.vita.back.api.reserv.mapper.ReservMapper;
 import com.vita.back.api.reserv.model.data.AgreeTermsDto;
 import com.vita.back.api.reserv.model.data.CenterCustomerInfoDto;
 import com.vita.back.api.reserv.model.data.CheckupPlaceDto;
+import com.vita.back.api.reserv.model.data.CheckupPolicyDto;
 import com.vita.back.api.reserv.model.data.CheckupProductDto;
 import com.vita.back.api.reserv.model.data.CheckupRosterDto;
 import com.vita.back.api.reserv.model.data.CheckupSuperRosterDto;
@@ -49,8 +53,10 @@ import com.vita.back.api.reserv.model.data.GetEquipNoDto;
 import com.vita.back.api.reserv.model.data.GetRemainCapaDto;
 import com.vita.back.api.reserv.model.data.GetRoomInfoDto;
 import com.vita.back.api.reserv.model.data.GetTestItemCdDto;
+import com.vita.back.api.reserv.model.data.PartnerCenterDto;
 import com.vita.back.api.reserv.model.data.RegDeferReservValIdDto;
 import com.vita.back.api.reserv.model.data.RegReservDto;
+import com.vita.back.api.reserv.model.data.ReservMemoDto;
 import com.vita.back.api.reserv.model.data.ReservTestItemDto;
 import com.vita.back.api.reserv.model.data.ReserveDataDto;
 import com.vita.back.api.reserv.model.data.ServiceInfoDto;
@@ -118,7 +124,7 @@ public class ReservServiceImpl implements ReservService {
 
 	@Override
 	public ReservResponse processReserv(ReservRequest request) throws VitaException {
-
+		
 		// 누락된 주소 업데이트
 		updateMissingAddresses(request);
 
@@ -127,7 +133,7 @@ public class ReservServiceImpl implements ReservService {
 		CheckupProductDto checkupProductDto = fetchCheckupProductInfo(request);
 		CenterConnecterInfoDto centerConnecterInfoDto = fetchCenterConnecterInfo(request);
 		ExtIntegrationDto extIntegrationDto = fetchExternalIntegrationInfo(request);
-
+		
 		RegReservDto regReservVo = makeRegReservVo(request, checkupRosterDto, checkupProductDto);
 		request.setCheckupPlaceId(regReservVo.getCheckupPlaceId());
 
@@ -138,25 +144,15 @@ public class ReservServiceImpl implements ReservService {
 
 		// 요청값 유효성 검사
 		validateRequest(request, checkupRosterDto, checkupProductDto);
-
-		/*
-		 * 검증로직 추후 검토
-		 * 
-		 * // 대상자 검증 service.rosterValidationCheck(request, checkupRosterVo);
-		 * 
-		 * // 상품 검증 service.productValidationCheck(request, checkupProductVo);
-		 * 
-		 * // 정책검증 service.policyValidationCheck(request, checkupRosterVo);
-		 * 
-		 * // 병원검증 service.centerValidationCheck(request, checkupRosterVo);
-		 * 
-		 * // 예약검증 service.reservValidationCheck(request,
-		 * checkupRosterVo.getCHECKUP_ROSTER_NO());
-		 * 
-		 * // 예약자 메모 정보조회
-		 * request.setReservRequestContents(commonService.commonGetMemo(checkupRosterNo)
-		 * );
-		 */
+		
+		ReservMemoDto memoDto = mapper.selectReservMemo(request.getCheckupRosterNo());
+		
+		if(!ValidUtil.isEmpty(memoDto) 
+				&& !ValidUtil.isEmpty(memoDto.getMemoContents())) {
+			request.setReservRequestContents(memoDto.getMemoContents());
+		} else {
+			request.setReservRequestContents("");
+		}
 
 		int reservNo = processReservation(regReservVo, request, checkupRosterDto, checkupProductDto, extIntegrationDto);
 		int deferReservNo = processDeferredCheckup(request);
@@ -177,14 +173,11 @@ public class ReservServiceImpl implements ReservService {
 		boolean isU2bioNotConnected = ValidUtil.isEmpty(extIntegrationDto);
 		boolean isCenterProductNotIncluded = ValidUtil.isEmpty(checkupProductDto.getCenterProductNo());
 
-		// 케파 갱신
-		// --> 이부분 의문점 왜 협력병원 연계정보 없을 때만 케파갱신 처리 하는지??
-
 		boolean isCenterNotKMI = isCenterNotConnected && (isU2bioNotConnected || isCenterProductNotIncluded);
 		boolean isOtherCenterWithU2bio = !isU2bioNotConnected && !isCenterProductNotIncluded;
+		// 케파 갱신
 		if (isCenterNotKMI)
 			updateCapacity(request);
-		// regReservVo
 
 		// Map<String,Object> map = new HashMap<>();
 		// map.put("customerId",request.getCustomerId());
@@ -988,9 +981,78 @@ public class ReservServiceImpl implements ReservService {
             throw new VitaException("VR000", "예약 시작/종료일시가 부정확합니다."); // 유효하지 않은 값
         }
 		
+		CheckupPolicyDto checkupPolicyDto = new CheckupPolicyDto();
+		checkupPolicyDto.setCustomerId(request.getCustomerId());
 		
+		try {
+			checkupPolicyDto = mapper.selectCheckupPolicy(checkupPolicyDto); // HC_CHECKUP_POLICY
+        } catch (Exception e) {
+            log.warn("DB error (selectCheckupPolicy)", e);
+            throw new VitaException(VitaCode.DATABASE_ERROR); // DB error
+        }
 		
+		if (ValidUtil.isEmpty(checkupPolicyDto)) {
+            log.warn("db return value is empty (getCheckupPolicy)");
+            throw new VitaException("VR000", "정책연도를 조회할 수 없습니다."); //유효하지 않은 값
+        }
 		
+		// 병원정보 조회
+        PartnerCenterDto partnerCenterDto = new PartnerCenterDto();
+        partnerCenterDto.setPartnerCenterId(request.getPartnerCenterId());
+        try {
+        	partnerCenterDto = mapper.selectPartnerCenter(partnerCenterDto); //HC_PARTNER_CENTER
+        } catch (Exception e) {
+            log.warn("DB error (selectPartnerCenter)", e);
+            throw new VitaException(VitaCode.DATABASE_ERROR); // DB error
+        }
+        
+        boolean gastro = request.getCheckupItemList().stream()
+        	    .map(ReservRequest.CheckupItemList::getCheckupItemCd)
+        	    .anyMatch(code -> code.equals(NORMAL_GASTRO) || code.equals(SLEEP_GASTRO));
+    	boolean colon = request.getCheckupItemList().stream()
+    	    .map(ReservRequest.CheckupItemList::getCheckupItemCd)
+    	    .anyMatch(code -> code.equals(NORMAL_COLON) || code.equals(SLEEP_COLON));
+    	
+    	if (!ValidUtil.isEmpty(partnerCenterDto) 
+                && "N".equals(request.getAdminReqYn())) {
+
+            int americanAge = ValidUtil.getAmericanAge(checkupRosterDto.getBirthday()); //만나이계산
+
+            if (partnerCenterDto.getColonoscopyLimitAge() != 0 // 대장내시경 나이제한이 유효하고
+                    && partnerCenterDto.getColonoscopyLimitAge() <= americanAge // 요청자의 만나이(71)가 나이제한(65) '이상'이고
+                    && colon == true) { // 내시경 요청자라면
+                log.error("내시경 나이제한에 걸림. 만나이:{}, 대장나이제한:{}", americanAge, partnerCenterDto.getColonoscopyLimitAge());
+                throw new VitaException("VR000", "예약이 불가능합니다.(대장내시경 나이제한 미충족)"); // 예약이 불가능합니다.
+            }
+            if (partnerCenterDto.getGastroscopyLimitAge() != 0 // 위내시경 나이제한이 유효하고
+                    && partnerCenterDto.getGastroscopyLimitAge() <= americanAge // 요청자의 만나이(71)가 나이제한(65) '이상'이고
+                    && gastro == true) { // 내시경 요청자라면
+                log.error("내시경 나이제한에 걸림. 만나이:{}, 위나이제한:{}", americanAge, partnerCenterDto.getGastroscopyLimitAge());
+                throw new VitaException("VR000", "예약이 불가능합니다.(위내시경 나이제한 미충족)"); // 예약이 불가능합니다.
+            }
+        }
+    	
+    	Set<ReservRequest.CheckupItemList> itemSet = new HashSet<>(request.getCheckupItemList());
+        if (request.getCheckupItemList().size() != itemSet.size()) { //검진항목List를 Set으로 변경해서 사이즈가 달라졌을 경우 (=중복된 항목이 있을 경우)
+            log.error("중복된 검진항목이 존재하여 요청수행불가");
+            throw new VitaException("VR000", "중복된 검진항목이 존재하여 예약이 불가능합니다.");
+        }
+        
+        
+        RegReservDto reservDto = new RegReservDto();
+        reservDto.setCheckupRosterNo(request.getCheckupRosterNo());
+        
+        List<RegReservDto> reservDtoList = mapper.selectReservInfo(reservDto);
+        
+        List<String> invalidReservStList = Arrays.asList("05", "79", "80", "90");
+        boolean hasValidReserv = reservDtoList.stream()
+                .anyMatch(dto -> !invalidReservStList.contains(dto.getReservSt()));
+        
+        if (hasValidReserv) { // 기예약정보가 유효하다면
+            log.warn("기예약자는 예약 불가능. 예약실패/노쇼/예약확정취소의 경우에만 재예약이 가능합니다). checkupRosterNo:{}, alreadyReservNoCount:{}", request.getCheckupRosterNo());
+            throw new VitaException("VR000", "중복예약은 불가능합니다.");
+        }
+    	
 	}
 
 	/**
@@ -1480,12 +1542,15 @@ public class ReservServiceImpl implements ReservService {
 
 		// 장비실 중복제거
 		List<String> roomList = roomIdList.stream().distinct().collect(Collectors.toList());
-		String centerIdByCenter = mapper.selectCenterIdByCenter(request.getPartnerCenterId());
+		
+		PartnerCenterDto centerDto = new PartnerCenterDto();
+		centerDto.setPartnerCenterId(request.getPartnerCenterId());
+		PartnerCenterDto center = mapper.selectPartnerCenter(centerDto);
 
 		// 연계 모델 셋팅
 		ConnGetCheckupAbleDaysRequest connAbleDaysReq = new ConnGetCheckupAbleDaysRequest();
 		connAbleDaysReq.setPartnerCenterId(request.getPartnerCenterId());
-		connAbleDaysReq.setPartnerCenterIdByCenter(centerIdByCenter);
+		connAbleDaysReq.setPartnerCenterIdByCenter(center.getPartnerCenterId());
 		connAbleDaysReq.setStartDt(request.getReserv1stHopeDay().substring(0, 8));
 		connAbleDaysReq.setEndDt(request.getReserv1stHopeDay().substring(0, 8));
 		if ("Y".equals(request.getSpecialCheckupYN())) {
@@ -1737,7 +1802,10 @@ public class ReservServiceImpl implements ReservService {
 			throws VitaException {
 		String centerIdByCenter = "";
 		try {
-			centerIdByCenter = mapper.selectCenterIdByCenter(partnerCenterId); // HC_CENTER_CUSTOMER_INFO
+			PartnerCenterDto centerDto = new PartnerCenterDto();
+			centerDto.setPartnerCenterId(partnerCenterId);
+			centerDto = mapper.selectPartnerCenter(centerDto); // HC_CENTER_CUSTOMER_INFO
+			centerIdByCenter = centerDto.getPartnerCenterId();
 		} catch (Exception e) {
 			updateReservStatus("90", reservNo, path, modifier);
 			log.warn("DB error (getCenterPartnerCenterId), partnerCenterId : {}", partnerCenterId, e);
@@ -1862,7 +1930,11 @@ public class ReservServiceImpl implements ReservService {
 		String resultStr = ""; // 결과문장
 
 		// 1. 검진기관명 조회
-		String partnerCenterName = mapper.selectPartnerCenterName(reservVo.getPartnerCenterId());
+		PartnerCenterDto centerDto = new PartnerCenterDto();
+		centerDto.setPartnerCenterId(reservVo.getPartnerCenterId());
+		PartnerCenterDto partnerCenter = mapper.selectPartnerCenter(centerDto);
+		
+		String partnerCenterName = partnerCenter.getPartnerCenterName();
 
 		// 1. 템플릿 조회
 		ServiceInfoDto hcServiceInfoVo = mapper.selectHcServiceInfo(serviceInfoId);

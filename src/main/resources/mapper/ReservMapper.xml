@@ -3,6 +3,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.vita.back.api.reserv.mapper.ReservMapper">
+	
+	<select id="selectReservMemo" 
+		parameterType="int" 
+		resultType="com.vita.back.api.reserv.model.data.ReservMemoDto">
+		SELECT 
+			MEMO_CONTENTS
+		FROM HC_RESERV_MEMO
+		WHERE CHECKUP_ROSTER_NO = #{checkupRosterNo}
+		ORDER BY REG_DT DESC
+		LIMIT 1
+	</select>
+	<select id="selectReservInfo" 
+		parameterType="com.vita.back.api.reserv.model.data.RegReservDto" 
+		resultType="com.vita.back.api.reserv.model.data.RegReservDto">
+		SELECT 
+		    RESERV_NO,
+		    CHECKUP_PRODUCT_NO,
+		    CHECKUP_ROSTER_NO,
+		    PARTNER_CENTER_ID,
+		    CHECKUP_PLACE_ID,
+		    RESERV_ST
+		FROM HC_RESERV
+		WHERE CHECKUP_ROSTER_NO = #{checkupRosterNo}
+	</select>
 	<select id="selectSedationItem" parameterType="int" resultType="int">
         SELECT IF(
                    NOT EXISTS(
@@ -31,7 +55,6 @@
                        SELECT ITEM.TEST_ITEM_CD
                        FROM HC_TEST_ITEM_CD ITEM
                        WHERE ITEM.PARTNER_CENTER_ID = 'H00001'
-                       AND ITEM.TEST_ITEM_NAME LIKE '%심장초음파%'
                    )
                ), 1, 0)
     </select>
@@ -297,15 +320,6 @@
 	        AND CUSTOMER_INFO_ST = '00'
 	    LIMIT 1;
 	</select>
-	<select id="selectCenterIdByCenter" parameterType="java.lang.String" resultType="java.lang.String">
-	    SELECT 
-	        CENTER_ID_BY_CENTER 
-	    FROM 
-	        HC_PARTNER_CENTER 
-	    WHERE 
-	        PARTNER_CENTER_ID = #{partnerCenterId}
-	        AND PARTNER_CENTER_ST = '00';
-	</select>
 	<select id="selectCheckupHolidayInfo" resultType="String">
         select HOLIDAY FROM HC_CHECKUP_HOLIDAY
     </select>
@@ -406,15 +420,18 @@
          WHERE  CHECKUP_ROSTER_NO = #{rosterNo}
            AND  CHECKUP_ROSTER_ST not in ('80','90')
     </select> -->
-	<select id="selectPartnerCenterName" parameterType="java.lang.String" resultType="java.lang.String">
-		SELECT 
-		    PARTNER_CENTER_NAME 
-		FROM 
-		    HC_PARTNER_CENTER 
-		WHERE 
-		    PARTNER_CENTER_ID = #{partnerCenterId}
-		    AND PARTNER_CENTER_ST = '00';
-    </select>
+	<select id="selectPartnerCenter" 
+        parameterType="com.vita.back.api.reserv.model.data.PartnerCenterDto" 
+        resultType="com.vita.back.api.reserv.model.data.PartnerCenterDto">
+	    SELECT 
+	        PARTNER_CENTER_NAME,
+	        CENTER_ID_BY_CENTER,
+	        COLONOSCOPY_LIMIT_AGE,
+	        GASTROSCOPY_LIMIT_AGE
+	    FROM HC_PARTNER_CENTER
+	    WHERE PARTNER_CENTER_ID = #{partnerCenterId}
+	      AND PARTNER_CENTER_ST = '00'
+	</select>
 	<select id="selectTestItemCdList" resultType="com.vita.back.api.reserv.model.data.ReservTestItemDto">
         SELECT
 	        a.RESERV_NO,
@@ -459,13 +476,42 @@
 		    CUSTOMER_ID = #{customerId}
 		    AND POLICY_YEAR = #{policyYear};
 	</select>
+	<select id="selectCheckupPolicy" 
+		resultType="com.vita.back.api.reserv.model.data.CheckupPolicyDto" 
+		parameterType="com.vita.back.api.reserv.model.data.CheckupPolicyDto">
+		SELECT 
+		    RESERV_START_DT,
+		    RESERV_END_DT,
+		    CHECKUP_START_DT,
+		    CHECKUP_END_DT,
+		    IFNULL(
+		        FAMILY_CHECKUP_START_DT, 
+		        (
+		            SELECT CHECKUP_START_DT 
+		            FROM HC_CHECKUP_POLICY 
+		            WHERE CUSTOMER_ID = #{customerId} 
+		              AND POLICY_YEAR = #{policyYear}
+		        )
+		    ) AS FAMILY_CHECKUP_START_DT,
+		    IFNULL(
+		        FAMILY_CHECKUP_END_DT, 
+		        (
+		            SELECT CHECKUP_END_DT 
+		            FROM HC_CHECKUP_POLICY 
+		            WHERE CUSTOMER_ID = #{customerId} 
+		              AND POLICY_YEAR = #{policyYear}
+		        )
+		    ) AS FAMILY_CHECKUP_END_DT
+		FROM HC_CHECKUP_POLICY
+		WHERE CUSTOMER_ID = #{customerId}
+		ORDER BY POLICY_YEAR DESC
+		LIMIT 1;
+	</select>
 	<!-- 그룹 장비케파 증감 -->
     <update id="updatePlusGroupEquipCapa" parameterType="Map">
         UPDATE HC_CENTER_EQUIP_CAPA_GROUP
-            SET
-                capa = capa+1
-        WHERE
-                PARTNER_CENTER_ID = #{PARTNER_CENTER_ID}
+            SET capa = capa+1
+        WHERE PARTNER_CENTER_ID = #{PARTNER_CENTER_ID}
             AND TEST_EQUIP_NO = #{TEST_EQUIP_NO}
             AND GROUP_NO = #{GROUP_NO}
             AND CAPA_DAY = #{CAPA_DAY}
@@ -497,10 +543,8 @@
     <!-- 그룹 장소 케파 차감 -->
     <update id="updateMinusGroupCapa" parameterType="Map">
 		UPDATE HC_CENTER_PLACE_CAPA_GROUP
-			SET
-				CAPA = CAPA-1
-		WHERE
-				PARTNER_CENTER_ID = #{partnerCenterId}
+			SET CAPA = CAPA-1
+		WHERE PARTNER_CENTER_ID = #{partnerCenterId}
 			AND CENTER_PLACE_ID = #{checkupPlaceId}
 			AND GROUP_NO = #{groupNo}
 			AND CAPA_DAY = #{capaDay}
@@ -780,9 +824,9 @@
 	<update id="updateCheckupRosterMobileNo">
         UPDATE HC_CHECKUP_ROSTER
         SET
-            MOBILE_NO = #{MOBILE_NO}
+            MOBILE_NO = #{mobileNo}
         WHERE
-            CHECKUP_ROSTER_NO = #{CHECKUP_ROSTER_NO}
+            CHECKUP_ROSTER_NO = #{checkupRosterNo}
     </update>
     
 	<!-- <select id="selectCustomerId" resultType="String">
