@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vita.back.api.mapper.CheckupMapper">
+	<select id="selectCustomerList" 
+		parameterType="int" 
+		resultType="com.vita.back.api.model.data.CustomerDto">
+		SELECT 
+		    C.CUSTOMER_ID,
+		    C.CUSTOMER_NAME,
+		    C.CEO_NAME,
+		    C.CORP_NO,
+		    C.ADDRRESS,
+		    C.ADDRRESS_DETAIL,
+		    C.ZIP_CD,
+		    C.MAIN_CUSTOMER_ID,
+		    C.SALES_ADMIN_ID,
+		    C.ADMIN_ID,
+		    C.COMPANY_LOGO_URL,
+		    C.CUSTOMER_DOMAIN,
+		    C.CUSTOMER_DOMAIN_YN,
+		    C.LOGIN_TYPE,
+		    C.MOBILE_NO_YN,
+		    C.REG_DT,
+		    C.CUSTOMER_ST,
+		    C.ROSTER_ID_TYPE,
+		    C.CUSTOMER_DISPLAY_YN,
+		    C.MIG_YN,
+		    C.MIG_DT,
+		    C.ROSTER_ADD_TYPE,
+		    C.PARTNER_HC_ID,
+		    C.COMPANY_CHECKUP_POLICY_GUIDE,
+		    C.COIMPANY_CHECKUP_PIL,
+		    C.BILL_UNIQUENESS_CONTENTS,
+		    C.LOGIN_URL,
+		    C.LOGIN_CONF_TYPE,
+		    C.NOTE,
+		    C.MIN_WAITING_DAY,
+		    C.MIN_WAITING_DAY_YN,
+		    C.BUSINESS_TYPE,
+		    C.BUSINESS_ITEM,
+		    C.ADD_TEST_YN,
+		    C.CUSTOMER_CERTIFY_CD,
+		    C.CUSTOMER_CERTIFY_CD_TYPE,
+		    C.CORPORATE_DISPLAY_YN
+		FROM HC_CUSTOMER C
+		JOIN HC_CUSTOMER_MAP CM
+		    ON C.CUSTOMER_ID = CM.CUSTOMER_ID
+		JOIN HC_USER_COMMON UC
+		    ON CM.COMMON_USER_NO = UC.COMMON_USER_NO
+		WHERE UC.COMMON_USER_NO = #{commonUserNo}
+	</select>
+</mapper>
