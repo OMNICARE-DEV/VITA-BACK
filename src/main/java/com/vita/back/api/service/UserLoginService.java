@@ -7,13 +7,13 @@ import com.vita.back.api.model.response.UserLoginResponse;
 import com.vita.back.common.exception.VitaException;
 
 public interface UserLoginService {
-    public int userLogin(UserLoginRequest request) throws VitaException;
+    int userLogin(UserLoginRequest request) throws VitaException;
 
-    public int userIdDupCheck(UserLoginRequest request) throws VitaException;;
+    int userIdDupCheck(UserLoginRequest request) throws VitaException;
 
-    public RegCommonUserResponse insertCommonUser(RegCommonUserRequest request) throws VitaException;
+    RegCommonUserResponse insertCommonUser(RegCommonUserRequest request) throws VitaException;
 
-    public UserLoginResponse getUserLoginResponse(UserLoginRequest request) throws VitaException;
+    UserLoginResponse getUserLoginResponse(UserLoginRequest request) throws VitaException;
 
-    public boolean mappingCustomerUser(int commonUserNo) throws VitaException;
+    boolean mappingCustomerUser(int commonUserNo) throws VitaException;
 }
