@@ -11,6 +11,8 @@ import com.vita.back.common.exception.VitaCode;
 import com.vita.back.common.exception.VitaException;
 import com.vita.back.common.util.Connection;
 import com.vita.back.common.util.ValidUtil;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 //noRollbackFor = { HopsNoRollbackException.class } -> 추후 정의
 @Transactional(rollbackFor = { Exception.class, VitaException.class })
 public class ReservServiceImpl implements ReservService {
@@ -36,13 +39,6 @@ public class ReservServiceImpl implements ReservService {
 	private final PayService payService;
 	private final Connection connection;
 
-	public ReservServiceImpl(ReservMapper mapper, U2BioServiceImpl u2BioService, PayService payService,
-			Connection connection) {
-		this.mapper = mapper;
-		this.u2bioService = u2BioService;
-		this.payService = payService;
-		this.connection = connection;
-	}
 
 	private final String MSG_RESERV_REG = "2112"; // 예약 신청
 	private final String MSG_RESERV_DONE = "2113"; // 예약 확정
