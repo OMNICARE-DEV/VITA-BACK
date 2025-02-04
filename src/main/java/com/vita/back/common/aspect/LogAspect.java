@@ -1,13 +1,10 @@
 package com.vita.back.common.aspect;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
@@ -70,8 +67,8 @@ public class LogAspect {
         Object result;
         try {
             result = joinPoint.proceed();
-        } catch (Throwable ex) {
-            throw ex;
+        } catch (Throwable e) {
+            throw e;
         }
 
         // 종료 시간
