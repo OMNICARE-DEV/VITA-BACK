@@ -36,7 +36,7 @@ public class ReservController {
     	return new VitaResponse<>(Constant.SUCCESS, response);
     }
     
-    @Operation(summary = "고객사 조회", description = "사용자 소속된 고객사 조회")
+    @Operation(summary = "고객사 조회", description = "사용자가 소속된 고객사 조회")
     @GetMapping("/select-customer-list")
     public VitaResponse<?> selectCustomerList(@RequestParam(value = "commonUserNo") int commonUserNo) throws VitaException {
     	CustomerResponse response = checkupService.selectCustomerList(commonUserNo);
